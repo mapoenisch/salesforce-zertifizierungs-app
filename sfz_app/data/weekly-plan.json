@@ -1,0 +1,362 @@
+[
+  {
+    "week": 1,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Setup: Trailhead-Account, Playground, Exam Guide lesen + Salesforce Ecosystem",
+    "newVocabTarget": 21,
+    "reviewsTarget": 0,
+    "readingExercisesTarget": 9,
+    "milestone": "Setup abgeschlossen"
+  },
+  {
+    "week": 2,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Navigation",
+    "newVocabTarget": 21,
+    "reviewsTarget": 19,
+    "readingExercisesTarget": 9,
+    "milestone": null
+  },
+  {
+    "week": 3,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Data Model",
+    "newVocabTarget": 21,
+    "reviewsTarget": 32,
+    "readingExercisesTarget": 9,
+    "milestone": null
+  },
+  {
+    "week": 4,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Reports & Dashboards + erste Wiederholung",
+    "newVocabTarget": 21,
+    "reviewsTarget": 45,
+    "readingExercisesTarget": 8,
+    "milestone": "Monat 1: Alle Grundbegriffe eingeführt, >=70% Trefferquote in Übungsfragen"
+  },
+  {
+    "week": 5,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Erste vollständige Mini-Prüfung + Wiederholung",
+    "newVocabTarget": 0,
+    "reviewsTarget": 51,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 6,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Gezielte Fehlerwiederholung",
+    "newVocabTarget": 0,
+    "reviewsTarget": 58,
+    "readingExercisesTarget": 0,
+    "milestone": "Monat 2: >=80% in Mini-Prüfungen"
+  },
+  {
+    "week": 7,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Reading-Strategie vertiefen (Signalwörter, Ausschlusslogik)",
+    "newVocabTarget": 0,
+    "reviewsTarget": 51,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 8,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Prüfungssimulation 1",
+    "newVocabTarget": 0,
+    "reviewsTarget": 58,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 9,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Fehlerfokus-Wiederholung",
+    "newVocabTarget": 0,
+    "reviewsTarget": 58,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 10,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Prüfungssimulation 2",
+    "newVocabTarget": 0,
+    "reviewsTarget": 58,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 11,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Letzte Lücken schließen",
+    "newVocabTarget": 0,
+    "reviewsTarget": 58,
+    "readingExercisesTarget": 0,
+    "milestone": "Monat 3: >=85% in Simulationen, bereit zur Prüfung"
+  },
+  {
+    "week": 12,
+    "certification": "foundations",
+    "phase": "foundations",
+    "focus": "Finale Wiederholung, Prüfung buchen und ablegen",
+    "newVocabTarget": 0,
+    "reviewsTarget": 58,
+    "readingExercisesTarget": 0,
+    "milestone": "Foundations-Prüfung ablegen"
+  },
+  {
+    "week": 1,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Setup: Trailhead-Account, Playground, Exam Guide lesen (setzt bestandene Foundations-Prüfung voraus) + Configuration and Setup",
+    "newVocabTarget": 20,
+    "reviewsTarget": 0,
+    "readingExercisesTarget": 8,
+    "milestone": "Setup abgeschlossen"
+  },
+  {
+    "week": 2,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Object Manager and Lightning App Builder",
+    "newVocabTarget": 20,
+    "reviewsTarget": 19,
+    "readingExercisesTarget": 8,
+    "milestone": null
+  },
+  {
+    "week": 3,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Data and Analytics Management, Teil 1 (größte Domain)",
+    "newVocabTarget": 20,
+    "reviewsTarget": 32,
+    "readingExercisesTarget": 8,
+    "milestone": null
+  },
+  {
+    "week": 4,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Data and Analytics Management, Teil 2 + Wiederholung",
+    "newVocabTarget": 20,
+    "reviewsTarget": 45,
+    "readingExercisesTarget": 8,
+    "milestone": "Monat 1: Configuration, Object Manager und Data-Grundlagen eingeführt, >=65% Trefferquote in Übungsfragen"
+  },
+  {
+    "week": 5,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Automation, Teil 1 (Flow-Schwerpunkt, hands-on)",
+    "newVocabTarget": 19,
+    "reviewsTarget": 58,
+    "readingExercisesTarget": 7,
+    "milestone": null
+  },
+  {
+    "week": 6,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Sales and Marketing Applications",
+    "newVocabTarget": 19,
+    "reviewsTarget": 64,
+    "readingExercisesTarget": 7,
+    "milestone": null
+  },
+  {
+    "week": 7,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Service and Support Applications",
+    "newVocabTarget": 19,
+    "reviewsTarget": 70,
+    "readingExercisesTarget": 7,
+    "milestone": null
+  },
+  {
+    "week": 8,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Productivity and Collaboration + Agentforce",
+    "newVocabTarget": 19,
+    "reviewsTarget": 77,
+    "readingExercisesTarget": 7,
+    "milestone": "Monat 2: Automation, Sales/Service/Productivity und Agentforce eingeführt, >=65% in Admin-Übungsprüfungen (Schwellenwert)"
+  },
+  {
+    "week": 9,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Vertiefung höchstgewichtete Domains (Data & Analytics, Automation, Configuration)",
+    "newVocabTarget": 0,
+    "reviewsTarget": 83,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 10,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Vollständige Prüfungssimulation 1",
+    "newVocabTarget": 0,
+    "reviewsTarget": 83,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 11,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Fehlerfokus-Wiederholung + Prüfungssimulation 2",
+    "newVocabTarget": 0,
+    "reviewsTarget": 83,
+    "readingExercisesTarget": 0,
+    "milestone": "Monat 3: >=75% in vollständigen Mini-Prüfungen"
+  },
+  {
+    "week": 12,
+    "certification": "administrator",
+    "phase": "administrator",
+    "focus": "Finale Wiederholung, Prüfungssimulation 3, Prüfung buchen und ablegen",
+    "newVocabTarget": 0,
+    "reviewsTarget": 83,
+    "readingExercisesTarget": 0,
+    "milestone": "Administrator-Prüfung ablegen"
+  },
+  {
+    "week": 1,
+    "certification": "administrator-full",
+    "phase": "foundations",
+    "focus": "Setup: Trailhead-Account, Playground, Exam Guide (Foundations) lesen + Salesforce Ecosystem",
+    "newVocabTarget": 21,
+    "reviewsTarget": 0,
+    "readingExercisesTarget": 9,
+    "milestone": "Setup abgeschlossen"
+  },
+  {
+    "week": 2,
+    "certification": "administrator-full",
+    "phase": "foundations",
+    "focus": "Navigation",
+    "newVocabTarget": 21,
+    "reviewsTarget": 19,
+    "readingExercisesTarget": 9,
+    "milestone": null
+  },
+  {
+    "week": 3,
+    "certification": "administrator-full",
+    "phase": "foundations",
+    "focus": "Data Model",
+    "newVocabTarget": 21,
+    "reviewsTarget": 32,
+    "readingExercisesTarget": 9,
+    "milestone": null
+  },
+  {
+    "week": 4,
+    "certification": "administrator-full",
+    "phase": "foundations",
+    "focus": "Reports & Dashboards + Foundations-Mini-Prüfung",
+    "newVocabTarget": 21,
+    "reviewsTarget": 45,
+    "readingExercisesTarget": 8,
+    "milestone": "Monat 1: Foundations-Grundwissen vollständig eingeführt (Ecosystem, Navigation, Data Model, Reports & Dashboards) — Foundations-Mini-Prüfung mit >=65% bestehen"
+  },
+  {
+    "week": 5,
+    "certification": "administrator-full",
+    "phase": "foundations",
+    "focus": "Foundations-Wiederholung abschließen, Übergang zu Administrator-Grundlagen",
+    "newVocabTarget": 0,
+    "reviewsTarget": 45,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 6,
+    "certification": "administrator-full",
+    "phase": "administrator",
+    "focus": "Configuration and Setup + Object Manager and Lightning App Builder",
+    "newVocabTarget": 32,
+    "reviewsTarget": 32,
+    "readingExercisesTarget": 12,
+    "milestone": null
+  },
+  {
+    "week": 7,
+    "certification": "administrator-full",
+    "phase": "administrator",
+    "focus": "Data and Analytics Management (größte Domain, 17%)",
+    "newVocabTarget": 31,
+    "reviewsTarget": 45,
+    "readingExercisesTarget": 12,
+    "milestone": null
+  },
+  {
+    "week": 8,
+    "certification": "administrator-full",
+    "phase": "administrator",
+    "focus": "Automation (Flow-Schwerpunkt, hands-on)",
+    "newVocabTarget": 31,
+    "reviewsTarget": 58,
+    "readingExercisesTarget": 12,
+    "milestone": "Monat 2: Foundations abgeschlossen, Administrator-Kernthemen Configuration, Object Manager, Data & Analytics und Automation eingeführt — >=65% in Admin-Übungsfragen"
+  },
+  {
+    "week": 9,
+    "certification": "administrator-full",
+    "phase": "administrator",
+    "focus": "Sales and Marketing + Service and Support Applications",
+    "newVocabTarget": 31,
+    "reviewsTarget": 64,
+    "readingExercisesTarget": 12,
+    "milestone": null
+  },
+  {
+    "week": 10,
+    "certification": "administrator-full",
+    "phase": "administrator",
+    "focus": "Productivity and Collaboration + Agentforce",
+    "newVocabTarget": 31,
+    "reviewsTarget": 70,
+    "readingExercisesTarget": 12,
+    "milestone": null
+  },
+  {
+    "week": 11,
+    "certification": "administrator-full",
+    "phase": "administrator",
+    "focus": "Vollständige Prüfungssimulation 1 + Fehlerfokus-Wiederholung",
+    "newVocabTarget": 0,
+    "reviewsTarget": 77,
+    "readingExercisesTarget": 0,
+    "milestone": null
+  },
+  {
+    "week": 12,
+    "certification": "administrator-full",
+    "phase": "administrator",
+    "focus": "Finale Wiederholung, Prüfungssimulation 2, Administrator-Prüfung buchen und ablegen",
+    "newVocabTarget": 0,
+    "reviewsTarget": 77,
+    "readingExercisesTarget": 0,
+    "milestone": "Monat 3: Administrator-Stoff vollständig eingeführt, >=75% in vollständigen Mini-Prüfungen — Administrator-Prüfung ablegen"
+  }
+]

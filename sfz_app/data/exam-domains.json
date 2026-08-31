@@ -1,0 +1,86 @@
+[
+  {
+    "id": "adm-config-setup",
+    "certification": "administrator",
+    "name": "Configuration and Setup",
+    "weightPercent": 15,
+    "source": "help.salesforce.com Exam Guide Administrator, Artikel 005298966, abgerufen 15.08.2026"
+  },
+  {
+    "id": "adm-object-manager",
+    "certification": "administrator",
+    "name": "Object Manager and Lightning App Builder",
+    "weightPercent": 15,
+    "source": "help.salesforce.com Exam Guide Administrator, Artikel 005298966, abgerufen 15.08.2026"
+  },
+  {
+    "id": "adm-sales-marketing",
+    "certification": "administrator",
+    "name": "Sales and Marketing Applications",
+    "weightPercent": 10,
+    "source": "help.salesforce.com Exam Guide Administrator, Artikel 005298966, abgerufen 15.08.2026"
+  },
+  {
+    "id": "adm-service-support",
+    "certification": "administrator",
+    "name": "Service and Support Applications",
+    "weightPercent": 10,
+    "source": "help.salesforce.com Exam Guide Administrator, Artikel 005298966, abgerufen 15.08.2026"
+  },
+  {
+    "id": "adm-productivity-collab",
+    "certification": "administrator",
+    "name": "Productivity and Collaboration",
+    "weightPercent": 10,
+    "source": "help.salesforce.com Exam Guide Administrator, Artikel 005298966, abgerufen 15.08.2026"
+  },
+  {
+    "id": "adm-data-analytics",
+    "certification": "administrator",
+    "name": "Data and Analytics Management",
+    "weightPercent": 17,
+    "source": "help.salesforce.com Exam Guide Administrator, Artikel 005298966, abgerufen 15.08.2026"
+  },
+  {
+    "id": "adm-automation",
+    "certification": "administrator",
+    "name": "Automation",
+    "weightPercent": 15,
+    "source": "help.salesforce.com Exam Guide Administrator, Artikel 005298966, abgerufen 15.08.2026"
+  },
+  {
+    "id": "adm-agentforce",
+    "certification": "administrator",
+    "name": "Agentforce",
+    "weightPercent": 8,
+    "source": "help.salesforce.com Exam Guide Administrator, Artikel 005298966, abgerufen 15.08.2026"
+  },
+  {
+    "id": "fnd-ecosystem",
+    "certification": "foundations",
+    "name": "Salesforce Ecosystem",
+    "weightPercent": 32,
+    "source": "help.salesforce.com Exam Guide Foundations, Artikel 005298979, abgerufen 15.08.2026"
+  },
+  {
+    "id": "fnd-navigation",
+    "certification": "foundations",
+    "name": "Navigation",
+    "weightPercent": 28,
+    "source": "help.salesforce.com Exam Guide Foundations, Artikel 005298979, abgerufen 15.08.2026"
+  },
+  {
+    "id": "fnd-data-model",
+    "certification": "foundations",
+    "name": "Data Model",
+    "weightPercent": 25,
+    "source": "help.salesforce.com Exam Guide Foundations, Artikel 005298979, abgerufen 15.08.2026"
+  },
+  {
+    "id": "fnd-reports-dashboards",
+    "certification": "foundations",
+    "name": "Reports & Dashboards",
+    "weightPercent": 15,
+    "source": "help.salesforce.com Exam Guide Foundations, Artikel 005298979, abgerufen 15.08.2026"
+  }
+]

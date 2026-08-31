@@ -1,0 +1,1872 @@
+[
+  {
+    "id": "def-adm-001",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Matching Rule",
+    "definition": "A rule that defines the criteria used to identify potential duplicate records, such as matching on name and email.",
+    "distractorDefinitions": [
+      "A rule that decides whether a duplicate is blocked or only produces a warning.",
+      "A rule that prevents a record from being saved if a formula condition is not met.",
+      "A rule that automatically assigns new leads to the correct owner."
+    ],
+    "germanExplanation": "Definiert die Kriterien, nach denen mögliche Duplikate erkannt werden, z. B. Übereinstimmung bei Name und E-Mail.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-002",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Bucket Field",
+    "definition": "A field created directly in a report that groups values into custom categories without changing the underlying data.",
+    "distractorDefinitions": [
+      "A field on the parent object that sums values from related child records.",
+      "A field that references a record on a different object.",
+      "A field type used to store large text values."
+    ],
+    "germanExplanation": "Ein im Report selbst erstelltes Feld, das Werte in eigene Kategorien gruppiert, ohne die zugrundeliegenden Daten zu verändern.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-003",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Public Group",
+    "definition": "A named collection of users, roles, or other groups that can be used as a target for sharing rules.",
+    "distractorDefinitions": [
+      "A hierarchical structure that defines which manager can see which subordinate's records.",
+      "The baseline access level applied to a record before any sharing is added.",
+      "A set of permissions that can be layered on top of a user's profile."
+    ],
+    "germanExplanation": "Eine benannte Sammlung von Nutzern, Rollen oder anderen Gruppen, die als Ziel für Sharing Rules genutzt werden kann.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-004",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Permission Set Group",
+    "definition": "A bundle of multiple permission sets that can be assigned to a user in a single step, with the option to mute specific permissions.",
+    "distractorDefinitions": [
+      "A single permission set assigned to exactly one user.",
+      "A profile that defines the baseline object and field access for a user.",
+      "A hierarchy of roles that controls record-level visibility."
+    ],
+    "germanExplanation": "Bündelt mehrere Permission Sets, die in einem Schritt zugewiesen werden können; einzelne Berechtigungen lassen sich dabei gezielt stummschalten (muten).",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-005",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Junction Object",
+    "definition": "A custom object with two master-detail relationships that connects two other objects in a many-to-many relationship.",
+    "distractorDefinitions": [
+      "An object that loosely references another object without affecting its security.",
+      "A field that automatically sums related child record values.",
+      "A layout that controls which fields are visible to which profile."
+    ],
+    "germanExplanation": "Ein Custom Object mit zwei Master-Detail-Beziehungen, das zwei andere Objekte in einer Many-to-Many-Beziehung verbindet.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-006",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Schema Builder",
+    "definition": "A visual tool that lets administrators view and create objects, fields, and relationships on a drag-and-drop canvas.",
+    "distractorDefinitions": [
+      "A tool that visually assembles screens, flows, and business logic for automation.",
+      "A tool used to design page layouts for a specific record type.",
+      "A tool that imports large volumes of records from a CSV file."
+    ],
+    "germanExplanation": "Visuelles Werkzeug, mit dem Objekte, Felder und Beziehungen auf einer Drag-and-Drop-Oberfläche betrachtet und erstellt werden können.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-007",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Screen Flow",
+    "definition": "A flow type that displays one or more screens to collect input from a user during the automation.",
+    "distractorDefinitions": [
+      "A flow type that runs automatically in the background when a record is created or updated.",
+      "A flow type that can only be launched from Apex or another flow, never directly by a user.",
+      "A legacy automation tool that has been officially retired."
+    ],
+    "germanExplanation": "Flow-Typ, der eine oder mehrere Bildschirmmasken anzeigt, um während der Automatisierung Eingaben von einem Nutzer zu erfassen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-008",
+    "certification": "administrator",
+    "examDomainId": "adm-sales-marketing",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Lead Scoring",
+    "definition": "A feature that automatically ranks leads by likelihood to convert, based on defined criteria or AI predictions.",
+    "distractorDefinitions": [
+      "A process that automatically turns a qualified lead into an account and contact.",
+      "A rule that automatically assigns new leads to the correct sales rep.",
+      "A guided, step-by-step visual path shown on the opportunity record."
+    ],
+    "germanExplanation": "Bewertet Leads automatisch nach ihrer Konversionswahrscheinlichkeit, basierend auf definierten Kriterien oder KI-Prognosen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-009",
+    "certification": "administrator",
+    "examDomainId": "adm-service-support",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Support Process",
+    "definition": "A set of status values and stages that a case moves through, which can differ by case record type.",
+    "distractorDefinitions": [
+      "A rule that automatically routes a case to the correct queue based on criteria.",
+      "A rule that reassigns or escalates a case after a defined time limit.",
+      "An automated email sent to a customer immediately after a case is created."
+    ],
+    "germanExplanation": "Eine Abfolge von Status-Werten und Phasen, die ein Case durchläuft; kann je nach Case-Record-Type unterschiedlich sein.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-010",
+    "certification": "administrator",
+    "examDomainId": "adm-productivity-collab",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Salesforce Mobile App",
+    "definition": "The official Salesforce app that gives users access to records, Lightning pages, and notifications from a phone or tablet.",
+    "distractorDefinitions": [
+      "A marketplace for installing third-party apps built by other companies.",
+      "A collaboration feature for group discussions and file sharing.",
+      "A tool for building custom pages using drag-and-drop components."
+    ],
+    "germanExplanation": "Offizielle Salesforce-App, mit der Nutzer von Smartphone oder Tablet aus auf Datensätze, Lightning-Seiten und Benachrichtigungen zugreifen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-fnd-001",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Trailblazer Community",
+    "definition": "An online community where Salesforce users, admins, and developers connect, ask questions, and share knowledge.",
+    "distractorDefinitions": [
+      "Salesforce's free official learning platform with modules and hands-on challenges.",
+      "The marketplace where third-party apps for Salesforce are listed.",
+      "The product family focused on managing sales pipelines and opportunities."
+    ],
+    "germanExplanation": "Online-Community, in der sich Salesforce-Nutzer, Admins und Entwickler vernetzen, Fragen stellen und Wissen teilen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-002",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Sales Cloud",
+    "definition": "The Salesforce product family focused on managing leads, opportunities, and the sales pipeline.",
+    "distractorDefinitions": [
+      "The Salesforce product family focused on customer support and case management.",
+      "Salesforce's vision of one unified view of the customer across departments.",
+      "The category of software used to manage customer relationships in general."
+    ],
+    "germanExplanation": "Salesforce-Produktfamilie mit Fokus auf Leads, Opportunities und die Vertriebspipeline.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-003",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Personal Settings",
+    "definition": "An area where an individual user can update their own profile details, such as email, language, and notifications.",
+    "distractorDefinitions": [
+      "The central admin area where the whole organization is configured.",
+      "A grid that lets a user quickly switch between different Salesforce apps.",
+      "A search bar that finds records across all objects at once."
+    ],
+    "germanExplanation": "Bereich, in dem ein einzelner Nutzer seine eigenen Profildaten anpassen kann, z. B. E-Mail, Sprache und Benachrichtigungen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-004",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Standard Object",
+    "definition": "An object that comes pre-built with Salesforce, such as Account, Contact, or Opportunity.",
+    "distractorDefinitions": [
+      "An object created by an organization to store data not covered by pre-built objects.",
+      "A layout that controls which fields appear on a record page.",
+      "A rule that automatically assigns records to the correct owner."
+    ],
+    "germanExplanation": "Ein bereits von Salesforce mitgeliefertes Objekt, z. B. Account, Contact oder Opportunity.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-005",
+    "certification": "foundations",
+    "examDomainId": "fnd-reports-dashboards",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Report Format",
+    "definition": "The layout style of a report, such as tabular, summary, matrix, or joined, which determines how rows and groupings are displayed.",
+    "distractorDefinitions": [
+      "A small visual element inside a dashboard, such as a chart or gauge.",
+      "The object and field selection available when building a report.",
+      "A folder used to organize and set sharing access for reports."
+    ],
+    "germanExplanation": "Bestimmt die Darstellungsform eines Reports (tabellarisch, zusammenfassend, Matrix, verbunden) und damit, wie Zeilen und Gruppierungen angezeigt werden.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-006",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Service Cloud",
+    "definition": "A Salesforce product focused on customer support, including Cases, Knowledge articles, and omni-channel routing.",
+    "distractorDefinitions": [
+      "A Salesforce product focused on managing the sales pipeline, from Lead to closed Opportunity.",
+      "A free online learning platform with guided modules and hands-on challenges.",
+      "A marketplace for installing third-party apps built on the Salesforce platform."
+    ],
+    "germanExplanation": "Ein Salesforce-Produkt mit Fokus auf Kundenservice, u. a. mit Cases, Knowledge-Artikeln und Omni-Channel-Routing.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-007",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Trailhead Playground",
+    "definition": "A free, full-featured Salesforce org used for hands-on learning and practice, separate from any production environment.",
+    "distractorDefinitions": [
+      "A paid sandbox environment used to test changes before deploying them to production.",
+      "The official Salesforce online marketplace for third-party apps.",
+      "A section of Trailhead that tracks a learner's earned badges and points."
+    ],
+    "germanExplanation": "Eine kostenlose, voll funktionsfähige Salesforce-Org zum praktischen Üben, getrennt von jeder produktiven Umgebung.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-008",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Utility Bar",
+    "definition": "A footer bar in Lightning Experience that gives quick access to tools like a phone dialer, notes, or recent records without leaving the current page.",
+    "distractorDefinitions": [
+      "The top navigation bar that lists an app's main tabs, such as Accounts or Opportunities.",
+      "The search field at the very top of every Lightning Experience page.",
+      "The area in Setup where administrators manage users and their profiles."
+    ],
+    "germanExplanation": "Eine Fußleiste in Lightning Experience mit Schnellzugriff auf Werkzeuge wie Telefonwähler, Notizen oder zuletzt genutzte Datensätze, ohne die aktuelle Seite zu verlassen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-009",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Lookup Field",
+    "definition": "A field that creates a loose relationship between two objects, linking a record to another record without requiring it.",
+    "distractorDefinitions": [
+      "A field that stores free text without any connection to another object.",
+      "A relationship where deleting the parent record automatically deletes all related child records.",
+      "A field that automatically calculates a value based on other fields on the same record."
+    ],
+    "germanExplanation": "Ein Feld, das eine lose Verbindung zwischen zwei Objekten herstellt und einen Datensatz mit einem anderen verknüpft, ohne diese Verknüpfung zwingend zu machen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-010",
+    "certification": "foundations",
+    "examDomainId": "fnd-reports-dashboards",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Dashboard Component",
+    "definition": "A single chart, table, or metric placed on a dashboard, based on the data from one underlying report.",
+    "distractorDefinitions": [
+      "The saved folder location where a dashboard is stored and shared.",
+      "A field within a report that groups values into custom ranges.",
+      "The automatic email sent to a user whenever a dashboard refreshes."
+    ],
+    "germanExplanation": "Ein einzelnes Diagramm, eine Tabelle oder eine Kennzahl auf einem Dashboard, basierend auf den Daten eines zugrundeliegenden Reports.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-adm-011",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Report Subscription",
+    "definition": "A feature that automatically emails a report to a user on a defined schedule, such as every Monday morning.",
+    "distractorDefinitions": [
+      "A dashboard setting that refreshes its data automatically every time it is opened.",
+      "A rule that blocks a report from running if it would return too many records.",
+      "A folder setting that controls which users can edit a shared report."
+    ],
+    "germanExplanation": "Eine Funktion, die einen Report automatisch nach einem festgelegten Zeitplan per E-Mail versendet, z. B. jeden Montagmorgen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-012",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Record-Triggered Flow",
+    "definition": "A Flow that runs automatically in the background whenever a record is created, updated, or deleted, without any user interaction.",
+    "distractorDefinitions": [
+      "A Flow that displays a series of screens for a user to fill in manually.",
+      "A Flow that only runs when a user clicks a button on a record page.",
+      "A Flow that can only be started by another Flow, never by a record change."
+    ],
+    "germanExplanation": "Ein Flow, der automatisch im Hintergrund läuft, sobald ein Datensatz erstellt, geändert oder gelöscht wird — ganz ohne Nutzerinteraktion.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-013",
+    "certification": "administrator",
+    "examDomainId": "adm-sales-marketing",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Sales Path",
+    "definition": "A guided, visual set of stages shown at the top of a record, such as Opportunity, that highlights key fields and best practices for the current stage.",
+    "distractorDefinitions": [
+      "A rule that automatically ranks leads by their likelihood to convert.",
+      "A feature that shows how much credit a marketing campaign gets for a won deal.",
+      "A report that projects expected revenue based on open opportunities."
+    ],
+    "germanExplanation": "Eine geführte, visuelle Abfolge von Phasen oben auf einem Datensatz wie Opportunity, die wichtige Felder und Best Practices für die aktuelle Phase hervorhebt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-014",
+    "certification": "administrator",
+    "examDomainId": "adm-sales-marketing",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Web-to-Lead",
+    "definition": "A feature that automatically creates a new Lead record in Salesforce whenever a visitor submits a form on the company's public website.",
+    "distractorDefinitions": [
+      "A rule that assigns existing leads to the correct sales rep based on criteria.",
+      "A feature that scores leads automatically using AI predictions.",
+      "A process that converts a qualified lead into an account and contact."
+    ],
+    "germanExplanation": "Erzeugt automatisch einen neuen Lead-Datensatz in Salesforce, sobald ein Besucher ein Formular auf der öffentlichen Unternehmenswebsite ausfüllt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-015",
+    "certification": "administrator",
+    "examDomainId": "adm-service-support",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Entitlement Process",
+    "definition": "A timeline of milestones, such as first response or resolution deadlines, that tracks the customer service level a case is entitled to.",
+    "distractorDefinitions": [
+      "A rule that automatically reassigns a case after a fixed time limit.",
+      "A sequence of case status values that a case moves through.",
+      "An automated email confirming that a case was received."
+    ],
+    "germanExplanation": "Ein Zeitplan aus Meilensteinen wie Erstantwort- oder Lösungsfristen, der den Service-Level nachverfolgt, auf den ein Case Anspruch hat.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-016",
+    "certification": "administrator",
+    "examDomainId": "adm-service-support",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Case Team",
+    "definition": "A predefined set of users with specific roles and access levels who collaborate on a single case, such as a support agent and a specialist.",
+    "distractorDefinitions": [
+      "A queue where unassigned cases wait for the next available agent.",
+      "A group of users used only as a target for sharing rules.",
+      "A report that lists all open cases for a team."
+    ],
+    "germanExplanation": "Eine vordefinierte Gruppe von Nutzern mit festgelegten Rollen und Zugriffsrechten, die gemeinsam an einem einzelnen Case arbeiten, z. B. ein Support-Agent und ein Spezialist.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-017",
+    "certification": "administrator",
+    "examDomainId": "adm-productivity-collab",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Feed Tracking",
+    "definition": "A setting on an object that determines which field changes automatically appear as updates in that record's Chatter feed.",
+    "distractorDefinitions": [
+      "A private discussion group limited to selected users.",
+      "A setting that controls who can see a record based on ownership.",
+      "A tool for building custom pages using drag-and-drop components."
+    ],
+    "germanExplanation": "Eine Objekteinstellung, die festlegt, welche Feldänderungen automatisch als Updates im Chatter-Feed dieses Datensatzes erscheinen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-018",
+    "certification": "administrator",
+    "examDomainId": "adm-productivity-collab",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Custom App",
+    "definition": "A collection of tabs and pages, accessible from the App Launcher, built to support a specific team's workflow, such as a Marketing app.",
+    "distractorDefinitions": [
+      "A third-party application installed from the AppExchange marketplace.",
+      "A page built with drag-and-drop components for a single record type.",
+      "A permission set granting access to specific objects."
+    ],
+    "germanExplanation": "Eine Sammlung von Tabs und Seiten, erreichbar über den App Launcher, die für den Workflow eines bestimmten Teams gebaut wird, z. B. eine Marketing-App.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-019",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Compact Layout",
+    "definition": "A condensed set of key fields shown at the top of a record or on a mobile card, separate from the full page layout.",
+    "distractorDefinitions": [
+      "The complete set of fields, related lists, and buttons on a record's detail page.",
+      "A feature that automatically calculates a value from other fields.",
+      "A relationship type where the child record cannot exist without the parent."
+    ],
+    "germanExplanation": "Eine verkürzte Auswahl wichtiger Felder oben auf einem Datensatz oder auf einer mobilen Karte, unabhängig vom vollständigen Page Layout.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-020",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Decision Element",
+    "definition": "A Flow Builder element that splits the flow into different paths based on defined conditions, similar to an if/else branch.",
+    "distractorDefinitions": [
+      "A Flow element that pauses execution and waits for a defined event.",
+      "A Flow element that displays a screen for user input.",
+      "A Flow element that creates a new record in Salesforce."
+    ],
+    "germanExplanation": "Ein Flow-Builder-Element, das den Flow anhand definierter Bedingungen in unterschiedliche Pfade aufteilt, ähnlich einer if/else-Verzweigung.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-021",
+    "certification": "administrator",
+    "examDomainId": "adm-agentforce",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Action",
+    "definition": "In Agentforce, a specific task the agent can perform, such as looking up an order or creating a case, usually connected to a Flow or Apex.",
+    "distractorDefinitions": [
+      "A topic that groups related instructions around one job the agent can do.",
+      "The tool used to write and test an agent's response wording.",
+      "The security profile assigned to the agent's underlying user."
+    ],
+    "germanExplanation": "In Agentforce eine konkrete Aufgabe, die der Agent ausführen kann, z. B. eine Bestellung nachschlagen oder einen Case anlegen, meist verbunden mit einem Flow oder Apex.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-fnd-011",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Notification",
+    "definition": "A short alert, shown via the bell icon, that informs a user about relevant activity, such as being mentioned in Chatter or assigned a task.",
+    "distractorDefinitions": [
+      "A saved, filtered list of records from a single object.",
+      "A footer bar with quick access to tools like a phone dialer.",
+      "A search bar that finds records across multiple objects at once."
+    ],
+    "germanExplanation": "Ein kurzer Hinweis über das Glockensymbol, der Nutzer über relevante Aktivitäten informiert, z. B. eine Erwähnung in Chatter oder eine zugewiesene Aufgabe.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-012",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Contact",
+    "definition": "A standard object representing an individual person, typically linked to the Account they work for.",
+    "distractorDefinitions": [
+      "A standard object representing a company or organization.",
+      "A standard object representing a potential sale a team is tracking.",
+      "A standard object representing an unqualified person or company that has shown interest."
+    ],
+    "germanExplanation": "Ein Standardobjekt, das eine einzelne Person repräsentiert, typischerweise verknüpft mit dem Account, für den sie arbeitet.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-013",
+    "certification": "foundations",
+    "examDomainId": "fnd-reports-dashboards",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Matrix Report",
+    "definition": "A report format that groups records by both rows and columns at the same time, useful for comparing two dimensions, such as region and product.",
+    "distractorDefinitions": [
+      "A report format that lists records as a simple, ungrouped table.",
+      "A report format that groups records along one dimension only, with subtotals.",
+      "A report format that combines multiple report types with different views on one page."
+    ],
+    "germanExplanation": "Ein Report-Format, das Datensätze gleichzeitig nach Zeilen und Spalten gruppiert — nützlich, um zwei Dimensionen wie Region und Produkt zu vergleichen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-adm-022",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Company Settings",
+    "definition": "The area in Setup that stores organization-wide details such as company name, address, fiscal year, default locale, and default time zone.",
+    "distractorDefinitions": [
+      "A record of the days and times when support agents are considered available for case handling.",
+      "A setting that lets an organization operate with more than one currency at the same time.",
+      "A license type that determines which standard features and objects a user can access."
+    ],
+    "germanExplanation": "Bereich in Setup, in dem organisationsweite Angaben wie Firmenname, Adresse, Geschäftsjahr, Standardsprache und Zeitzone hinterlegt sind.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-023",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Fiscal Year",
+    "definition": "The 12-month accounting period an organization uses for reporting and forecasting, which can follow the standard calendar or a custom pattern.",
+    "distractorDefinitions": [
+      "A record of the days and times when support agents are considered available for case handling.",
+      "The setting that lets an organization operate with more than one currency at the same time.",
+      "The area in Setup that stores an organization's default locale, address, and time zone."
+    ],
+    "germanExplanation": "Das 12-Monats-Abrechnungszeitraum, den eine Organisation für Reporting und Forecasting nutzt; kann dem Standardkalender folgen oder individuell definiert sein.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-024",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Business Hours",
+    "definition": "A defined schedule of days and times, often per time zone, used to calculate entitlements, case escalation, and support process timing.",
+    "distractorDefinitions": [
+      "The 12-month accounting period an organization uses for financial reporting.",
+      "A timeline of milestones that tracks the service level a case is entitled to.",
+      "A rule that automatically reassigns a case after it has not been resolved within a time limit."
+    ],
+    "germanExplanation": "Ein festgelegter Zeitplan aus Tagen und Uhrzeiten, oft je Zeitzone, der für Entitlements, Case-Eskalation und Support-Prozesszeiten genutzt wird.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-025",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Currency Management",
+    "definition": "A setting that lets an organization enable multiple currencies, define conversion rates, and let users enter amounts in different currencies.",
+    "distractorDefinitions": [
+      "The 12-month accounting period an organization uses for reporting and forecasting.",
+      "The area in Setup that stores an organization's default locale, address, and time zone.",
+      "A license type that determines which standard features a user profile can access."
+    ],
+    "germanExplanation": "Ermöglicht einer Organisation, mehrere Währungen zu aktivieren, Umrechnungskurse festzulegen und Beträge in verschiedenen Währungen zu erfassen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-026",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "User License",
+    "definition": "A license assigned to every user that determines the baseline set of features and standard objects available to them, such as Salesforce or Platform license.",
+    "distractorDefinitions": [
+      "An optional add-on license that unlocks one specific feature, independent of the base license.",
+      "A named collection of object, field, and system permissions assigned to exactly one user as their base access.",
+      "A record of every configuration change made in Setup, including who made it and when."
+    ],
+    "germanExplanation": "Jedem Nutzer zugewiesene Lizenz, die den grundlegenden Funktions- und Objektumfang festlegt, z. B. Salesforce- oder Platform-Lizenz.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-027",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Session Settings",
+    "definition": "Setup options that control session security behavior, such as session timeout duration, session locking to the IP address, and clickjack protection.",
+    "distractorDefinitions": [
+      "A log that records configuration changes made by administrators in Setup, including who made the change and when.",
+      "A defined window of days and times during which a user is allowed to log in to Salesforce.",
+      "A process that requires users to confirm their identity with an extra verification step during login."
+    ],
+    "germanExplanation": "Setup-Optionen, die das Sitzungsverhalten steuern, z. B. Session-Timeout, Bindung der Sitzung an die IP-Adresse und Clickjack-Schutz.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-028",
+    "certification": "administrator",
+    "examDomainId": "adm-config-setup",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Setup Audit Trail",
+    "definition": "A log that tracks recent configuration changes made in Setup, including which administrator made the change and when.",
+    "distractorDefinitions": [
+      "Setup options that control how long a user session stays active before it times out.",
+      "A defined window of days and times during which a user is permitted to log in.",
+      "A rule that defines which second verification factor a user must provide during login."
+    ],
+    "germanExplanation": "Ein Protokoll, das kürzlich vorgenommene Konfigurationsänderungen in Setup nachverfolgt, inklusive Administrator und Zeitpunkt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-029",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Object",
+    "definition": "A container in Salesforce that defines the structure for storing a particular type of information, made up of fields, and whose instances are called records.",
+    "distractorDefinitions": [
+      "A single piece of information stored on a record, such as a name or date.",
+      "One specific instance of data stored within an object, such as one customer's Account.",
+      "A visual tool that lets administrators view and create objects, fields, and relationships on a canvas."
+    ],
+    "germanExplanation": "Ein Container in Salesforce, der die Struktur für einen bestimmten Datentyp festlegt, besteht aus Feldern; einzelne Instanzen heißen Records.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-030",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Quick Action",
+    "definition": "A button, configurable on a page layout, that lets a user quickly create a record, log a call, or update a record without navigating away from the current page.",
+    "distractorDefinitions": [
+      "A button available almost anywhere in Salesforce, not tied to a specific record's page layout, used to create a record or log a call.",
+      "A condensed set of key fields shown at the top of a record or on a mobile card.",
+      "The complete set of fields, related lists, and buttons on a record's detail page."
+    ],
+    "germanExplanation": "Ein auf einem Page Layout konfigurierbarer Button, mit dem ein Nutzer schnell einen Datensatz anlegen oder aktualisieren kann, ohne die Seite zu verlassen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-031",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Cross-Object Formula",
+    "definition": "A formula field that references and calculates a value using fields from a related object, such as pulling a field from a parent Account onto a child record.",
+    "distractorDefinitions": [
+      "A field on the parent object that automatically sums, counts, or averages values from related child records on a master-detail relationship.",
+      "A field that creates a loose relationship between two objects without requiring the link.",
+      "A field created directly in a report that groups values into custom categories."
+    ],
+    "germanExplanation": "Ein Formelfeld, das Werte aus Feldern eines verknüpften Objekts referenziert und berechnet, z. B. ein Feld vom übergeordneten Account auf einem Kind-Datensatz.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-032",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Picklist Dependency",
+    "definition": "A relationship between two picklist fields where the available values in one field, the dependent picklist, change based on the value selected in another field, the controlling field.",
+    "distractorDefinitions": [
+      "A rule that lets different business processes and picklist values apply to the same object based on record type.",
+      "A formula field that calculates a value using fields from a related object.",
+      "A field that stores a value chosen from a predefined list, with no relationship to other fields."
+    ],
+    "germanExplanation": "Eine Beziehung zwischen zwei Auswahllistenfeldern, bei der die verfügbaren Werte im abhängigen Feld vom gewählten Wert des steuernden Felds abhängen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-033",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Business Process",
+    "definition": "A defined set of picklist values, such as sales stages or lead statuses, that can be assigned to specific record types to reflect different workflows on the same object.",
+    "distractorDefinitions": [
+      "A set of status values and stages that a case moves through, which can differ by case record type.",
+      "A guided, visual set of stages shown at the top of a record that highlights key fields for the current stage.",
+      "A visual tool that lets administrators view and create objects, fields, and relationships on a canvas."
+    ],
+    "germanExplanation": "Eine festgelegte Menge von Picklist-Werten, z. B. Vertriebsphasen, die bestimmten Record Types zugeordnet werden, um unterschiedliche Abläufe auf demselben Objekt abzubilden.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-034",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Lightning Record Page",
+    "definition": "A page built with the Lightning App Builder for a specific object that arranges components such as related lists, fields, and charts for viewing a record.",
+    "distractorDefinitions": [
+      "A collection of tabs and pages, accessible from the App Launcher, built for a specific team's workflow.",
+      "The complete set of fields, related lists, and buttons defined for a record's detail and edit page.",
+      "A condensed set of key fields shown at the top of a record or on a mobile card."
+    ],
+    "germanExplanation": "Eine mit dem Lightning App Builder für ein bestimmtes Objekt erstellte Seite, auf der Komponenten wie Related Lists, Felder und Diagramme angeordnet werden.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-035",
+    "certification": "administrator",
+    "examDomainId": "adm-object-manager",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Field-Level Security",
+    "definition": "Security settings, controlled through profiles and permission sets, that determine whether a specific field is visible, editable, or hidden for a given user.",
+    "distractorDefinitions": [
+      "Settings that determine which records a user can see, based on ownership and sharing rules.",
+      "The complete set of fields, related lists, and buttons shown on a record's page layout.",
+      "A named collection of object, field, and system permissions assigned as a user's baseline access."
+    ],
+    "germanExplanation": "Sicherheitseinstellungen über Profile und Permission Sets, die festlegen, ob ein bestimmtes Feld für einen Nutzer sichtbar, bearbeitbar oder verborgen ist.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-036",
+    "certification": "administrator",
+    "examDomainId": "adm-sales-marketing",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Opportunity Scoring",
+    "definition": "An Einstein-powered feature that automatically predicts the likelihood of an open opportunity being won, based on historical data patterns.",
+    "distractorDefinitions": [
+      "A feature that automatically ranks leads by likelihood to convert, based on defined criteria or AI predictions.",
+      "A guided, visual set of stages shown at the top of an opportunity that highlights key fields for the current stage.",
+      "A feature that shows how much credit one or more marketing campaigns get for a won opportunity."
+    ],
+    "germanExplanation": "Eine Einstein-gestützte Funktion, die automatisch die Gewinnwahrscheinlichkeit einer offenen Opportunity anhand historischer Datenmuster prognostiziert.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-037",
+    "certification": "administrator",
+    "examDomainId": "adm-sales-marketing",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Lead Assignment Rule",
+    "definition": "A rule that automatically assigns new leads to the correct owner or queue based on criteria such as territory, industry, or lead source.",
+    "distractorDefinitions": [
+      "A process that automatically turns a qualified lead into an account, contact, and optionally an opportunity.",
+      "A feature that automatically creates a new lead whenever a visitor submits a form on the company website.",
+      "A rule that automatically ranks leads by likelihood to convert."
+    ],
+    "germanExplanation": "Weist neue Leads automatisch anhand von Kriterien wie Gebiet, Branche oder Lead-Quelle dem richtigen Besitzer oder einer Queue zu.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-038",
+    "certification": "administrator",
+    "examDomainId": "adm-sales-marketing",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Campaign Member",
+    "definition": "A lead or contact associated with a specific campaign, tracked with a status such as 'Sent' or 'Responded' to measure engagement.",
+    "distractorDefinitions": [
+      "A record that tracks a specific marketing initiative, such as an email newsletter or trade show.",
+      "A feature that shows how much credit one or more campaigns get for contributing to a won opportunity.",
+      "A person or company that has shown interest but has not yet been qualified as a customer opportunity."
+    ],
+    "germanExplanation": "Ein Lead oder Contact, der einer bestimmten Kampagne zugeordnet ist und mit einem Status wie 'Sent' oder 'Responded' verfolgt wird.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-039",
+    "certification": "administrator",
+    "examDomainId": "adm-sales-marketing",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Einstein for Sales",
+    "definition": "A set of AI-powered features for Sales Cloud, such as opportunity scoring and forecasting insights, that help sales reps prioritize and close deals.",
+    "distractorDefinitions": [
+      "A set of AI-powered features for Service Cloud that help agents resolve cases faster, such as reply recommendations.",
+      "Salesforce's platform for building and deploying AI agents that can act autonomously within defined permissions.",
+      "A rolled-up projection of expected revenue based on the value and stage of open opportunities."
+    ],
+    "germanExplanation": "Eine Reihe KI-gestützter Funktionen für Sales Cloud, z. B. Opportunity Scoring und Forecasting-Insights, die Vertriebsmitarbeitern helfen zu priorisieren.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-040",
+    "certification": "administrator",
+    "examDomainId": "adm-sales-marketing",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Opportunity Contact Role",
+    "definition": "A record that links a contact to an opportunity and specifies that contact's role in the deal, such as Decision Maker or Economic Buyer.",
+    "distractorDefinitions": [
+      "A lead or contact associated with a specific campaign, tracked with a status such as 'Sent' or 'Responded'.",
+      "A rule that automatically assigns new leads to the correct owner or queue based on criteria.",
+      "A guided, visual set of stages shown at the top of a record that highlights key fields for the current stage."
+    ],
+    "germanExplanation": "Verknüpft einen Contact mit einer Opportunity und legt dessen Rolle im Geschäft fest, z. B. Entscheider oder wirtschaftlicher Käufer.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-041",
+    "certification": "administrator",
+    "examDomainId": "adm-service-support",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Case Assignment Rule",
+    "definition": "A rule that automatically assigns new cases to the correct owner or queue based on criteria such as case origin, type, or priority.",
+    "distractorDefinitions": [
+      "A rule that automatically reassigns or notifies someone when a case has not been resolved within a time limit.",
+      "A timeline of milestones that tracks the customer service level a case is entitled to.",
+      "A holding area where unassigned cases wait until a team member picks them up."
+    ],
+    "germanExplanation": "Weist neue Cases automatisch anhand von Kriterien wie Ursprung, Typ oder Priorität dem richtigen Besitzer oder einer Queue zu.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-042",
+    "certification": "administrator",
+    "examDomainId": "adm-service-support",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Auto-Response Rule",
+    "definition": "A rule that automatically sends a templated email reply to a customer when they submit a case or lead through a specific channel, such as a web form.",
+    "distractorDefinitions": [
+      "A rule that automatically assigns a new case to the correct owner or queue based on criteria.",
+      "A rule that automatically reassigns a case after it has not been resolved within a defined time limit.",
+      "A reusable piece of content, such as a how-to guide, that agents or customers can search for while resolving a case."
+    ],
+    "germanExplanation": "Sendet automatisch eine vorlagenbasierte E-Mail-Antwort, sobald ein Kunde über einen bestimmten Kanal, z. B. ein Webformular, einen Case oder Lead einreicht.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-043",
+    "certification": "administrator",
+    "examDomainId": "adm-service-support",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Einstein for Service",
+    "definition": "A set of AI-powered features for Service Cloud, such as case classification and reply recommendations, that help agents resolve cases faster.",
+    "distractorDefinitions": [
+      "A set of AI-powered features for Sales Cloud that predict which open opportunities are likely to close.",
+      "Salesforce's platform for building and deploying AI agents that can act autonomously within defined permissions.",
+      "A feature that automatically assigns incoming cases or chats to the best-matched available agent."
+    ],
+    "germanExplanation": "KI-gestützte Funktionen für Service Cloud, z. B. Case-Klassifizierung und Antwortvorschläge, die Agents helfen, Cases schneller zu lösen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-044",
+    "certification": "administrator",
+    "examDomainId": "adm-service-support",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Milestone",
+    "definition": "A required step in an entitlement process, such as first response or case resolution, with a target completion time that can trigger alerts if missed.",
+    "distractorDefinitions": [
+      "A timeline that tracks the overall customer service level a case is entitled to.",
+      "A rule that automatically reassigns a case after it has not been resolved within a defined time limit.",
+      "A set of status values and stages that a case moves through."
+    ],
+    "germanExplanation": "Ein Pflichtschritt innerhalb eines Entitlement Process, z. B. Erstantwort oder Lösung, mit Zielzeit, die bei Überschreitung Alarme auslösen kann.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-045",
+    "certification": "administrator",
+    "examDomainId": "adm-service-support",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Queue",
+    "definition": "A holding area for records such as cases or leads that do not yet have an owner, from which team members can accept and work on items.",
+    "distractorDefinitions": [
+      "A named collection of users, roles, or groups used as a target for sharing rules.",
+      "A predefined set of users with specific roles who collaborate on a single case.",
+      "A rule that automatically assigns new cases to the correct owner based on criteria."
+    ],
+    "germanExplanation": "Sammelbereich für Datensätze wie Cases oder Leads ohne Besitzer, aus dem Teammitglieder Aufgaben übernehmen können.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-046",
+    "certification": "administrator",
+    "examDomainId": "adm-productivity-collab",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Task",
+    "definition": "An activity record representing a to-do item, such as a follow-up call, that can be assigned a due date and owner and linked to a related record.",
+    "distractorDefinitions": [
+      "A calendar-based activity record representing a scheduled meeting or appointment with a start and end time.",
+      "A chronological view on a record showing past and upcoming activities and emails in one place.",
+      "A short alert shown via the bell icon that informs a user about relevant activity."
+    ],
+    "germanExplanation": "Ein Aktivitätsdatensatz für eine To-do-Aufgabe, z. B. ein Follow-up-Anruf, mit Fälligkeitsdatum, Besitzer und Verknüpfung zu einem Datensatz.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-047",
+    "certification": "administrator",
+    "examDomainId": "adm-productivity-collab",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Event",
+    "definition": "A calendar-based activity record representing a scheduled meeting or appointment, with a defined start and end time.",
+    "distractorDefinitions": [
+      "An activity record representing a to-do item with a due date but no specific start or end time.",
+      "A chronological view on a record showing past and upcoming tasks, events, and emails.",
+      "A footer bar with quick access to tools like a phone dialer or notes."
+    ],
+    "germanExplanation": "Ein kalenderbasierter Aktivitätsdatensatz für einen geplanten Termin mit festgelegtem Start- und Endzeitpunkt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-048",
+    "certification": "administrator",
+    "examDomainId": "adm-productivity-collab",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Unmanaged Package",
+    "definition": "An AppExchange package whose components become fully editable once installed, unlike a managed package, and which typically cannot receive automatic upgrades.",
+    "distractorDefinitions": [
+      "An AppExchange package with locked, upgradeable components that the installing org typically cannot modify.",
+      "Salesforce's online marketplace for third-party apps and components.",
+      "A bundle of multiple permission sets that can be assigned to a user in one step."
+    ],
+    "germanExplanation": "Ein AppExchange-Paket, dessen Komponenten nach der Installation frei bearbeitbar sind, im Gegensatz zum Managed Package; meist ohne automatische Updates.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-049",
+    "certification": "administrator",
+    "examDomainId": "adm-productivity-collab",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "AppExchange",
+    "definition": "Salesforce's online marketplace where organizations can browse, review, and install third-party apps and components built on the platform.",
+    "distractorDefinitions": [
+      "A package format whose components stay locked and can be automatically upgraded by the publisher.",
+      "A tool that visually assembles screens, flows, and business logic for automation.",
+      "A collection of tabs and pages built to support a specific team's workflow."
+    ],
+    "germanExplanation": "Salesforces Online-Marktplatz, auf dem Organisationen Drittanbieter-Apps und -Komponenten durchsuchen, bewerten und installieren können.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-050",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Data Export",
+    "definition": "A feature that lets an organization download a full or partial backup of its data as CSV files, either manually or on a scheduled basis.",
+    "distractorDefinitions": [
+      "A tool for large-volume, repeatable data operations such as bulk import, update, and deletion beyond the standard UI.",
+      "A feature that automatically identifies and stores older, rarely accessed records outside the main org to save space.",
+      "A wizard-guided tool for importing a limited number of standard object records."
+    ],
+    "germanExplanation": "Ermöglicht einer Organisation, ein vollständiges oder teilweises Backup der Daten als CSV-Dateien herunterzuladen, manuell oder zeitgesteuert.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-051",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Data Archival",
+    "definition": "The practice of moving older, less frequently accessed records out of an org's active storage to manage storage limits while retaining access when needed.",
+    "distractorDefinitions": [
+      "A feature that lets an organization download a full or partial backup of its data as CSV files.",
+      "A tool for large-volume, repeatable data operations such as bulk import and mass deletion.",
+      "A rule that defines the criteria used to identify potential duplicate records."
+    ],
+    "germanExplanation": "Praxis, ältere, selten genutzte Datensätze aus dem aktiven Speicher der Org zu verschieben, um Speichergrenzen zu managen, bei weiterhin möglichem Zugriff.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-052",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Joined Report",
+    "definition": "A report format that combines data from multiple report types with different blocks on a single page, allowing side-by-side comparison of related data sets.",
+    "distractorDefinitions": [
+      "A report format that groups records by both rows and columns at the same time.",
+      "The layout style of a report that determines how rows and groupings are displayed.",
+      "A field created directly in a report that groups values into custom categories."
+    ],
+    "germanExplanation": "Ein Report-Format, das Daten mehrerer Report-Typen in unterschiedlichen Blöcken auf einer Seite kombiniert und so den direkten Vergleich ermöglicht.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-053",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Chart Settings",
+    "definition": "Configuration options on a report or dashboard chart, such as chart type, axis fields, and grouping, that control how the underlying data is visualized.",
+    "distractorDefinitions": [
+      "A single chart, table, or metric placed on a dashboard, based on data from one underlying report.",
+      "A field created directly in a report that groups values into custom categories.",
+      "The layout style of a report, such as tabular, summary, or matrix."
+    ],
+    "germanExplanation": "Konfigurationsoptionen für ein Report- oder Dashboard-Diagramm, z. B. Diagrammtyp, Achsenfelder und Gruppierung, die die Visualisierung steuern.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-054",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Report Folder",
+    "definition": "A storage location for reports whose sharing settings determine which users can view, edit, or manage the reports inside it.",
+    "distractorDefinitions": [
+      "A field on a report that groups values into custom categories without changing the underlying data.",
+      "A single chart or metric placed on a dashboard, based on data from an underlying report.",
+      "A feature that automatically emails a report to a user on a defined schedule."
+    ],
+    "germanExplanation": "Speicherort für Reports, dessen Freigabeeinstellungen bestimmen, wer die enthaltenen Reports ansehen, bearbeiten oder verwalten darf.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-055",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Custom Report Type",
+    "definition": "A report type created by an administrator that defines a specific combination of related objects and fields, such as Accounts with Opportunities, available for building reports.",
+    "distractorDefinitions": [
+      "A field created directly in a report that groups values into custom categories.",
+      "A storage location for reports with its own sharing settings.",
+      "A rule that defines the criteria used to identify potential duplicate records."
+    ],
+    "germanExplanation": "Ein von einem Administrator erstellter Report-Typ, der eine bestimmte Kombination verknüpfter Objekte und Felder festlegt, z. B. Accounts mit Opportunities.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-056",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Scheduled Refresh",
+    "definition": "A dashboard setting that automatically updates the dashboard's data at a defined time interval, without requiring a user to open it manually.",
+    "distractorDefinitions": [
+      "A feature that automatically emails a report to a user on a defined schedule, such as every Monday morning.",
+      "A dashboard setting that shows each viewer their own data by running under the logged-in user.",
+      "A field created directly in a report that groups values into custom categories."
+    ],
+    "germanExplanation": "Eine Dashboard-Einstellung, die die Daten des Dashboards automatisch in festgelegten Zeitabständen aktualisiert, ohne dass es manuell geöffnet werden muss.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-057",
+    "certification": "administrator",
+    "examDomainId": "adm-data-analytics",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Running User",
+    "definition": "The user whose record access and security settings determine which data a static dashboard displays to all of its viewers.",
+    "distractorDefinitions": [
+      "A dashboard setting that shows each viewer their own data instead of a fixed user's data.",
+      "A user assigned by default to run certain automated flows so they do not depend on the triggering user's permissions.",
+      "A named collection of users, roles, or groups used as a target for sharing rules."
+    ],
+    "germanExplanation": "Der Nutzer, dessen Zugriffs- und Sicherheitseinstellungen bestimmen, welche Daten ein statisches Dashboard allen Betrachtern anzeigt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-058",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Default Automation User",
+    "definition": "A dedicated user account that certain automations can run as, so their actions do not depend on the permissions of whichever user triggers them.",
+    "distractorDefinitions": [
+      "The user whose access settings determine what data a static dashboard displays to its viewers.",
+      "A named collection of object, field, and system permissions assigned as a user's baseline access.",
+      "A rule that automatically routes a record to one or more approvers before it can proceed."
+    ],
+    "germanExplanation": "Ein dediziertes Nutzerkonto, unter dem bestimmte Automatisierungen laufen können, sodass deren Aktionen nicht von den Rechten des auslösenden Nutzers abhängen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-059",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Fault Path",
+    "definition": "A branch in Flow Builder that defines what happens when an element, such as a record update, fails to execute, allowing errors to be handled gracefully.",
+    "distractorDefinitions": [
+      "A Flow Builder element that splits the flow into different paths based on defined conditions.",
+      "A Flow that can only be launched from Apex or another flow, never directly by a user.",
+      "A Flow element that pauses execution and waits for a defined event before continuing."
+    ],
+    "germanExplanation": "Ein Zweig im Flow Builder, der festlegt, was passiert, wenn ein Element wie ein Datensatz-Update fehlschlägt, um Fehler kontrolliert abzufangen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-060",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Get Records Element",
+    "definition": "A Flow Builder element that retrieves one or more records from Salesforce that match specified filter criteria, for use later in the flow.",
+    "distractorDefinitions": [
+      "A Flow Builder element that creates a new record in Salesforce.",
+      "A Flow Builder element that splits the flow into different paths based on defined conditions.",
+      "A Flow element that displays a screen for user input."
+    ],
+    "germanExplanation": "Ein Flow-Builder-Element, das einen oder mehrere Datensätze anhand von Filterkriterien abruft, um sie später im Flow zu verwenden.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-061",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Loop Element",
+    "definition": "A Flow Builder element that repeats a set of actions once for each item in a collection, such as processing every record in a list.",
+    "distractorDefinitions": [
+      "A Flow Builder element that retrieves records from Salesforce matching filter criteria.",
+      "A Flow Builder element that splits the flow into different paths based on conditions.",
+      "A Flow that runs automatically in the background whenever a record is created, updated, or deleted."
+    ],
+    "germanExplanation": "Ein Flow-Builder-Element, das eine Reihe von Aktionen für jedes Element einer Sammlung wiederholt, z. B. für jeden Datensatz einer Liste.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-062",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Schedule-Triggered Flow",
+    "definition": "A Flow that runs automatically at a specified date, time, and frequency, independent of any specific record being created or updated.",
+    "distractorDefinitions": [
+      "A Flow that runs automatically in the background whenever a record is created, updated, or deleted.",
+      "A Flow that runs without displaying any screens and is typically triggered by Apex or another flow.",
+      "A Flow type that displays one or more screens to collect input from a user."
+    ],
+    "germanExplanation": "Ein Flow, der automatisch zu einem festgelegten Datum, Zeitpunkt und in einer definierten Häufigkeit läuft, unabhängig von einer Datensatzänderung.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-063",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Approval Step",
+    "definition": "A single stage within an approval process that defines its entry criteria and the specific approver or approvers responsible for that stage.",
+    "distractorDefinitions": [
+      "A process that routes a record to one or more approvers who must accept or reject it before it can proceed.",
+      "A rule that automatically reassigns or notifies someone when a time limit is exceeded.",
+      "A Flow Builder element that splits the flow into different paths based on conditions."
+    ],
+    "germanExplanation": "Eine einzelne Stufe innerhalb eines Approval Process, die Eintrittskriterien und den zuständigen Genehmiger oder die Genehmiger dieser Stufe festlegt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-064",
+    "certification": "administrator",
+    "examDomainId": "adm-automation",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Subflow",
+    "definition": "A Flow element that calls another, separate flow from within the current flow, allowing reusable automation logic to be shared across multiple flows.",
+    "distractorDefinitions": [
+      "A Flow that runs automatically at a specified date, time, and frequency.",
+      "A Flow Builder element that repeats a set of actions for each item in a collection.",
+      "A Flow element that pauses and waits for a defined event before continuing."
+    ],
+    "germanExplanation": "Ein Flow-Element, das einen anderen, separaten Flow innerhalb des aktuellen Flows aufruft, sodass wiederverwendbare Automatisierungslogik geteilt werden kann.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-065",
+    "certification": "administrator",
+    "examDomainId": "adm-agentforce",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Prompt",
+    "definition": "In Agentforce, the instructions and context that guide how an AI agent interprets a request and generates its response.",
+    "distractorDefinitions": [
+      "In Agentforce, a specific task the agent can perform, such as looking up an order, usually connected to a Flow or Apex.",
+      "In Agentforce, a topic that groups related instructions around one job the agent can do.",
+      "The tool used to create, test, and update prompts and instructions for an agent, including a conversation preview."
+    ],
+    "germanExplanation": "In Agentforce die Anweisungen und der Kontext, die steuern, wie ein KI-Agent eine Anfrage interpretiert und seine Antwort formuliert.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-066",
+    "certification": "administrator",
+    "examDomainId": "adm-agentforce",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Conversation Preview",
+    "definition": "A testing feature inside Agent Builder that lets an administrator simulate a conversation with an agent to check its responses before deployment.",
+    "distractorDefinitions": [
+      "The tool used to create, test, and update prompts and instructions for an AI agent.",
+      "In Agentforce, a topic that groups related instructions around one job the agent can do.",
+      "A specific task the agent can perform, usually connected to a Flow or Apex."
+    ],
+    "germanExplanation": "Eine Testfunktion im Agent Builder, mit der ein Administrator eine Konversation mit einem Agenten simulieren kann, bevor dieser live geht.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-067",
+    "certification": "administrator",
+    "examDomainId": "adm-agentforce",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Agent Permission",
+    "definition": "The set of access rights, based on the agent's underlying user, that determines which objects, fields, and actions an Agentforce agent is allowed to use.",
+    "distractorDefinitions": [
+      "The instructions and context that guide how an AI agent interprets a request and generates its response.",
+      "A testing feature that lets an administrator simulate a conversation with an agent before deployment.",
+      "A topic that groups related instructions around one job the agent can do."
+    ],
+    "germanExplanation": "Die auf dem zugrundeliegenden Nutzer basierenden Zugriffsrechte, die festlegen, welche Objekte, Felder und Actions ein Agentforce-Agent nutzen darf.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-adm-068",
+    "certification": "administrator",
+    "examDomainId": "adm-agentforce",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Instructions",
+    "definition": "In Agent Builder, the natural-language guidance written within a topic that tells the agent when it applies and how it should behave.",
+    "distractorDefinitions": [
+      "In Agentforce, a specific task the agent can perform, such as creating a case, usually connected to a Flow or Apex.",
+      "The set of access rights that determines which objects and actions an agent is allowed to use.",
+      "A testing feature that lets an administrator simulate a conversation with an agent."
+    ],
+    "germanExplanation": "Im Agent Builder die in natürlicher Sprache verfasste Anleitung innerhalb eines Topics, die festlegt, wann es zuständig ist und wie sich der Agent verhalten soll.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.1"
+  },
+  {
+    "id": "def-fnd-014",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Customer 360",
+    "definition": "Salesforce's vision and set of connected products that give companies one unified view of the customer across sales, service, marketing, and other departments.",
+    "distractorDefinitions": [
+      "The category of software used to manage customer relationships in general.",
+      "Salesforce's free official learning platform with modules and hands-on challenges.",
+      "An architecture principle where many customer organizations share the same infrastructure while their data stays separated."
+    ],
+    "germanExplanation": "Salesforces Vision und verbundene Produktfamilie, die Unternehmen eine einheitliche Kundensicht über Sales, Service, Marketing und mehr ermöglicht.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-015",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "CRM",
+    "definition": "Customer Relationship Management, the category of software focused on managing a company's interactions and relationships with customers and prospects.",
+    "distractorDefinitions": [
+      "Salesforce's vision of one unified view of the customer across departments.",
+      "A delivery model where users access software over the internet instead of installing it locally.",
+      "An architecture principle where many organizations share the same infrastructure while data stays separated."
+    ],
+    "germanExplanation": "Customer Relationship Management, die Softwarekategorie, die sich auf die Verwaltung von Kundenbeziehungen und Interessenten konzentriert.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-016",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Multi-Tenancy",
+    "definition": "An architecture in which many different customer organizations share the same underlying infrastructure, while each organization's data remains logically separated from the others.",
+    "distractorDefinitions": [
+      "A delivery model where software is accessed over the internet instead of being installed locally.",
+      "Salesforce's vision of a single unified view of the customer across departments.",
+      "The category of software used to manage customer relationships."
+    ],
+    "germanExplanation": "Eine Architektur, bei der sich viele Kunden-Organisationen dieselbe Infrastruktur teilen, während ihre Daten logisch voneinander getrennt bleiben.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-017",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Cloud Computing",
+    "definition": "The delivery of computing resources, such as storage, servers, and software, over the internet instead of running them on local hardware.",
+    "distractorDefinitions": [
+      "A delivery model in which software specifically is provided as a subscription service over the internet.",
+      "An architecture where many organizations share infrastructure while their data stays logically separated.",
+      "The category of software focused on managing customer relationships."
+    ],
+    "germanExplanation": "Die Bereitstellung von Rechenressourcen wie Speicher, Servern und Software über das Internet, statt sie auf lokaler Hardware zu betreiben.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-018",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "SaaS",
+    "definition": "Software as a Service, a delivery model in which users access software over the internet on a subscription basis instead of installing and maintaining it locally.",
+    "distractorDefinitions": [
+      "The broader delivery of computing resources like storage and servers over the internet.",
+      "An architecture where many organizations share infrastructure while data stays logically separated.",
+      "The category of software used to manage customer relationships."
+    ],
+    "germanExplanation": "Software as a Service — ein Liefermodell, bei dem Nutzer Software abonnementbasiert über das Internet verwenden, statt sie lokal zu installieren.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-019",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Career Path",
+    "definition": "The range of job roles, such as administrator, developer, or consultant, that a person can pursue within the Salesforce ecosystem, often supported by specific Trailhead trails and certifications.",
+    "distractorDefinitions": [
+      "An online community where Salesforce users, admins, and developers connect and share knowledge.",
+      "A credential that verifies a person's skills and knowledge on the Salesforce platform.",
+      "Salesforce's free official learning platform with modules and hands-on challenges."
+    ],
+    "germanExplanation": "Die Bandbreite an Rollen, z. B. Administrator, Entwickler oder Berater, die eine Person im Salesforce-Ökosystem verfolgen kann, oft unterstützt durch Trailhead-Trails.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-020",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Salesforce Certification",
+    "definition": "A credential earned by passing an official exam that verifies a person's knowledge and skills on a specific area of the Salesforce platform.",
+    "distractorDefinitions": [
+      "The range of job roles a person can pursue within the Salesforce ecosystem.",
+      "An online community where Salesforce users, admins, and developers connect and share knowledge.",
+      "A free, full-featured Salesforce org used for hands-on learning and practice."
+    ],
+    "germanExplanation": "Ein durch das Bestehen einer offiziellen Prüfung erworbener Nachweis, der Kenntnisse und Fähigkeiten in einem bestimmten Salesforce-Bereich bestätigt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-021",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Trailhead",
+    "definition": "Salesforce's free, official online learning platform that offers modules, trails, and hands-on challenges for building platform skills.",
+    "distractorDefinitions": [
+      "An online community where Salesforce users, admins, and developers connect and share knowledge.",
+      "A free, full-featured Salesforce org used for hands-on learning, separate from a production environment.",
+      "Salesforce's online marketplace for third-party apps and components."
+    ],
+    "germanExplanation": "Salesforces kostenlose, offizielle Online-Lernplattform mit Modulen, Trails und praktischen Übungen zum Aufbau von Plattform-Kenntnissen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-022",
+    "certification": "foundations",
+    "examDomainId": "fnd-ecosystem",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Chatter",
+    "definition": "Salesforce's built-in collaboration tool that lets users post updates, follow records, and comment in a feed similar to a social network.",
+    "distractorDefinitions": [
+      "A named collaboration space where users discuss a specific topic and share files, similar to a group on a social network.",
+      "A setting on an object that determines which field changes automatically appear as feed updates.",
+      "A chronological view on a record showing past and upcoming tasks, events, and emails."
+    ],
+    "germanExplanation": "Salesforces eingebautes Kollaborationswerkzeug, mit dem Nutzer Updates posten, Datensätzen folgen und kommentieren können, ähnlich einem sozialen Feed.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-023",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "App Launcher",
+    "definition": "A menu, opened from the grid icon, that lets users quickly switch between different Salesforce apps, such as Sales or Service.",
+    "distractorDefinitions": [
+      "The top navigation bar that lists an app's main tabs, such as Accounts or Opportunities.",
+      "A search bar that finds records across multiple objects from a single field.",
+      "The central area, accessed via the gear icon, where administrators configure Salesforce."
+    ],
+    "germanExplanation": "Ein über das Raster-Symbol geöffnetes Menü, mit dem Nutzer schnell zwischen verschiedenen Salesforce-Apps wie Sales oder Service wechseln können.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-024",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Navigation Bar",
+    "definition": "The horizontal bar near the top of a Salesforce app that lists its tabs, such as Home, Accounts, or Opportunities, for moving between areas of the app.",
+    "distractorDefinitions": [
+      "A menu that lets users quickly switch between entirely different Salesforce apps.",
+      "A footer bar that gives quick access to tools like a phone dialer or notes without leaving the page.",
+      "A search bar that finds records across multiple objects from a single field."
+    ],
+    "germanExplanation": "Die horizontale Leiste oben in einer Salesforce-App, die deren Tabs wie Home, Accounts oder Opportunities auflistet, um zwischen Bereichen zu wechseln.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-025",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Setup",
+    "definition": "The central administrative area, accessed via the gear icon, where an administrator configures objects, users, security, and other org-wide settings.",
+    "distractorDefinitions": [
+      "An area where an individual user can update their own profile details, such as email and language.",
+      "A menu that lets users quickly switch between different Salesforce apps.",
+      "A search bar that finds records across multiple objects at once."
+    ],
+    "germanExplanation": "Der zentrale Administrationsbereich, erreichbar über das Zahnrad-Symbol, in dem Objekte, Nutzer, Sicherheit und weitere Org-Einstellungen konfiguriert werden.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-026",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Global Search",
+    "definition": "A search bar at the top of every page that lets a user find records across multiple objects at once, based on their access.",
+    "distractorDefinitions": [
+      "A saved, filtered list of records from a single object.",
+      "A footer bar with quick access to tools such as a phone dialer or recent records.",
+      "A menu that lets users quickly switch between different Salesforce apps."
+    ],
+    "germanExplanation": "Eine Suchleiste am oberen Seitenrand, mit der ein Nutzer objektübergreifend Datensätze finden kann, entsprechend seinen Zugriffsrechten.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-027",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Kanban View",
+    "definition": "A view that displays records as cards grouped into columns, such as opportunity stages, letting users see progress at a glance and drag cards between columns.",
+    "distractorDefinitions": [
+      "A saved, filtered list of records from a single object, shown as rows in a table.",
+      "A section on a record's detail page that shows other linked records, such as Contacts on an Account.",
+      "A built-in list view that automatically shows the records a user opened most recently, without any manual setup."
+    ],
+    "germanExplanation": "Zeigt Datensätze als Karten in Spalten, z. B. Opportunity-Stages, sodass Fortschritt auf einen Blick sichtbar ist und Karten verschoben werden können.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-028",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Recently Viewed",
+    "definition": "A built-in list view that automatically shows the records a user opened most recently, without requiring any manual setup.",
+    "distractorDefinitions": [
+      "A view that displays records as cards grouped into columns, such as opportunity stages.",
+      "A saved, filtered list of records from a single object, such as 'My Open Opportunities'.",
+      "A section on a record's detail page that shows other records linked to it."
+    ],
+    "germanExplanation": "Eine eingebaute List View, die automatisch die zuletzt geöffneten Datensätze eines Nutzers anzeigt, ganz ohne manuelle Einrichtung.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-029",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "List View",
+    "definition": "A filtered, often saved, list of records from a single object, such as 'My Open Opportunities', displayed as rows in a table.",
+    "distractorDefinitions": [
+      "A view that displays records as cards grouped into columns, letting users drag cards between stages.",
+      "A section on a record's detail page showing other records linked to it, such as Contacts on an Account.",
+      "A display of records that meet specific criteria, which can combine data from more than one object."
+    ],
+    "germanExplanation": "Eine gefilterte, oft gespeicherte Liste von Datensätzen eines einzelnen Objekts, z. B. 'My Open Opportunities', dargestellt als Tabellenzeilen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-030",
+    "certification": "foundations",
+    "examDomainId": "fnd-navigation",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Related List",
+    "definition": "A section on a record's detail page that shows other records linked to it, such as the list of Contacts related to an Account.",
+    "distractorDefinitions": [
+      "A filtered list of records from a single object, such as 'My Open Opportunities'.",
+      "A built-in list that automatically shows the records a user opened most recently.",
+      "A search bar that finds records across multiple objects at once."
+    ],
+    "germanExplanation": "Ein Bereich auf der Detailseite eines Datensatzes, der verknüpfte Datensätze zeigt, z. B. die Liste der Contacts zu einem Account.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-031",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Lead",
+    "definition": "A standard object representing a person or company that has shown interest but has not yet been qualified as a real sales opportunity.",
+    "distractorDefinitions": [
+      "A standard object representing an individual person, typically linked to the account they work for.",
+      "A standard object representing a potential sale that a sales team actively tracks through defined stages.",
+      "A standard object that represents a company or organization."
+    ],
+    "germanExplanation": "Ein Standardobjekt, das eine Person oder ein Unternehmen repräsentiert, das Interesse gezeigt hat, aber noch nicht als echte Verkaufschance qualifiziert wurde.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-032",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Opportunity",
+    "definition": "A standard object representing a potential sale that a sales team actively tracks through defined stages until it is won or lost.",
+    "distractorDefinitions": [
+      "A standard object representing a person or company that has shown interest but is not yet qualified.",
+      "A standard object that tracks a customer's question, feedback, or problem.",
+      "A standard object representing an individual person, typically linked to the account they work for."
+    ],
+    "germanExplanation": "Ein Standardobjekt, das ein potenzielles Geschäft repräsentiert, das ein Vertriebsteam durch definierte Phasen bis zum Gewinn oder Verlust verfolgt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-033",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Case",
+    "definition": "A standard object that tracks a customer's question, feedback, or problem as it moves through a support process.",
+    "distractorDefinitions": [
+      "A standard object representing a potential sale that a sales team tracks through defined stages.",
+      "A standard object representing a person or company that has shown interest but is not yet qualified.",
+      "A standard object that represents a specific marketing initiative and the people associated with it."
+    ],
+    "germanExplanation": "Ein Standardobjekt, das eine Kundenanfrage, ein Feedback oder ein Problem erfasst, während es einen Support-Prozess durchläuft.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-034",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Data Integrity",
+    "definition": "The accuracy, consistency, and quality of the data stored in Salesforce, maintained through tools such as validation rules and duplicate rules.",
+    "distractorDefinitions": [
+      "The set of rules that determine which records a specific user is allowed to see.",
+      "A field that stores free text without any connection to another object.",
+      "A rule that defines the criteria used to identify potential duplicate records."
+    ],
+    "germanExplanation": "Die Genauigkeit, Konsistenz und Qualität der in Salesforce gespeicherten Daten, sichergestellt durch Werkzeuge wie Validation Rules und Duplicate Rules.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-035",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Custom Object",
+    "definition": "An object created by an organization to store data that is not covered by Salesforce's pre-built standard objects, such as Account or Case.",
+    "distractorDefinitions": [
+      "An object that comes pre-built with Salesforce, such as Account, Contact, or Opportunity.",
+      "A layout that controls which fields and buttons appear on a record's detail page.",
+      "A single piece of information stored on a record, such as a name or date."
+    ],
+    "germanExplanation": "Ein von der Organisation selbst erstelltes Objekt für Daten, die vorgefertigte Standardobjekte wie Account oder Case nicht abdecken.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-036",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Field",
+    "definition": "A single piece of information stored on a record, such as a name, date, or amount, defined by the object it belongs to.",
+    "distractorDefinitions": [
+      "A single instance of data stored within an object, such as one specific customer's Account.",
+      "A container that defines the structure for storing a particular type of information.",
+      "An object created by an organization to store data not covered by standard objects."
+    ],
+    "germanExplanation": "Eine einzelne Information eines Datensatzes, z. B. ein Name, ein Datum oder ein Betrag, definiert durch das zugehörige Objekt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-037",
+    "certification": "foundations",
+    "examDomainId": "fnd-data-model",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Record",
+    "definition": "A single instance of data stored within an object, such as one specific customer's Account or one specific Opportunity.",
+    "distractorDefinitions": [
+      "A single piece of information stored on a record, such as a name, date, or amount.",
+      "A container that defines the structure for storing a particular type of information.",
+      "A layout that controls which fields, related lists, and buttons appear on a detail page."
+    ],
+    "germanExplanation": "Eine einzelne Dateninstanz innerhalb eines Objekts, z. B. der Account eines bestimmten Kunden oder eine bestimmte Opportunity.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-038",
+    "certification": "foundations",
+    "examDomainId": "fnd-reports-dashboards",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Report",
+    "definition": "A display of a set of records that meet specific criteria, arranged in rows and columns, and used as the data source for dashboards.",
+    "distractorDefinitions": [
+      "A visual display of data from one or more reports using charts, gauges, and tables.",
+      "A filtered list of records from a single object, such as 'My Open Opportunities'.",
+      "The layout style of a report, such as tabular, summary, or matrix."
+    ],
+    "germanExplanation": "Eine Darstellung von Datensätzen, die bestimmte Kriterien erfüllen, angeordnet in Zeilen und Spalten, als Datenquelle für Dashboards genutzt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-039",
+    "certification": "foundations",
+    "examDomainId": "fnd-reports-dashboards",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Dashboard",
+    "definition": "A visual display of data from one or more underlying reports, using charts, gauges, and tables to summarize information at a glance.",
+    "distractorDefinitions": [
+      "A display of records that meet specific criteria, arranged in rows and columns.",
+      "A single chart, table, or metric placed on a dashboard, based on data from one report.",
+      "A folder used to organize and set sharing access for reports."
+    ],
+    "germanExplanation": "Eine visuelle Darstellung von Daten aus einem oder mehreren zugrundeliegenden Reports mittels Diagrammen, Messanzeigen und Tabellen.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-040",
+    "certification": "foundations",
+    "examDomainId": "fnd-reports-dashboards",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Dashboard Widget",
+    "definition": "A general term for a visual element on a dashboard, such as a chart, gauge, metric, or table, that presents data from an underlying report.",
+    "distractorDefinitions": [
+      "The layout style of a report, such as tabular, summary, matrix, or joined.",
+      "A field created directly in a report that groups values into custom categories.",
+      "A storage location for dashboards whose sharing settings control who can view or edit them."
+    ],
+    "germanExplanation": "Sammelbegriff für ein visuelles Element auf einem Dashboard, z. B. Diagramm, Messanzeige oder Tabelle, das Daten aus einem Report darstellt.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-041",
+    "certification": "foundations",
+    "examDomainId": "fnd-reports-dashboards",
+    "cefr": "B2",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Summary Report",
+    "definition": "A report format that groups records along one or more row groupings and can show subtotals, but does not group by columns.",
+    "distractorDefinitions": [
+      "A report format that groups records by both rows and columns at the same time.",
+      "A report format that lists records as a simple, ungrouped table without any groupings.",
+      "A report format that combines multiple report types with different views on one page."
+    ],
+    "germanExplanation": "Ein Report-Format, das Datensätze nach einer oder mehreren Zeilen-Gruppierungen ordnet und Zwischensummen zeigen kann, aber nicht nach Spalten gruppiert.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  },
+  {
+    "id": "def-fnd-042",
+    "certification": "foundations",
+    "examDomainId": "fnd-reports-dashboards",
+    "cefr": "B1",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Tabular Report",
+    "definition": "A report format that lists records as a simple, ungrouped table of rows and columns, well suited for creating export lists such as mailing lists.",
+    "distractorDefinitions": [
+      "A report format that groups records along one dimension and shows subtotals.",
+      "A report format that groups records by both rows and columns at the same time.",
+      "A report format that combines multiple report types with different views on one page."
+    ],
+    "germanExplanation": "Ein Report-Format, das Datensätze als einfache, ungruppierte Tabelle aus Zeilen und Spalten auflistet, gut geeignet für Exportlisten wie Mailinglisten.",
+    "source": "01_Recherchebasis_und_Content-Grundlage.md, Kapitel 7.2"
+  }
+]
