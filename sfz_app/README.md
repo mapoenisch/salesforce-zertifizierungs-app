@@ -53,7 +53,7 @@ Die App lädt ihre Lerninhalte (`data/*.json`) und JavaScript-Module per `fetch(
 Falls `start-server-mac.command` bzw. `start-server-windows.bat` nicht funktioniert (z. B. kein Python installiert), im Terminal:
 
 ```bash
-cd /pfad/zum/Ordner/salesforce_zertifizierungs_app
+cd /pfad/zum/Ordner/salesforce_hubspot_zertifizierungs_app
 python3 -m http.server 8000
 ```
 
@@ -276,7 +276,7 @@ Wichtig für die richtige Einordnung:
 Verzeichnisstruktur:
 
 ```
-salesforce_zertifizierungs_app/
+salesforce_hubspot_zertifizierungs_app/
 ├── index.html              Einstiegspunkt
 ├── app.js                  Router und App-Initialisierung
 ├── styles.css               Gesamtes Styling (Dark/Light Mode)
@@ -331,3 +331,45 @@ Kein Problem — der Lernpfad lässt sich in den Einstellungen jederzeit wechsel
 ## 12. Rechtlicher Hinweis
 
 Diese App ist ein privates Lernprojekt und steht in keiner Verbindung zu Salesforce.com, Inc. "Salesforce" sowie zugehörige Produkt- und Zertifizierungsnamen sind Marken von Salesforce. Alle Übungsinhalte sind eigenständig erstellt und synthetisch; es werden keine Originalprüfungsfragen, geleakten Inhalte oder "Exam Dumps" verwendet, gespeichert oder verbreitet.
+
+
+## HubSpot-Ebene (zweite Plattform)
+
+Die App deckt zwei getrennte Zertifizierungswelten ab. Die Plattform wird im Onboarding gewählt
+und ist später unter Einstellungen → Lernpfad umstellbar; der Fortschritt beider Plattformen
+bleibt dabei erhalten.
+
+| | Salesforce | HubSpot |
+|---|---|---|
+| Prüfungssprache | Englisch | Deutsch |
+| Lernpfade | Foundations, Administrator, Administrator inkl. Foundations | Inbound Sales, Sales Hub Software, Reibungsloser Vertrieb, alle drei nacheinander |
+| Prüfungsenglisch-Bereich | ja | nein |
+| CEFR-Einstufung (B1/B2) | ja | nein |
+| Gewichtung der Themenbereiche | offizielle Exam-Outline-Gewichtung | redaktionelle Priorität, abgeleitet aus der offiziellen Lektionsdauer |
+
+Weil die drei HubSpot-Zertifizierungen auf Deutsch abgelegt werden, enthält diese Ebene bewusst
+kein Englisch- und Leseverständnistraining: keine CEFR-Level, keine Signalwort-Analyse, alle
+Inhalte auf Deutsch. Statt der Signalwort-Analyse zeigen HubSpot-Fragen eine **Ausschlusslogik**,
+die begründet, warum die falschen Optionen ausscheiden.
+
+### Neue Dateien
+
+- `js/platforms.js` — Registry beider Plattformen: Beschriftungen, sichtbare Bereiche, Content-Felder
+- `data/hubspot-vocabulary.json` (90), `data/hubspot-definitions.json` (45),
+  `data/hubspot-questions.json` (75), `data/hubspot-reading-passages.json` (24),
+  `data/hubspot-practice-tasks.json` (12), `data/hubspot-domains.json` (13),
+  `data/hubspot-weekly-plan.json` (4 Lernpfade à 12 Wochen)
+
+Die Salesforce-Dateien bleiben unverändert; `js/contentLoader.js` lädt beide Ebenen und führt sie
+zusammen. Getrennt werden sie über das `certification`-Tag jedes Inhalts.
+
+### Herkunft der HubSpot-Prioritäten
+
+HubSpot veröffentlicht für diese Zertifizierungen **keine** prozentualen Themengewichtungen. Die
+Prozentwerte der HubSpot-Themenbereiche sind deshalb redaktionell aus der offiziellen
+Lektionsdauer abgeleitet (`priorityType: "editorialPriority"`) und werden in der Oberfläche auch
+so beschriftet. Details, Quellen und Abrufdaten: `recherche_kontext/03_HubSpot_Recherchebasis.md`.
+
+Nicht öffentlich dokumentiert und deshalb nirgends behauptet: Fragenanzahl, Zeitlimit,
+Bestehensgrenze und Gültigkeitsdauer der HubSpot-Zertifizierungen. Sie stehen im jeweiligen Kurs
+unter „Prüfung". Bestätigt ist: Wiederholung frühestens 12 Stunden nach dem letzten Versuch.

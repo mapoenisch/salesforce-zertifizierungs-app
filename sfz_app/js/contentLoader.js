@@ -1,22 +1,30 @@
 // contentLoader.js — Lädt und cached die statischen JSON-Content-Dateien.
 
+// Jede Content-Art wird aus mehreren Dateien geladen und zusammengeführt: zuerst die
+// Salesforce-Ebene, danach die HubSpot-Ebene. Unterschieden werden die Inhalte über ihr
+// certification-Tag (siehe js/platforms.js) — nachgelagerte Filter bleiben unverändert.
 const files = {
-  vocabulary: "data/vocabulary.json",
-  definitions: "data/definitions.json",
-  readingPassages: "data/reading-passages.json",
-  questions: "data/questions.json",
-  practiceTasks: "data/practice-tasks.json",
-  examDomains: "data/exam-domains.json",
-  weeklyPlan: "data/weekly-plan.json"
+  vocabulary: ["data/vocabulary.json", "data/hubspot-vocabulary.json"],
+  definitions: ["data/definitions.json", "data/hubspot-definitions.json"],
+  readingPassages: ["data/reading-passages.json", "data/hubspot-reading-passages.json"],
+  questions: ["data/questions.json", "data/hubspot-questions.json"],
+  practiceTasks: ["data/practice-tasks.json", "data/hubspot-practice-tasks.json"],
+  examDomains: ["data/exam-domains.json", "data/hubspot-domains.json"],
+  weeklyPlan: ["data/weekly-plan.json", "data/hubspot-weekly-plan.json"]
 };
 
 const cache = {};
 
 async function loadFile(key) {
   if (cache[key]) return cache[key];
-  const res = await fetch(files[key]);
-  if (!res.ok) throw new Error(`Konnte ${files[key]} nicht laden (Status ${res.status})`);
-  const data = await res.json();
+  const parts = await Promise.all(
+    files[key].map(async (path) => {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error(`Konnte ${path} nicht laden (Status ${res.status})`);
+      return res.json();
+    })
+  );
+  const data = parts.flat();
   cache[key] = data;
   return data;
 }

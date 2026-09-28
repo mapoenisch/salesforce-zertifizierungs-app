@@ -1,9 +1,9 @@
 // views/progress.js — Detaillierte Fortschrittsübersicht.
 
-import { state, allLearnableContent, domainMap, pathCertifications } from "../state.js";
+import { state, allLearnableContent, domainMap, pathCertifications, activePlatform } from "../state.js";
 import * as db from "../db.js";
 import * as weeklyPlan from "../weeklyPlan.js";
-import { el, clear, progressBar, formatDuration, todayISO, pathLabel } from "../utils.js";
+import { el, clear, progressBar, formatDuration, todayISO, pathLabel, domainWeightLabel } from "../utils.js";
 
 export async function render(container) {
   clear(container);
@@ -54,7 +54,7 @@ export async function render(container) {
   if (weekTarget) {
     goalCard.appendChild(progressBar((weekActual.newVocab / Math.max(1, weekTarget.newVocabTarget)) * 100, `Neue Vokabeln: ${weekActual.newVocab}/${weekTarget.newVocabTarget}`));
     goalCard.appendChild(progressBar((weekActual.reviews / Math.max(1, weekTarget.reviewsTarget)) * 100, `Wiederholungen: ${weekActual.reviews}/${weekTarget.reviewsTarget}`));
-    goalCard.appendChild(progressBar((weekActual.readingExercises / Math.max(1, weekTarget.readingExercisesTarget)) * 100, `Reading: ${weekActual.readingExercises}/${weekTarget.readingExercisesTarget}`));
+    goalCard.appendChild(progressBar((weekActual.readingExercises / Math.max(1, weekTarget.readingExercisesTarget)) * 100, `${activePlatform().hasEnglishTraining ? "Reading" : "Szenario-Übungen"}: ${weekActual.readingExercises}/${weekTarget.readingExercisesTarget}`));
   }
   if (milestone) goalCard.appendChild(el("p", { class: "milestone" }, [el("strong", { text: "Meilenstein: " }), document.createTextNode(milestone)]));
   goalCard.appendChild(el("p", { class: "item-hint", text: "Die Lernreifeanzeige ist ein Indikator für deinen Lernfortschritt, keine Garantie für das Bestehen der Prüfung." }));
@@ -90,8 +90,9 @@ export async function render(container) {
 
   // Domain-Abdeckung nach Gewichtung (nur Domains des aktiven Lernpfads)
   const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));
+  const platform = activePlatform();
   const domainCard = el("div", { class: "card" });
-  domainCard.appendChild(el("h2", { text: "Domain-Abdeckung (nach offizieller Gewichtung)" }));
+  domainCard.appendChild(el("h2", { text: platform.coverageHeading }));
   [...domains.values()]
     .filter((d) => certifications.includes(d.certification))
     .sort((a, b) => b.weightPercent - a.weightPercent)
@@ -103,8 +104,9 @@ export async function render(container) {
         return p && p.repetitions >= 2 && p.lastResult === "correct";
       }).length;
       const pct = (mastered / items.length) * 100;
-      domainCard.appendChild(progressBar(pct, `${domain.name} (${domain.weightPercent}%) — gefestigt: ${mastered}/${items.length}`));
+      domainCard.appendChild(progressBar(pct, `${domain.name} (${domainWeightLabel(domain)}) — gefestigt: ${mastered}/${items.length}`));
     });
+  domainCard.appendChild(el("p", { class: "item-hint", text: `Gewichtung: ${platform.weightingNote}.` }));
   container.appendChild(domainCard);
 
   // Schwachpunktanalyse

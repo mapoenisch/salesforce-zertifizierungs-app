@@ -1,0 +1,812 @@
+[
+  {
+    "id": "hs-def-sw-001",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Zuordnung",
+    "definition": "Die beidseitige Verbindung zwischen zwei Datensätzen, zum Beispiel zwischen einem Kontakt und einem Unternehmen.",
+    "distractorDefinitions": [
+      "Ein Feld, in dem ein einzelner Wert zu einem Datensatz gespeichert wird.",
+      "Die automatische Bewertung eines Datensatzes anhand hinterlegter Kriterien.",
+      "Die Übergabe eines Datensatzes an eine andere zuständige Person."
+    ],
+    "germanExplanation": "Zuordnungen gelten immer in beide Richtungen. Die maximale Anzahl je Objektpaar hängt vom Abonnement ab.",
+    "source": "knowledge.hubspot.com/de/records/associate-records, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-002",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Zuordnungslabel",
+    "definition": "Eine Beschriftung, die die Rolle einer bestehenden Verbindung zwischen zwei Datensätzen genauer beschreibt, etwa „Entscheider\".",
+    "distractorDefinitions": [
+      "Eine Beschriftung, die den Bearbeitungsstand eines Leads angibt.",
+      "Ein Pflichtfeld, ohne das zwei Datensätze nicht verbunden werden können.",
+      "Ein Filter, der bestimmt, welche Datensätze in einer Ansicht erscheinen."
+    ],
+    "germanExplanation": "Erst kommt die Zuordnung, dann optional das Label. Das Label ersetzt die Verbindung nicht, es beschreibt sie.",
+    "source": "knowledge.hubspot.com/de/records/associate-records, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-003",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Primäres Unternehmen",
+    "definition": "Das Unternehmen, das standardmäßig als Hauptzugehörigkeit eines Kontakts gilt — bei Kontakten das zuerst zugeordnete.",
+    "distractorDefinitions": [
+      "Das Unternehmen mit dem höchsten Umsatz im Account.",
+      "Das Unternehmen, dem die meisten Deals zugeordnet sind.",
+      "Das zuletzt bearbeitete Unternehmen in der Ansicht."
+    ],
+    "germanExplanation": "Wichtig für Berichte und Zuordnungslogik: Ein Kontakt kann mehreren Unternehmen zugeordnet sein, aber nur eines ist das primäre.",
+    "source": "knowledge.hubspot.com/de/records/associate-records, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-004",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Benutzerdefinierte Eigenschaft",
+    "definition": "Ein selbst angelegtes Feld für Daten, die die Standardeigenschaften von HubSpot nicht abdecken.",
+    "distractorDefinitions": [
+      "Ein von HubSpot geliefertes Feld, das sich nicht bearbeiten lässt.",
+      "Ein Feld, das ausschließlich in Workflows beschrieben werden kann.",
+      "Ein Feld, das nur für Administratoren sichtbar ist."
+    ],
+    "germanExplanation": "Standardeigenschaften liefert HubSpot, benutzerdefinierte Eigenschaften bildet das Unternehmen selbst ab.",
+    "source": "knowledge.hubspot.com/de/properties/create-and-edit-properties, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-005",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Feldtyp",
+    "definition": "Die technische Art einer Eigenschaft, die bestimmt, welche Werte erlaubt sind — etwa Einzeiliger Text, Zahl oder Datumsauswahl.",
+    "distractorDefinitions": [
+      "Die Gruppe, in der eine Eigenschaft in der Seitenleiste einsortiert ist.",
+      "Die Berechtigung, die festlegt, wer eine Eigenschaft bearbeiten darf.",
+      "Der Verlauf aller bisherigen Werte einer Eigenschaft."
+    ],
+    "germanExplanation": "Der Feldtyp ist bei der Anlage die wichtigste Entscheidung — er bestimmt Auswertbarkeit und spätere Filtermöglichkeiten.",
+    "source": "knowledge.hubspot.com/de/properties/create-and-edit-properties, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-006",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Workflow",
+    "definition": "Ein Automatisierungstool, das Datensätze anhand von Auslösern aufnimmt und darauf eine Reihe von Aktionen ausführt.",
+    "distractorDefinitions": [
+      "Ein Tool, das gestaffelte 1:1-Vertriebs-E-Mails an einzelne Kontakte sendet.",
+      "Eine Sammlung von Berichten auf einer gemeinsamen Übersichtsseite.",
+      "Eine interaktive Gesprächskarte in der Seitenleiste eines Datensatzes."
+    ],
+    "germanExplanation": "Abgrenzung zur Sequenz: Der Workflow automatisiert Prozesse auf Datensätzen, die Sequenz die persönliche Nachfasskommunikation.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-007",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Automatische Sequenz-Austragung",
+    "definition": "Das standardmäßige Beenden einer Sequenz für einen Kontakt, sobald er auf eine E-Mail antwortet oder über einen Meetinglink der Sequenz bucht.",
+    "distractorDefinitions": [
+      "Das Pausieren einer Sequenz, wenn eine E-Mail nicht zugestellt werden konnte.",
+      "Das Entfernen eines Kontakts aus dem Sales-Workspace nach der Qualifizierung.",
+      "Das automatische Löschen abgeschlossener Aufgaben nach sieben Tagen."
+    ],
+    "germanExplanation": "Verhindert, dass jemand weiter angeschrieben wird, obwohl er bereits reagiert hat. Die Auslöser lassen sich anpassen.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-008",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Meeting-Link",
+    "definition": "Eine persönliche Buchungsseite, über die Interessenten selbst einen Termin aus der freien Kalenderverfügbarkeit wählen.",
+    "distractorDefinitions": [
+      "Eine E-Mail-Vorlage, die einen Terminvorschlag enthält.",
+      "Ein Bericht über alle stattgefundenen Meetings eines Zeitraums.",
+      "Eine Aufgabe, die an ein anstehendes Meeting erinnert."
+    ],
+    "germanExplanation": "Der Meeting-Link entfernt die Terminabstimmung als Reibungspunkt und wird häufig in Sequenzschritte eingebaut.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-009",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Leitfaden",
+    "definition": "Eine interaktive Content-Karte im Datensatz mit vorgegebenen Gesprächsfragen, deren Antworten direkt protokolliert werden.",
+    "distractorDefinitions": [
+      "Ein kurzer Textbaustein, der über das Rautezeichen eingefügt wird.",
+      "Eine wiederverwendbare vollständige Vertriebs-E-Mail.",
+      "Eine Verkaufsunterlage mit Nachverfolgung der Lesedauer."
+    ],
+    "germanExplanation": "Leitfäden (Playbooks) standardisieren Gespräche, etwa die Qualifizierung, und erfordern Sales oder Service Hub Professional/Enterprise.",
+    "source": "knowledge.hubspot.com/de/playbooks/use-playbooks, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-010",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Snippet",
+    "definition": "Ein kurzer, wiederverwendbarer Textbaustein von maximal 2.500 Zeichen, der über „#\" in Editoren eingefügt wird.",
+    "distractorDefinitions": [
+      "Eine vollständige E-Mail mit Betreffzeile und Auswertung der Antwortrate.",
+      "Ein Platzhalter, der beim Senden durch einen Eigenschaftswert ersetzt wird.",
+      "Ein automatisch versendeter Schritt innerhalb einer Sequenz."
+    ],
+    "germanExplanation": "Kostenlos sind bis zu 3 Snippets möglich, in bezahlten Editionen bis zu 5.000.",
+    "source": "knowledge.hubspot.com/de/conversations/use-snippets, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-011",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Manuelle E-Mail-Aufgabe",
+    "definition": "Ein Sequenzschritt, der keine E-Mail automatisch versendet, sondern eine Aufgabe zum persönlichen Senden erzeugt.",
+    "distractorDefinitions": [
+      "Ein Schritt, der eine E-Mail ohne weiteres Zutun zum geplanten Zeitpunkt versendet.",
+      "Eine Aufgabe, die nach dem Ende der Sequenz automatisch erstellt wird.",
+      "Eine Erinnerung, einen Kontakt manuell aus der Sequenz auszutragen."
+    ],
+    "germanExplanation": "Wichtiger Unterschied zur automatisierten E-Mail: Der Versand bleibt in der Hand der Person und lässt sich vorher anpassen.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-012",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Aufgabenwarteschlange",
+    "definition": "Eine gebündelte Abfolge fälliger Aufgaben, die nacheinander ohne Wechsel der Ansicht abgearbeitet werden.",
+    "distractorDefinitions": [
+      "Eine Liste aller offenen Leads eines Vertriebsteams.",
+      "Die Reihenfolge der Schritte innerhalb einer Sequenz.",
+      "Ein Bericht über die durchschnittliche Bearbeitungsdauer von Aufgaben."
+    ],
+    "germanExplanation": "Warteschlangen reduzieren Kontextwechsel — ein typischer Reibungspunkt im Vertriebsalltag.",
+    "source": "knowledge.hubspot.com/de/prospecting/configure-the-sales-workspace-settings, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-013",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-deals",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Deal-Phase",
+    "definition": "Eine einzelne Station innerhalb einer Pipeline, der eine Abschlusswahrscheinlichkeit hinterlegt ist.",
+    "distractorDefinitions": [
+      "Die Position eines Kontakts im gesamten Marketing- und Vertriebsprozess.",
+      "Die Unterstufe innerhalb der Lebenszyklusphase Sales-Qualified-Lead.",
+      "Die Kategorie, mit der ein Deal in der Prognose eingeordnet wird."
+    ],
+    "germanExplanation": "Die Deal-Phase beschreibt den Deal, nicht den Kontakt — das ist eine der häufigsten Verwechslungen.",
+    "source": "knowledge.hubspot.com/de/object-settings/set-up-and-customize-pipelines, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-014",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-deals",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Pipeline-Limit",
+    "definition": "Die vom Abonnement abhängige Höchstzahl zusätzlicher Pipelines, die ein Account über die Standard-Pipeline hinaus anlegen darf.",
+    "distractorDefinitions": [
+      "Die maximale Anzahl Deals, die gleichzeitig in einer Phase stehen dürfen.",
+      "Die Obergrenze für den Betrag eines einzelnen Deals.",
+      "Die maximale Anzahl an Phasen innerhalb einer Pipeline."
+    ],
+    "germanExplanation": "Kostenlose Tools erlauben keine zusätzlichen benutzerdefinierten Pipelines, Professional und Enterprise deutlich mehr.",
+    "source": "knowledge.hubspot.com/de/object-settings/set-up-and-customize-pipelines, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-015",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-deals",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Abgeschlossen und gewonnen",
+    "definition": "Die Standard-Endphase der Sales-Pipeline für erfolgreich abgeschlossene Deals, hinterlegt mit 100 % Wahrscheinlichkeit.",
+    "distractorDefinitions": [
+      "Die Phase, in der ein Angebot versendet, aber noch nicht unterzeichnet wurde.",
+      "Die Phase, in der ein Entscheidungsträger dem Vorgehen zugestimmt hat.",
+      "Die Kategorie, in der ein Deal für die Prognose als sicher gemeldet wird."
+    ],
+    "germanExplanation": "Gegenstück ist „Abgeschlossen und verloren\" mit 0 %. Beide Phasen beenden den Deal in der Pipeline.",
+    "source": "knowledge.hubspot.com/de/object-settings/set-up-and-customize-pipelines, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-016",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Dashboard",
+    "definition": "Eine Übersichtsseite, auf der mehrere Berichte gemeinsam dargestellt und geteilt werden.",
+    "distractorDefinitions": [
+      "Eine einzelne Auswertung mit eigenen Filtern und einer Visualisierung.",
+      "Die Arbeitsoberfläche mit Leads, Aufgaben und Terminen.",
+      "Die Vorausschau auf den erwarteten Umsatz eines Zeitraums."
+    ],
+    "germanExplanation": "Dashboards sind die Berichtsebene für wiederkehrende Reviews, nicht die Arbeitsebene des Vertriebs.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/hubspot-sales-software, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-sw-017",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Prognose",
+    "definition": "Die Vorausschau auf den erwarteten Umsatz eines Zeitraums auf Basis der Deals in der Pipeline.",
+    "distractorDefinitions": [
+      "Die rückblickende Auswertung abgeschlossener Deals eines Quartals.",
+      "Der Sollwert, den ein Team in einem Zeitraum erreichen soll.",
+      "Der Prozentwert, der einer einzelnen Deal-Phase hinterlegt ist."
+    ],
+    "germanExplanation": "Prognose (erwartet) und Zielvorgabe (gewünscht) sind zwei verschiedene Größen und werden regelmäßig verwechselt.",
+    "source": "knowledge.hubspot.com/de/forecast/, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-sw-018",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Aktivitätsprotokollierung",
+    "definition": "Das Festhalten von Anrufen, E-Mails, Meetings und Notizen in der Zeitleiste eines Datensatzes.",
+    "distractorDefinitions": [
+      "Das automatische Anlegen von Aufgaben nach einem Anruf.",
+      "Die Auswertung von Gesprächsaufzeichnungen nach Stichwörtern.",
+      "Die Nachverfolgung, wer eine Verkaufsunterlage geöffnet hat."
+    ],
+    "germanExplanation": "Ohne protokollierte Aktivitäten bleiben Vertriebsberichte lückenhaft — Datenqualität ist die Voraussetzung jeder Auswertung.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/hubspot-sales-software, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-001",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-grundlagen",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Inbound-Sales",
+    "definition": "Ein Vertriebsansatz, der den eigenen Verkaufsprozess am Kaufprozess der Käuferschaft ausrichtet.",
+    "distractorDefinitions": [
+      "Ein Vertriebsansatz, der möglichst viele Kontakte in kurzer Zeit anspricht.",
+      "Eine Methode, mit der Marketing qualifizierte Leads an den Vertrieb übergibt.",
+      "Ein Preismodell, bei dem Kundinnen und Kunden selbst online abschließen."
+    ],
+    "germanExplanation": "Der Unterschied liegt in der Reihenfolge: erst der Kaufprozess, dann der Verkaufsprozess.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-is-002",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-grundlagen",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Käuferreise",
+    "definition": "Der Weg der Käuferschaft durch Bewusstsein, Überlegung und Entscheidung.",
+    "distractorDefinitions": [
+      "Die Abfolge der Phasen, die ein Deal in der Pipeline durchläuft.",
+      "Die Schritte einer Sequenz vom ersten bis zum letzten Kontaktversuch.",
+      "Die Stationen eines Kunden nach dem Kauf bis zur Verlängerung."
+    ],
+    "germanExplanation": "Die Käuferreise ist die Außensicht, die Pipeline die Innensicht auf denselben Vorgang.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-is-003",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-identify",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Aktiver Käufer",
+    "definition": "Eine Person, die bereits erkennbare Kaufsignale zeigt, etwa durch wiederholte Interaktionen oder eine konkrete Anfrage.",
+    "distractorDefinitions": [
+      "Eine Person, die ins Zielkundenprofil passt, aber keine Aktivität zeigt.",
+      "Eine Person, die in der Vergangenheit gekauft hat und erneut angesprochen wird.",
+      "Eine Person, die einem Vertriebsmitarbeitenden fest zugewiesen ist."
+    ],
+    "germanExplanation": "Aktiv bezieht sich auf beobachtbares Verhalten, nicht auf Sympathie oder Bekanntheit.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-is-004",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-identify",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Ideales Kundenprofil",
+    "definition": "Die Beschreibung der Unternehmen, die am besten zum eigenen Angebot passen — nach Merkmalen wie Größe, Branche und Situation.",
+    "distractorDefinitions": [
+      "Die Beschreibung einer typischen Ansprechperson mit Zielen und Herausforderungen.",
+      "Die Liste der Kontakte mit dem höchsten Lead-Score.",
+      "Die Sammlung aller Unternehmen mit mindestens einem offenen Deal."
+    ],
+    "germanExplanation": "Profil = Unternehmen, Persona = Person. Beides wird regelmäßig verwechselt.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-005",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-identify",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Buyer Persona",
+    "definition": "Ein halbfiktives Profil einer typischen Ansprechperson mit Zielen, Herausforderungen und Entscheidungskriterien.",
+    "distractorDefinitions": [
+      "Ein Firmenprofil der am besten passenden Zielunternehmen.",
+      "Ein Kontaktdatensatz mit vollständig gepflegten Eigenschaften.",
+      "Eine Bewertungsregel, die Kontakte automatisch priorisiert."
+    ],
+    "germanExplanation": "Personas steuern Ansprache und Argumentation, nicht die Auswahl der Unternehmen.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-006",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Aufhänger",
+    "definition": "Der situationsbezogene Einstieg in die Erstansprache, der einen erkennbaren Grund für den Kontakt liefert.",
+    "distractorDefinitions": [
+      "Die kurze Selbstvorstellung des eigenen Unternehmens mit Alleinstellungsmerkmal.",
+      "Die Abschlussfrage am Ende eines Verkaufsgesprächs.",
+      "Der Betreff einer automatisierten Massen-E-Mail."
+    ],
+    "germanExplanation": "Der Aufhänger nimmt die Perspektive des Empfängers ein, der Pitch die eigene.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-007",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Kontaktkadenz",
+    "definition": "Die geplante Abfolge und der zeitliche Abstand mehrerer Kontaktversuche.",
+    "distractorDefinitions": [
+      "Der Zeitraum zwischen Erstkontakt und Abschluss eines Deals.",
+      "Die Anzahl der Personen, die in einem Unternehmen angesprochen werden.",
+      "Die Reihenfolge der Phasen innerhalb der Käuferreise."
+    ],
+    "germanExplanation": "In HubSpot wird die Kadenz über Sequenzschritte und Verzögerungen umgesetzt.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-008",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Erlaubnis einholen",
+    "definition": "Die kurze Verständigung zu Gesprächsbeginn über Anlass, Dauer und Themen des Gesprächs.",
+    "distractorDefinitions": [
+      "Die schriftliche Einwilligung in die Verarbeitung personenbezogener Daten.",
+      "Die Freigabe des Angebots durch die Vertriebsleitung.",
+      "Die Bestätigung eines Termins über einen Meeting-Link."
+    ],
+    "germanExplanation": "Gemeint ist die Gesprächsführung, nicht die datenschutzrechtliche Einwilligung — ein häufiger Stolperstein.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-009",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Personalisierung",
+    "definition": "Die inhaltliche Ausrichtung einer Ansprache auf Rolle, Branche und Situation des Empfängers.",
+    "distractorDefinitions": [
+      "Das automatische Einsetzen des Vornamens über einen Platzhalter.",
+      "Die Aufteilung einer Kontaktliste in mehrere Segmente.",
+      "Die Anpassung des Preises an die Zahlungsbereitschaft."
+    ],
+    "germanExplanation": "Token sind ein Werkzeug der Personalisierung, aber nicht ihr Inhalt.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-010",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Explorationsgespräch",
+    "definition": "Das strukturierte Gespräch, in dem Ziele, Pläne, Herausforderungen und Zeitrahmen geklärt werden, bevor eine Lösung gezeigt wird.",
+    "distractorDefinitions": [
+      "Die Produktvorführung mit allen verfügbaren Funktionen.",
+      "Das Gespräch über Preise, Rabatte und Vertragslaufzeiten.",
+      "Der erste Anruf zur Terminvereinbarung."
+    ],
+    "germanExplanation": "Exploration steht vor Präsentation — die Reihenfolge ist prüfungsrelevant.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-is-011",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Herausforderung",
+    "definition": "Das Hindernis, das den bisherigen Plan der Käuferschaft daran hindert, ihr Ziel zu erreichen.",
+    "distractorDefinitions": [
+      "Ein Bedenken gegen das eigene Angebot oder den Anbieter.",
+      "Das messbare Ergebnis, das erreicht werden soll.",
+      "Der Zeitpunkt, zu dem eine Entscheidung fallen muss."
+    ],
+    "germanExplanation": "Herausforderung und Einwand zu verwechseln, führt im Gespräch zur falschen Reaktion.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-012",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Konsequenzfrage",
+    "definition": "Eine Frage nach den Folgen, die entstehen, wenn das Problem ungelöst bleibt.",
+    "distractorDefinitions": [
+      "Eine Frage, die eine gewünschte Antwort bereits nahelegt.",
+      "Eine Frage, die direkt zum Vertragsabschluss führen soll.",
+      "Eine Frage nach dem verfügbaren Budget."
+    ],
+    "germanExplanation": "Sie erzeugt Dringlichkeit aus der Sache — im Gegensatz zu künstlichem Zeitdruck.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-013",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Aktives Zuhören",
+    "definition": "Das Zusammenfassen und Rückfragen des Gesagten, um gemeinsames Verständnis herzustellen.",
+    "distractorDefinitions": [
+      "Das lückenlose Mitschreiben aller Aussagen im Gespräch.",
+      "Das Abarbeiten einer festen Fragenliste ohne Abweichung.",
+      "Das Wiederholen der eigenen Kernbotschaften an mehreren Stellen."
+    ],
+    "germanExplanation": "Erkennbar am Ergebnis: Die Notizen enthalten die Worte des Käufers.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-014",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-advise",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Nutzenargument",
+    "definition": "Die Verbindung einer konkreten Funktion mit einem zuvor genannten Ziel der Käuferschaft.",
+    "distractorDefinitions": [
+      "Die Aufzählung technischer Eigenschaften einer Lösung.",
+      "Der Vergleich des eigenen Angebots mit dem Wettbewerb.",
+      "Das Angebot eines Rabatts bei schneller Entscheidung."
+    ],
+    "germanExplanation": "Ohne Zielbezug bleibt es eine Merkmalsliste.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-is-015",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-advise",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Nächster Schritt",
+    "definition": "Die verbindliche Vereinbarung am Gesprächsende, wer bis wann was tut.",
+    "distractorDefinitions": [
+      "Die nächste Phase, in die ein Deal in der Pipeline verschoben wird.",
+      "Der nächste automatisierte Schritt innerhalb einer Sequenz.",
+      "Die Nachfass-E-Mail, die nach einem Gespräch versendet wird."
+    ],
+    "germanExplanation": "Der nächste Schritt ist eine Vereinbarung zwischen Menschen, keine Systemaktion.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-fs-001",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-identify",
+    "format": "definition-matching",
+    "difficulty": "easy",
+    "term": "Reibung",
+    "definition": "Alles, was Vertriebsteam oder Käuferschaft ausbremst, ohne zum Ergebnis beizutragen.",
+    "distractorDefinitions": [
+      "Der berechtigte Widerstand eines Interessenten gegen ein Angebot.",
+      "Der notwendige Aufwand, der mit jedem Verkaufsabschluss verbunden ist.",
+      "Der Wettbewerbsdruck in einem gesättigten Markt."
+    ],
+    "germanExplanation": "Reibung ist vermeidbar — im Unterschied zu echtem Aufwand und zu Einwänden.",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-fs-002",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-identify",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Schwungrad",
+    "definition": "Ein Wachstumsmodell, in dem zufriedene Kundschaft neues Wachstum antreibt und Reibung das Tempo bremst.",
+    "distractorDefinitions": [
+      "Ein Modell, das Interessenten stufenweise bis zum Abschluss filtert.",
+      "Die Abfolge der Phasen, die ein Deal in der Pipeline durchläuft.",
+      "Der Weg der Käuferschaft von Bewusstsein bis Entscheidung."
+    ],
+    "germanExplanation": "Im Trichter endet der Prozess beim Abschluss, im Schwungrad treibt der Abschluss den nächsten an.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-fs-003",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-identify",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Durchlaufzeit",
+    "definition": "Die gesamte Zeit von der Anfrage bis zum Abschluss, inklusive aller Wartezeiten.",
+    "distractorDefinitions": [
+      "Die reine Arbeitszeit, die an einem Vorgang verbracht wird.",
+      "Die Zeit zwischen Anfrage und erster Reaktion.",
+      "Die durchschnittliche Dauer eines Verkaufsgesprächs."
+    ],
+    "germanExplanation": "Die Lücke zwischen Bearbeitungs- und Durchlaufzeit ist ein direkter Reibungsindikator.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-fs-004",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-enable",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Sales Enablement",
+    "definition": "Die Befähigung des Vertriebsteams durch bessere Prozesse, Werkzeuge und Inhalte.",
+    "distractorDefinitions": [
+      "Die Steuerung des Vertriebsteams über Zielvorgaben und Kennzahlen.",
+      "Die Auswertung abgeschlossener Deals nach Umsatz und Marge.",
+      "Die Schulung von Kundinnen und Kunden in der Produktnutzung."
+    ],
+    "germanExplanation": "Enablement verbessert das System um die Menschen herum, statt den Druck auf sie zu erhöhen.",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-fs-005",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-enable",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Standardisierung",
+    "definition": "Die Vereinheitlichung wiederkehrender Aufgaben, damit sie von allen gleich verlässlich erledigt werden.",
+    "distractorDefinitions": [
+      "Die maschinelle Erledigung wiederkehrender Schritte ohne menschliches Zutun.",
+      "Die Anpassung eines Angebots an die Situation eines einzelnen Kunden.",
+      "Die Aufteilung eines Teams in spezialisierte Rollen."
+    ],
+    "germanExplanation": "Standardisierung geht der Automatisierung voraus — uneinheitliche Abläufe lassen sich schlecht automatisieren.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-fs-006",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-enable",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Lead-Verteilung",
+    "definition": "Die regelbasierte Zuweisung eingehender Anfragen an zuständige Personen.",
+    "distractorDefinitions": [
+      "Die Bewertung eingehender Anfragen nach Kaufbereitschaft.",
+      "Die Aufteilung des Marktes in Gebiete und Segmente.",
+      "Die Reihenfolge, in der Kontakte bearbeitet werden."
+    ],
+    "germanExplanation": "Unklare Zuständigkeit erzeugt liegen gebliebene oder doppelt bearbeitete Anfragen.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-fs-007",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Käuferausrichtung",
+    "definition": "Die Gestaltung des Verkaufsprozesses entlang der Art, wie die Käuferschaft tatsächlich kaufen möchte.",
+    "distractorDefinitions": [
+      "Die Ausrichtung des Angebots an den Stärken des eigenen Produkts.",
+      "Die Verteilung von Zielvorgaben auf einzelne Teammitglieder.",
+      "Die Segmentierung des Marktes nach Branche und Größe."
+    ],
+    "germanExplanation": "Ein Prozess, der nur intern Sinn ergibt, erzeugt Reibung beim Käufer.",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-fs-008",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Service-Level-Vereinbarung",
+    "definition": "Eine verbindliche, messbare Zusage zwischen zwei Teams über Leistung und Qualität ihrer Zusammenarbeit.",
+    "distractorDefinitions": [
+      "Ein Vertrag zwischen Anbieter und Kunde über Reaktionszeiten im Support.",
+      "Eine Zielvorgabe, die eine Führungskraft einem Team setzt.",
+      "Eine Dokumentation des tatsächlichen Prozessablaufs."
+    ],
+    "germanExplanation": "Im Kurskontext geht es um die interne Vereinbarung, typischerweise zwischen Marketing und Vertrieb.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-fs-009",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Silodenken",
+    "definition": "Die Optimierung eigener Teamkennzahlen ohne Blick auf die Folgen für angrenzende Teams.",
+    "distractorDefinitions": [
+      "Die bewusste Spezialisierung von Rollen innerhalb eines Vertriebsteams.",
+      "Die Konzentration auf wenige, besonders wertvolle Zielkunden.",
+      "Die Trennung von Neugeschäft und Bestandskundenbetreuung in zwei Pipelines."
+    ],
+    "germanExplanation": "Spezialisierung ist sinnvoll, Silodenken ist ihr Missbrauch ohne gemeinsame Ziele.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-fs-010",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-transform",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Lernkultur",
+    "definition": "Eine Arbeitsweise, in der Erkenntnisse regelmäßig geteilt und in Prozesse zurückgeführt werden.",
+    "distractorDefinitions": [
+      "Ein jährliches Schulungsprogramm mit festen Themen.",
+      "Die Bewertung von Mitarbeitenden anhand ihrer Zielerreichung.",
+      "Die Dokumentation aller Gespräche im CRM."
+    ],
+    "germanExplanation": "Lernkultur ist Routine, nicht Veranstaltung.",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-def-fs-011",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-transform",
+    "format": "definition-matching",
+    "difficulty": "medium",
+    "term": "Coaching",
+    "definition": "Die regelmäßige, individuelle Begleitung einzelner Personen anhand konkreter eigener Gespräche.",
+    "distractorDefinitions": [
+      "Eine Gruppenschulung zu einem neuen Produkt.",
+      "Die Kontrolle der Aktivitätszahlen einzelner Mitarbeitender.",
+      "Die Festlegung individueller Umsatzziele."
+    ],
+    "germanExplanation": "Coaching arbeitet an realen Fällen und zielt auf Befähigung, nicht auf Kontrolle.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-def-fs-012",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-transform",
+    "format": "definition-matching",
+    "difficulty": "hard",
+    "term": "Feedback-Schleife",
+    "definition": "Der organisierte Rückfluss von Erkenntnissen aus Gesprächen und verlorenen Deals in Prozess und Inhalte.",
+    "distractorDefinitions": [
+      "Die Rückmeldung einer Führungskraft nach einem Mitarbeitergespräch.",
+      "Die Bewertung eines Angebots durch die Kundschaft.",
+      "Die automatische Benachrichtigung bei geöffneten E-Mails."
+    ],
+    "germanExplanation": "Ohne Rückfluss bleibt Wissen personengebunden und geht verloren.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  }
+]

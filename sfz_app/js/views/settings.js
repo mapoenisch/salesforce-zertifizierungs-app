@@ -30,11 +30,21 @@ export async function render(container, ctx) {
   pathSelectLabel.appendChild(el("span", { text: "Aktueller Lernpfad" }));
   const pathSelect = el("select");
   [
-    ["foundations", "Salesforce Certified Platform Foundations"],
-    ["administrator", "Salesforce Certified Platform Administrator (Foundations vorausgesetzt)"],
-    ["administrator-full", "Salesforce Certified Platform Administrator (inkl. Foundations)"]
-  ].forEach(([value, text]) => {
-    pathSelect.appendChild(el("option", { text, attrs: { value } }));
+    ["Salesforce (Prüfungssprache Englisch)", [
+      ["foundations", "Salesforce Certified Platform Foundations"],
+      ["administrator", "Salesforce Certified Platform Administrator (Foundations vorausgesetzt)"],
+      ["administrator-full", "Salesforce Certified Platform Administrator (inkl. Foundations)"]
+    ]],
+    ["HubSpot (Prüfungssprache Deutsch)", [
+      ["hubspot-inbound-sales", "Inbound-Sales-Zertifizierung"],
+      ["hubspot-sales-software", "Software-Zertifizierung zu HubSpot Sales Hub"],
+      ["hubspot-frictionless-sales", "Reibungsloser Vertrieb"],
+      ["hubspot-all", "Alle drei HubSpot-Zertifizierungen nacheinander"]
+    ]]
+  ].forEach(([groupLabel, entries]) => {
+    const group = el("optgroup", { attrs: { label: groupLabel } });
+    entries.forEach(([value, text]) => group.appendChild(el("option", { text, attrs: { value } })));
+    pathSelect.appendChild(group);
   });
   pathSelect.value = state.settings.certificationPath;
   pathSelect.addEventListener("change", () => {
@@ -48,7 +58,8 @@ export async function render(container, ctx) {
     text:
       "Dein Fortschritt bleibt beim Wechsel immer erhalten. Achtung bei Pfad \"Administrator (Foundations vorausgesetzt)\": " +
       "Er zeigt bewusst keine Foundations-Inhalte — nur sinnvoll, wenn du den Foundations-Stoff bereits beherrschst. " +
-      "Bist du dir unsicher, wähle stattdessen \"Administrator (inkl. Foundations)\"."
+      "Bist du dir unsicher, wähle stattdessen \"Administrator (inkl. Foundations)\". " +
+      "Die HubSpot-Pfade prüfen auf Deutsch — dort entfallen Prüfungsenglisch und CEFR-Einstufung."
   }));
   container.appendChild(pathCard);
 

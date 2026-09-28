@@ -73,7 +73,7 @@ Navigation: einfache obere/seitliche Navigationsleiste mit fünf Hauptpunkten (D
 ## 3. Dateistruktur
 
 ```
-salesforce_zertifizierungs_app/
+salesforce_hubspot_zertifizierungs_app/
 ├── index.html
 ├── styles.css
 ├── app.js                        # Einstiegspunkt, initialisiert DB, Router, Views

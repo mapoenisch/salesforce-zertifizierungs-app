@@ -1,0 +1,3297 @@
+[
+  {
+    "id": "hs-q-sw-001",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Eine Vertriebsmitarbeiterin soll morgens zuerst die Verkaufschancen bearbeiten, über die noch gar nicht entschieden wurde. Welche Auswahl im Sales-Workspace bildet genau diesen Arbeitsvorrat ab?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Alle offenen Leads, also Leads weder in einer qualifizierten noch in einer disqualifizierten Phase",
+        "correct": true,
+        "explanation": "Genau das ist die Definition eines offenen Leads: die Entscheidung steht noch aus."
+      },
+      {
+        "id": "b",
+        "text": "Alle Leads ohne zugewiesenen Owner",
+        "correct": false,
+        "explanation": "„Nicht zugewiesen\" betrifft die Zuständigkeit, nicht den Entscheidungsstand."
+      },
+      {
+        "id": "c",
+        "text": "Alle Kontakte mit der Lebenszyklusphase Kunde",
+        "correct": false,
+        "explanation": "Kunden haben bereits gekauft und sind kein offener Arbeitsvorrat."
+      },
+      {
+        "id": "d",
+        "text": "Alle Deals in der Phase „Termin vereinbart\"",
+        "correct": false,
+        "explanation": "Deals sind bereits qualifizierte Verkaufschancen — hier geht es um die Stufe davor."
+      }
+    ],
+    "answerLogic": [
+      "„Über die noch gar nicht entschieden wurde\" zeigt auf offen, nicht auf unzugewiesen.",
+      "Die Frage zielt auf Leads, nicht auf Deals oder Kontakte."
+    ],
+    "germanExplanation": "Offene Leads sind Leads, die weder qualifiziert noch disqualifiziert wurden. Zuweisung und Entscheidungsstand sind zwei getrennte Dimensionen.",
+    "source": "knowledge.hubspot.com/de/prospecting/manage-leads-in-the-prospecting-workspace, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-002",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Kontakt hat ein Whitepaper heruntergeladen, der Vertrieb hat ihn geprüft und arbeitet nun aktiv an ihm. Welche beiden Eigenschaften bilden diesen Zustand korrekt ab?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Lebenszyklusphase „Sales-Qualified-Lead\" und Lead-Status „In Bearbeitung\"",
+        "correct": true,
+        "explanation": "Die Lebenszyklusphase beschreibt die Position im Gesamtprozess, der Lead-Status die Unterphase innerhalb der Qualifizierung."
+      },
+      {
+        "id": "b",
+        "text": "Lebenszyklusphase „In Bearbeitung\" und Lead-Status „Sales-Qualified-Lead\"",
+        "correct": false,
+        "explanation": "Die Werte sind vertauscht — „In Bearbeitung\" ist ein Lead-Status, kein Lebenszyklus-Wert."
+      },
+      {
+        "id": "c",
+        "text": "Deal-Phase „Für Kauf qualifiziert\" und Lead-Status „Neu\"",
+        "correct": false,
+        "explanation": "Eine Deal-Phase beschreibt einen Deal, nicht einen Kontakt; ein Deal existiert hier noch nicht."
+      },
+      {
+        "id": "d",
+        "text": "Lebenszyklusphase „Opportunity\" und Lead-Status „Offen\"",
+        "correct": false,
+        "explanation": "„Opportunity\" setzt einen zugeordneten Deal voraus, der hier noch nicht angelegt wurde."
+      }
+    ],
+    "answerLogic": [
+      "„Der Vertrieb arbeitet aktiv daran\" verweist auf einen Lead-Status, nicht auf eine neue Lebenszyklusphase.",
+      "Kein Deal im Sachverhalt bedeutet: noch keine Phase „Opportunity\"."
+    ],
+    "germanExplanation": "Lebenszyklusphase und Lead-Status greifen ineinander: Der Status verfeinert die Phase „Sales-Qualified-Lead\".",
+    "source": "knowledge.hubspot.com/de/contacts/use-lifecycle-stages, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-003",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Aussage über Kontakte und Unternehmen in HubSpot trifft zu?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Das erste einem Kontakt zugeordnete Unternehmen wird automatisch zum primären Unternehmen",
+        "correct": true,
+        "explanation": "So ist das Standardverhalten bei der Zuordnung von Kontakten zu Unternehmen."
+      },
+      {
+        "id": "b",
+        "text": "Ein Kontakt kann grundsätzlich nur einem einzigen Unternehmen zugeordnet werden",
+        "correct": false,
+        "explanation": "Mehrfachzuordnungen sind möglich; nur das primäre Unternehmen ist eindeutig."
+      },
+      {
+        "id": "c",
+        "text": "Zuordnungen gelten nur in eine Richtung und müssen doppelt gepflegt werden",
+        "correct": false,
+        "explanation": "Zuordnungen sind immer beidseitig sichtbar."
+      },
+      {
+        "id": "d",
+        "text": "Unternehmen sind eine Eigenschaft des Kontaktdatensatzes, kein eigenes Objekt",
+        "correct": false,
+        "explanation": "Unternehmen sind ein eigenes CRM-Objekt mit eigenen Datensätzen."
+      }
+    ],
+    "answerLogic": [
+      "„Grundsätzlich nur einem einzigen\" ist ein absoluter Ausschluss und meist falsch.",
+      "Die Beidseitigkeit von Zuordnungen ist offizielles Standardverhalten."
+    ],
+    "germanExplanation": "Zuordnungen sind bidirektional; das primäre Unternehmen entsteht standardmäßig aus der ersten Zuordnung.",
+    "source": "knowledge.hubspot.com/de/records/associate-records, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-004",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Team will Kontakte künftig automatisch nach Kaufbereitschaft priorisieren, statt sie manuell zu sortieren. Welches Vorgehen passt?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Eine Score-Eigenschaft mit Kriterien einrichten und danach sortieren",
+        "correct": true,
+        "explanation": "Score-Eigenschaften bewerten Datensätze automatisch anhand hinterlegter Kriterien."
+      },
+      {
+        "id": "b",
+        "text": "Eine Einzeiliger-Text-Eigenschaft anlegen, in die jede Person ihre Einschätzung schreibt",
+        "correct": false,
+        "explanation": "Das ist wieder manuell und nicht auswertbar."
+      },
+      {
+        "id": "c",
+        "text": "Die Lebenszyklusphase aller Kontakte auf Sales-Qualified-Lead setzen",
+        "correct": false,
+        "explanation": "Eine pauschale Phasenänderung priorisiert nichts, sie verfälscht die Daten."
+      },
+      {
+        "id": "d",
+        "text": "Für jeden Kontakt einen Deal anlegen und die Dealwahrscheinlichkeit schätzen",
+        "correct": false,
+        "explanation": "Deals sind für qualifizierte Chancen gedacht, nicht als Priorisierungshilfe für alle Kontakte."
+      }
+    ],
+    "answerLogic": [
+      "„Automatisch\" schließt alle manuellen Varianten aus.",
+      "Die Frage bleibt auf Kontaktebene — Deals sind die falsche Ebene."
+    ],
+    "germanExplanation": "Score ist ein offizieller Feldtyp in HubSpot und das vorgesehene Mittel zur automatischen Priorisierung.",
+    "source": "knowledge.hubspot.com/de/properties/create-and-edit-properties, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-005",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Beschreibung trifft auf den Sales-Workspace zu?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Er bündelt Leads, Aufgaben und Termine als Arbeitsoberfläche und ist mit Sales Hub Professional oder Enterprise verfügbar",
+        "correct": true,
+        "explanation": "Der Workspace ist die Arbeitsebene des Vertriebs und an die Professional-/Enterprise-Editionen gebunden."
+      },
+      {
+        "id": "b",
+        "text": "Er ist die Auswertungsfläche, auf der mehrere Berichte gemeinsam dargestellt werden",
+        "correct": false,
+        "explanation": "Das beschreibt ein Dashboard."
+      },
+      {
+        "id": "c",
+        "text": "Er ist das gemeinsame Postfach für eingehende E-Mails und Chats",
+        "correct": false,
+        "explanation": "Das beschreibt das Konversationen-Postfach."
+      },
+      {
+        "id": "d",
+        "text": "Er steht in allen Editionen einschließlich der kostenlosen Tools zur Verfügung",
+        "correct": false,
+        "explanation": "Der Sales-Workspace ist an Sales Hub Professional oder Enterprise gebunden."
+      }
+    ],
+    "answerLogic": [
+      "Arbeiten vs. auswerten vs. empfangen trennt Workspace, Dashboard und Postfach.",
+      "Aussagen mit „in allen Editionen\" sind bei Sales-Hub-Tools fast immer falsch."
+    ],
+    "germanExplanation": "Der Sales-Workspace enthält die konfigurierbaren Registerkarten Unternehmen, Leads und Deals.",
+    "source": "knowledge.hubspot.com/de/prospecting/configure-the-sales-workspace-settings, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-006",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Beim Anlegen einer neuen Eigenschaft für „Vertragslaufzeit in Monaten\" soll später nach Zahlenbereichen gefiltert und gerechnet werden können. Welcher Feldtyp ist richtig?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Zahl",
+        "correct": true,
+        "explanation": "Nur ein numerischer Feldtyp erlaubt Rechnen und Bereichsfilter."
+      },
+      {
+        "id": "b",
+        "text": "Einzeiliger Text",
+        "correct": false,
+        "explanation": "Text lässt sich nicht zuverlässig sortieren oder berechnen."
+      },
+      {
+        "id": "c",
+        "text": "Dropdown-Auswahl",
+        "correct": false,
+        "explanation": "Eine Auswahlliste erzwingt feste Werte und verhindert Berechnungen."
+      },
+      {
+        "id": "d",
+        "text": "Datumsauswahl",
+        "correct": false,
+        "explanation": "Ein Datum ist ein Zeitpunkt, keine Dauer."
+      }
+    ],
+    "answerLogic": [
+      "„Rechnen und Bereichsfilter\" verlangt zwingend einen numerischen Typ.",
+      "Der Feldtyp wird bei der Anlage entschieden und bestimmt die spätere Auswertbarkeit."
+    ],
+    "germanExplanation": "Zu den offiziellen Feldtypen zählen unter anderem Einzeiliger Text, Dropdown-Auswahl, Zahl, Datumsauswahl, Berechnung und Score.",
+    "source": "knowledge.hubspot.com/de/properties/create-and-edit-properties, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-007",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche zwei Aussagen zur Unterscheidung von Lead und Kontakt sind korrekt? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Der Lead ist ein eigenes CRM-Objekt und nicht identisch mit dem Kontaktdatensatz",
+        "correct": true,
+        "explanation": "Leads sind ein eigenständiges Objekt im Sales-Workspace."
+      },
+      {
+        "id": "b",
+        "text": "Ein nicht zugewiesener Lead erscheint weiterhin im zugehörigen Kontakt- oder Unternehmensdatensatz",
+        "correct": true,
+        "explanation": "So beschreibt es die offizielle Dokumentation."
+      },
+      {
+        "id": "c",
+        "text": "Ein Lead ersetzt den Kontaktdatensatz, sobald er qualifiziert wurde",
+        "correct": false,
+        "explanation": "Der Kontakt bleibt bestehen; der Lead beschreibt nur die Verkaufschance."
+      },
+      {
+        "id": "d",
+        "text": "Leads sind eine Lebenszyklusphase und kein Objekt",
+        "correct": false,
+        "explanation": "„Lead\" gibt es zwar auch als Lebenszyklusphase, das Lead-Objekt ist davon unabhängig."
+      }
+    ],
+    "answerLogic": [
+      "Achte auf die Doppelbedeutung von „Lead\": Objekt und Lebenszyklusphase sind zweierlei.",
+      "Bei Mehrfachauswahl zählt jede Option einzeln."
+    ],
+    "germanExplanation": "Das Lead-Objekt bildet unqualifizierte Verkaufschancen ab; Kontakt und Unternehmen bleiben als Datensätze bestehen.",
+    "source": "knowledge.hubspot.com/de/prospecting/manage-leads-in-the-prospecting-workspace, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-008",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-leads",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Kontaktdatensatz enthält viele Angaben, aber niemand weiß, wer im Kundenunternehmen tatsächlich entscheidet. Was ist der passende HubSpot-Weg, das festzuhalten?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ein Zuordnungslabel wie „Entscheider\" an der Verbindung zwischen Kontakt und Unternehmen setzen",
+        "correct": true,
+        "explanation": "Zuordnungslabels beschreiben die Rolle einer bestehenden Verbindung."
+      },
+      {
+        "id": "b",
+        "text": "Den Namen in eine neue Einzeiliger-Text-Eigenschaft am Unternehmen schreiben",
+        "correct": false,
+        "explanation": "Das ist redundant, nicht auswertbar und veraltet schnell."
+      },
+      {
+        "id": "c",
+        "text": "Den Kontakt in eine eigene Liste „Entscheider\" aufnehmen",
+        "correct": false,
+        "explanation": "Eine Liste bildet keine Rolle innerhalb einer Beziehung ab."
+      },
+      {
+        "id": "d",
+        "text": "Die Lebenszyklusphase des Kontakts auf Opportunity setzen",
+        "correct": false,
+        "explanation": "Die Lebenszyklusphase beschreibt den Prozessfortschritt, nicht die Rolle."
+      }
+    ],
+    "answerLogic": [
+      "„Wer entscheidet\" ist eine Rolle in einer Beziehung — das ist genau der Zweck von Zuordnungslabels.",
+      "Eine eigene Eigenschaft oder Liste löst das Problem nur scheinbar."
+    ],
+    "germanExplanation": "Erst besteht die Zuordnung, dann beschreibt das Zuordnungslabel ihre Rolle.",
+    "source": "knowledge.hubspot.com/de/records/associate-records, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-009",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Interessent antwortet auf die zweite E-Mail einer laufenden Sequenz. Was passiert standardmäßig?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Der Kontakt wird automatisch aus der Sequenz ausgetragen",
+        "correct": true,
+        "explanation": "Antwort auf eine Sequenz-E-Mail ist ein Standardauslöser für das automatische Austragen."
+      },
+      {
+        "id": "b",
+        "text": "Die Sequenz läuft weiter, bis alle Schritte abgearbeitet sind",
+        "correct": false,
+        "explanation": "Das würde bedeuten, dass jemand weiter angeschrieben wird, obwohl er reagiert hat."
+      },
+      {
+        "id": "c",
+        "text": "Die Sequenz pausiert und startet nach sieben Tagen erneut",
+        "correct": false,
+        "explanation": "Ein automatischer Neustart ist kein Standardverhalten."
+      },
+      {
+        "id": "d",
+        "text": "Der Kontakt wird automatisch in einen Deal umgewandelt",
+        "correct": false,
+        "explanation": "Deals entstehen nicht automatisch aus einer Sequenzantwort."
+      }
+    ],
+    "answerLogic": [
+      "„Standardmäßig\" fragt nach dem Verhalten ohne Sonderkonfiguration.",
+      "Antwort und Meetingbuchung über einen Sequenz-Meetinglink sind die beiden Standardauslöser."
+    ],
+    "germanExplanation": "Kontakte werden standardmäßig ausgetragen, wenn sie antworten oder über einen Meetinglink der Sequenz buchen. Die Auslöser lassen sich anpassen.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-010",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Team möchte eine mehrstufige Nachfasskommunikation an einzelne Interessenten aufsetzen, die stoppt, sobald jemand reagiert. Welches Tool ist dafür vorgesehen?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Sequenzen",
+        "correct": true,
+        "explanation": "Sequenzen sind genau für gestaffelte 1:1-Vertriebskommunikation mit automatischem Austragen gebaut."
+      },
+      {
+        "id": "b",
+        "text": "Workflows",
+        "correct": false,
+        "explanation": "Workflows automatisieren Prozesse auf Datensätzen, nicht die persönliche Nachfasskommunikation."
+      },
+      {
+        "id": "c",
+        "text": "Snippets",
+        "correct": false,
+        "explanation": "Snippets sind Textbausteine ohne jede zeitliche Steuerung."
+      },
+      {
+        "id": "d",
+        "text": "Leitfäden",
+        "correct": false,
+        "explanation": "Leitfäden unterstützen Gespräche, versenden aber nichts."
+      }
+    ],
+    "answerLogic": [
+      "„Mehrstufig, an einzelne Personen, stoppt bei Reaktion\" beschreibt eine Sequenz.",
+      "Wenn Automatisierung auf Datensatzebene gemeint wäre, hieße es „bei Erfüllung von Kriterien\"."
+    ],
+    "germanExplanation": "Sequenz und Workflow sind der Klassiker unter den Verwechslungen: persönliche Nachfassreihe vs. allgemeine Datensatzautomatisierung.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-011",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Voraussetzung gilt für die Nutzung von Sequenzen?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Sales Hub oder Service Hub Professional bzw. Enterprise mit zugewiesener Lizenz",
+        "correct": true,
+        "explanation": "So sind die offiziellen Voraussetzungen dokumentiert."
+      },
+      {
+        "id": "b",
+        "text": "Ein kostenloser HubSpot-Account genügt",
+        "correct": false,
+        "explanation": "Sequenzen sind kein Bestandteil der kostenlosen Tools."
+      },
+      {
+        "id": "c",
+        "text": "Starter-Edition ohne weitere Lizenz",
+        "correct": false,
+        "explanation": "Die Starter-Edition reicht für Sequenzen nicht aus."
+      },
+      {
+        "id": "d",
+        "text": "Super-Admin-Rechte im Account",
+        "correct": false,
+        "explanation": "Entscheidend ist die zugewiesene Lizenz, nicht der Admin-Status."
+      }
+    ],
+    "answerLogic": [
+      "Fragen nach Voraussetzungen zielen auf Edition plus Lizenz, nicht auf Rollen.",
+      "„Ein kostenloser Account genügt\" ist bei Sales-Hub-Automatisierung fast immer falsch."
+    ],
+    "germanExplanation": "Sequenzen erfordern Sales Hub oder Service Hub Professional/Enterprise und eine zugewiesene Sales- oder Service-Lizenz.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-012",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "In einer Sequenz soll eine E-Mail nicht automatisch rausgehen, sondern vor dem Senden noch persönlich angepasst werden. Welcher Schritttyp ist richtig?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Manuelle E-Mail-Aufgabe",
+        "correct": true,
+        "explanation": "Sie erzeugt eine Aufgabe zum persönlichen Senden statt eines automatischen Versands."
+      },
+      {
+        "id": "b",
+        "text": "Automatisierte E-Mail",
+        "correct": false,
+        "explanation": "Diese geht ohne weiteres Zutun zum geplanten Zeitpunkt raus."
+      },
+      {
+        "id": "c",
+        "text": "Allgemeine Aufgabe",
+        "correct": false,
+        "explanation": "Sie ist nicht speziell an den E-Mail-Versand gebunden."
+      },
+      {
+        "id": "d",
+        "text": "Verzögerung",
+        "correct": false,
+        "explanation": "Eine Verzögerung ist nur ein zeitlicher Abstand zwischen zwei Schritten."
+      }
+    ],
+    "answerLogic": [
+      "„Vor dem Senden persönlich anpassen\" schließt den automatisierten Versand aus.",
+      "Der Schritttyp entscheidet, wie viel Kontrolle bei der Person bleibt."
+    ],
+    "germanExplanation": "Sequenzschritte umfassen automatisierte E-Mails, manuelle E-Mail-Aufgaben, Anrufaufgaben und allgemeine Aufgaben.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-013",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Eine Vertriebsmitarbeiterin tippt in fast jeder E-Mail denselben Absatz zur Datenverarbeitung. Was ist die passende Lösung?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Einen Snippet anlegen und ihn über „#\" einfügen",
+        "correct": true,
+        "explanation": "Snippets sind kurze, wiederverwendbare Textbausteine mit Kurzbefehl."
+      },
+      {
+        "id": "b",
+        "text": "Eine Vorlage für jede denkbare E-Mail-Variante anlegen",
+        "correct": false,
+        "explanation": "Vorlagen sind ganze E-Mails; für einen einzelnen Absatz ist das unpraktisch."
+      },
+      {
+        "id": "c",
+        "text": "Den Absatz als Dokument hochladen und verlinken",
+        "correct": false,
+        "explanation": "Dokumente sind Verkaufsunterlagen mit Nachverfolgung, keine Textbausteine."
+      },
+      {
+        "id": "d",
+        "text": "Einen Leitfaden mit dem Absatz erstellen",
+        "correct": false,
+        "explanation": "Leitfäden führen durch Gespräche, sie liefern keinen E-Mail-Text."
+      }
+    ],
+    "answerLogic": [
+      "Ein einzelner wiederkehrender Absatz ist ein Baustein, keine ganze E-Mail.",
+      "Der Kurzbefehl „#\" ist das Erkennungszeichen für Snippets."
+    ],
+    "germanExplanation": "Snippets sind auf maximal 2.500 Zeichen begrenzt; kostenlos sind bis zu 3 möglich, in bezahlten Editionen bis zu 5.000.",
+    "source": "knowledge.hubspot.com/de/conversations/use-snippets, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-014",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Worin unterscheiden sich Vorlage und Snippet?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Vorlage ist eine vollständige, auswertbare E-Mail, der Snippet ein kurzer Textbaustein für beliebige Editoren",
+        "correct": true,
+        "explanation": "Das ist die zentrale Abgrenzung der beiden Werkzeuge."
+      },
+      {
+        "id": "b",
+        "text": "Die Vorlage ist auf 2.500 Zeichen begrenzt, der Snippet nicht",
+        "correct": false,
+        "explanation": "Das Zeichenlimit von 2.500 gilt für Snippets."
+      },
+      {
+        "id": "c",
+        "text": "Snippets lassen sich nur in Sequenzen verwenden, Vorlagen überall",
+        "correct": false,
+        "explanation": "Snippets funktionieren in Datensätzen, Vorlagen, Chats und Notizen."
+      },
+      {
+        "id": "d",
+        "text": "Vorlagen enthalten keine Personalisierungs-Token, Snippets schon",
+        "correct": false,
+        "explanation": "Personalisierungs-Token lassen sich in beiden verwenden."
+      }
+    ],
+    "answerLogic": [
+      "Abgrenzungsfragen prüfen Umfang und Einsatzort, nicht Schönheitsmerkmale.",
+      "Zahlenangaben in falschen Optionen sind oft aus der richtigen Antwort geliehen."
+    ],
+    "germanExplanation": "Vorlage = ganze E-Mail mit Auswertung. Snippet = kurzer Baustein, eingefügt über „#\".",
+    "source": "knowledge.hubspot.com/de/conversations/use-snippets, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-015",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Team führt Qualifizierungsgespräche sehr unterschiedlich, wichtige Fragen werden vergessen und Antworten landen in privaten Notizen. Welches HubSpot-Tool adressiert das?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Leitfäden, die die Fragen vorgeben und die Antworten direkt am Datensatz protokollieren",
+        "correct": true,
+        "explanation": "Genau dafür sind Leitfäden (Playbooks) gedacht."
+      },
+      {
+        "id": "b",
+        "text": "Snippets mit den wichtigsten Fragen",
+        "correct": false,
+        "explanation": "Snippets liefern Text, aber keine strukturierte Protokollierung."
+      },
+      {
+        "id": "c",
+        "text": "Ein Dashboard mit Qualifizierungsberichten",
+        "correct": false,
+        "explanation": "Ein Dashboard zeigt Ergebnisse, verbessert aber nicht das Gespräch selbst."
+      },
+      {
+        "id": "d",
+        "text": "Eine Sequenz mit Qualifizierungsfragen per E-Mail",
+        "correct": false,
+        "explanation": "Das verlagert die Qualifizierung aus dem Gespräch in E-Mails."
+      }
+    ],
+    "answerLogic": [
+      "„Uneinheitlich geführt\" plus „Antworten gehen verloren\" verweist auf Standardisierung samt Protokollierung.",
+      "Wer nur Text bereitstellt, löst das Protokollproblem nicht."
+    ],
+    "germanExplanation": "Leitfäden erscheinen in der rechten Seitenleiste des Datensatzes und erfordern Sales oder Service Hub Professional/Enterprise.",
+    "source": "knowledge.hubspot.com/de/playbooks/use-playbooks, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-016",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Wozu dient ein Meeting-Link?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Interessenten buchen selbst einen Termin aus der freien Kalenderverfügbarkeit",
+        "correct": true,
+        "explanation": "Der Meeting-Link spiegelt den verbundenen Kalender."
+      },
+      {
+        "id": "b",
+        "text": "Das Team plant intern Termine ohne Beteiligung des Interessenten",
+        "correct": false,
+        "explanation": "Der Sinn liegt gerade in der Selbstbuchung durch den Interessenten."
+      },
+      {
+        "id": "c",
+        "text": "Meetings werden automatisch aufgezeichnet und transkribiert",
+        "correct": false,
+        "explanation": "Das leistet die Gesprächsanalyse, nicht der Meeting-Link."
+      },
+      {
+        "id": "d",
+        "text": "Termine werden aus einem Bericht heraus exportiert",
+        "correct": false,
+        "explanation": "Das hat mit Terminbuchung nichts zu tun."
+      }
+    ],
+    "answerLogic": [
+      "Selbstbuchung ist das Kernmerkmal.",
+      "Aufzeichnung und Auswertung sind andere Werkzeuge."
+    ],
+    "germanExplanation": "Wird über einen Meetinglink in einem Sequenzschritt gebucht, wird der Kontakt standardmäßig aus der Sequenz ausgetragen.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-017",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Angaben zu Snippets stimmen? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ein Snippet darf maximal 2.500 Zeichen umfassen",
+        "correct": true,
+        "explanation": "So dokumentiert HubSpot das Limit."
+      },
+      {
+        "id": "b",
+        "text": "Snippets werden über das Rautezeichen im Editor eingefügt",
+        "correct": true,
+        "explanation": "„#\" plus Kürzel ruft das Snippet auf."
+      },
+      {
+        "id": "c",
+        "text": "In der kostenlosen Version sind unbegrenzt viele Snippets möglich",
+        "correct": false,
+        "explanation": "Kostenlos sind bis zu 3 Snippets möglich."
+      },
+      {
+        "id": "d",
+        "text": "Snippets funktionieren ausschließlich in E-Mail-Vorlagen",
+        "correct": false,
+        "explanation": "Sie funktionieren auch in Datensätzen, Chats und Notizen."
+      }
+    ],
+    "answerLogic": [
+      "„Unbegrenzt\" und „ausschließlich\" sind typische Übertreibungen in falschen Optionen.",
+      "Bei Limits lohnt es sich, die Zahl selbst zu merken."
+    ],
+    "germanExplanation": "Snippets: 3 in der kostenlosen Version, bis zu 5.000 in bezahlten Editionen, je maximal 2.500 Zeichen.",
+    "source": "knowledge.hubspot.com/de/conversations/use-snippets, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-018",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Der Vertrieb soll alle Kontakte eines Unternehmens automatisch aus einer Sequenz nehmen, sobald eine Person dort antwortet. Ist das möglich?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ja, die Austragungsauslöser lassen sich so einstellen, dass alle Kontakte des Unternehmens ausgetragen werden",
+        "correct": true,
+        "explanation": "Die Auslöser sind anpassbar und schließen diese Option ein."
+      },
+      {
+        "id": "b",
+        "text": "Nein, das Austragen wirkt immer nur auf den einzelnen antwortenden Kontakt",
+        "correct": false,
+        "explanation": "Die Einstellung lässt sich auf alle Kontakte des Unternehmens ausweiten."
+      },
+      {
+        "id": "c",
+        "text": "Nur mit einem zusätzlichen Workflow, der die Sequenz beendet",
+        "correct": false,
+        "explanation": "Ein separater Workflow ist dafür nicht nötig."
+      },
+      {
+        "id": "d",
+        "text": "Nur in der Enterprise-Edition mit Operations Hub",
+        "correct": false,
+        "explanation": "Diese Zusatzanforderung existiert nicht."
+      }
+    ],
+    "answerLogic": [
+      "Die Frage prüft, ob die Standardauslöser als unveränderlich missverstanden werden.",
+      "Zusatzprodukte in Optionen sind oft erfunden."
+    ],
+    "germanExplanation": "Die Austragungsauslöser sind konfigurierbar — inklusive der Frage, ob nur der einzelne Kontakt oder alle Kontakte des Unternehmens betroffen sind.",
+    "source": "knowledge.hubspot.com/de/sequences/create-and-edit-sequences, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-019",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Personalisierungs-Token für den Vornamen bleibt bei manchen Empfängern leer. Was ist die sinnvollste Reaktion?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Einen Standardwert für das Token hinterlegen und die Datenqualität der Eigenschaft verbessern",
+        "correct": true,
+        "explanation": "Der Standardwert fängt Lücken ab, die Datenpflege löst die Ursache."
+      },
+      {
+        "id": "b",
+        "text": "Auf Personalisierungs-Token verzichten und alle E-Mails manuell schreiben",
+        "correct": false,
+        "explanation": "Das skaliert nicht und ist keine Lösung des Datenproblems."
+      },
+      {
+        "id": "c",
+        "text": "Das Token durch einen Snippet ersetzen",
+        "correct": false,
+        "explanation": "Ein Snippet ist statisch und kann keinen individuellen Wert einsetzen."
+      },
+      {
+        "id": "d",
+        "text": "Die betroffenen Kontakte löschen",
+        "correct": false,
+        "explanation": "Datensätze wegen fehlender Vornamen zu löschen, vernichtet Vertriebschancen."
+      }
+    ],
+    "answerLogic": [
+      "Die beste Antwort behebt Symptom und Ursache.",
+      "Optionen, die ein Werkzeug ganz aufgeben, sind selten richtig."
+    ],
+    "germanExplanation": "Personalisierungs-Token sind nur so gut wie die Eigenschaftswerte dahinter; Standardwerte sind das eingebaute Sicherheitsnetz.",
+    "source": "knowledge.hubspot.com/de/conversations/use-snippets, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-020",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-deals",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Standard-Deal-Phase der Sales-Pipeline ist mit 100 % Wahrscheinlichkeit hinterlegt?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Abgeschlossen und gewonnen",
+        "correct": true,
+        "explanation": "Diese Endphase steht für den erfolgreichen Abschluss."
+      },
+      {
+        "id": "b",
+        "text": "Vertrag gesendet",
+        "correct": false,
+        "explanation": "Sie ist mit 90 % hinterlegt."
+      },
+      {
+        "id": "c",
+        "text": "Entscheidungsträger hat zugestimmt",
+        "correct": false,
+        "explanation": "Sie ist mit 80 % hinterlegt."
+      },
+      {
+        "id": "d",
+        "text": "Abgeschlossen und verloren",
+        "correct": false,
+        "explanation": "Sie steht für 0 %."
+      }
+    ],
+    "answerLogic": [
+      "Die Standardphasen sind aufsteigend mit Wahrscheinlichkeiten belegt.",
+      "Nur zwei Phasen beenden einen Deal: gewonnen und verloren."
+    ],
+    "germanExplanation": "Standardphasen: Termin vereinbart (20 %), Für Kauf qualifiziert (40 %), Präsentation vereinbart (60 %), Entscheidungsträger hat zugestimmt (80 %), Vertrag gesendet (90 %), Abgeschlossen und gewonnen, Abgeschlossen und verloren.",
+    "source": "knowledge.hubspot.com/de/object-settings/set-up-and-customize-pipelines, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-021",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-deals",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Unternehmen verkauft Neugeschäft und Verlängerungen in zwei völlig verschiedenen Prozessen. Was ist der saubere Weg in HubSpot?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Zwei getrennte Deal-Pipelines mit jeweils eigenen Phasen anlegen",
+        "correct": true,
+        "explanation": "Pipelines bilden unterschiedliche Verkaufsprozesse ab."
+      },
+      {
+        "id": "b",
+        "text": "Eine Pipeline mit allen Phasen beider Prozesse hintereinander bauen",
+        "correct": false,
+        "explanation": "Das erzeugt Phasen, die für die Hälfte der Deals sinnlos sind."
+      },
+      {
+        "id": "c",
+        "text": "Für Verlängerungen Tickets statt Deals verwenden",
+        "correct": false,
+        "explanation": "Tickets sind für Serviceanfragen gedacht, nicht für Umsatz."
+      },
+      {
+        "id": "d",
+        "text": "Die Unterscheidung über eine Einzeiliger-Text-Eigenschaft abbilden",
+        "correct": false,
+        "explanation": "Ein Textfeld ersetzt keinen eigenen Prozessablauf."
+      }
+    ],
+    "answerLogic": [
+      "Zwei unterschiedliche Prozesse verlangen zwei Pipelines.",
+      "Die Anzahl zusätzlicher Pipelines hängt von der Edition ab — das ist die reale Grenze."
+    ],
+    "germanExplanation": "Kostenlose Tools erlauben keine zusätzlichen benutzerdefinierten Pipelines; Professional und Enterprise deutlich mehr.",
+    "source": "knowledge.hubspot.com/de/object-settings/set-up-and-customize-pipelines, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-022",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-deals",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Kontakt bekommt einen zugeordneten Deal. Welche Auswirkung hat das typischerweise auf die Lebenszyklusphase?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Sie erreicht die Phase „Opportunity\"",
+        "correct": true,
+        "explanation": "Ein zugeordneter Deal ist das Merkmal der Phase Opportunity."
+      },
+      {
+        "id": "b",
+        "text": "Sie wechselt auf „Kunde\"",
+        "correct": false,
+        "explanation": "„Kunde\" setzt mindestens einen abgeschlossenen Deal voraus."
+      },
+      {
+        "id": "c",
+        "text": "Sie wechselt auf „Marketing-Qualified-Lead\"",
+        "correct": false,
+        "explanation": "Diese Phase liegt vor der Übergabe an den Vertrieb."
+      },
+      {
+        "id": "d",
+        "text": "Sie bleibt in jedem Fall unverändert",
+        "correct": false,
+        "explanation": "Lebenszyklusphasen können automatisch anhand von Zuordnungen aktualisiert werden."
+      }
+    ],
+    "answerLogic": [
+      "Ein Deal ist eine laufende Chance, kein Abschluss.",
+      "„In jedem Fall\" ist ein Absolutwort und selten richtig."
+    ],
+    "germanExplanation": "Die Phase „Opportunity\" beschreibt einen Kontakt mit zugeordnetem Deal; „Kunde\" erst nach einem abgeschlossenen Deal.",
+    "source": "knowledge.hubspot.com/de/contacts/use-lifecycle-stages, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-023",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-deals",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Deal enthält zwei Softwaremodule mit unterschiedlichen Mengen und einen Rabatt. Wie werden diese Positionen abgebildet?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Als Artikel am Deal, erzeugt aus der Produktbibliothek",
+        "correct": true,
+        "explanation": "Artikel sind die Positionszeilen eines Deals oder Angebots."
+      },
+      {
+        "id": "b",
+        "text": "Als einzelne Deals je Modul",
+        "correct": false,
+        "explanation": "Damit zerfällt eine Verkaufschance künstlich in mehrere."
+      },
+      {
+        "id": "c",
+        "text": "Als Notiz im Aktivitätsprotokoll",
+        "correct": false,
+        "explanation": "Notizen sind nicht auswertbar und fließen nicht in Beträge ein."
+      },
+      {
+        "id": "d",
+        "text": "Als Snippets im Angebotstext",
+        "correct": false,
+        "explanation": "Snippets sind Textbausteine ohne Preislogik."
+      }
+    ],
+    "answerLogic": [
+      "Preisrelevante Positionen gehören in strukturierte Felder, nicht in Freitext.",
+      "Ein Deal bleibt eine Verkaufschance, auch wenn er mehrere Positionen enthält."
+    ],
+    "germanExplanation": "Das Produkt ist der Katalogeintrag, der Artikel die konkret verkaufte Position mit Menge, Preis und Rabatt.",
+    "source": "Eigene Aufgabenstellung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/hubspot-sales-software, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-sw-024",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-deals",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Die Pipeline sieht gut gefüllt aus, aber die Prognose ist unbrauchbar: Viele Deals stehen seit Monaten in derselben Phase, Abschlussdaten liegen in der Vergangenheit. Was ist die fachlich richtige Reaktion?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Deal-Daten bereinigen — Phasen aktualisieren, unrealistische Deals schließen, Abschlussdaten korrigieren",
+        "correct": true,
+        "explanation": "Die Prognose kann nur so gut sein wie die Daten, aus denen sie entsteht."
+      },
+      {
+        "id": "b",
+        "text": "Die Dealwahrscheinlichkeiten der Phasen erhöhen, damit die Prognose passt",
+        "correct": false,
+        "explanation": "Das verschleiert das Problem und verfälscht alle Auswertungen."
+      },
+      {
+        "id": "c",
+        "text": "Eine zusätzliche Pipeline für alte Deals anlegen",
+        "correct": false,
+        "explanation": "Das verschiebt das Problem, statt es zu lösen."
+      },
+      {
+        "id": "d",
+        "text": "Auf die Prognose verzichten und nur noch abgeschlossene Umsätze berichten",
+        "correct": false,
+        "explanation": "Damit verliert der Vertrieb jede Vorausschau."
+      }
+    ],
+    "answerLogic": [
+      "Wenn ein Auswertungswerkzeug falsche Ergebnisse liefert, ist meist die Datengrundlage schuld.",
+      "Optionen, die Kennzahlen schönen, sind in Prüfungen nie richtig."
+    ],
+    "germanExplanation": "Prognosequalität ist Datenqualität: veraltete Phasen und Abschlussdaten sind die häufigste Ursache unbrauchbarer Vorausschauen.",
+    "source": "Eigene Aufgabenstellung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/hubspot-sales-software, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-sw-025",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Worin unterscheiden sich Bericht und Dashboard?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Der Bericht ist eine einzelne Auswertung, das Dashboard fasst mehrere Berichte zusammen",
+        "correct": true,
+        "explanation": "Das ist die Grundstruktur des Reportings in HubSpot."
+      },
+      {
+        "id": "b",
+        "text": "Der Bericht zeigt Prognosen, das Dashboard nur Vergangenheitsdaten",
+        "correct": false,
+        "explanation": "Beide können beides darstellen, je nach Inhalt."
+      },
+      {
+        "id": "c",
+        "text": "Das Dashboard ist an einen einzelnen Deal gebunden",
+        "correct": false,
+        "explanation": "Dashboards werten datensatzübergreifend aus."
+      },
+      {
+        "id": "d",
+        "text": "Berichte lassen sich nicht teilen, Dashboards schon",
+        "correct": false,
+        "explanation": "Auch Berichte lassen sich teilen bzw. auf geteilten Dashboards zeigen."
+      }
+    ],
+    "answerLogic": [
+      "Einzelauswertung vs. Sammelfläche ist die Kernunterscheidung.",
+      "Absolute Aussagen über Teilbarkeit sind meist falsch."
+    ],
+    "germanExplanation": "Dashboards bündeln Berichte für wiederkehrende Reviews.",
+    "source": "Eigene Aufgabenstellung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/hubspot-sales-software, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-sw-026",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Die Vertriebsleitung möchte wissen, welcher Umsatz im laufenden Quartal voraussichtlich erreicht wird. Welches Werkzeug beantwortet das?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Prognose",
+        "correct": true,
+        "explanation": "Sie schätzt den erwarteten Umsatz auf Basis der Pipeline."
+      },
+      {
+        "id": "b",
+        "text": "Ein Bericht über abgeschlossene Deals des Vorquartals",
+        "correct": false,
+        "explanation": "Das ist eine Rückschau, keine Vorausschau."
+      },
+      {
+        "id": "c",
+        "text": "Die Zielvorgabe des Teams",
+        "correct": false,
+        "explanation": "Die Zielvorgabe beschreibt das Soll, nicht die Erwartung."
+      },
+      {
+        "id": "d",
+        "text": "Die Aktivitätsübersicht der Vertriebsmitarbeitenden",
+        "correct": false,
+        "explanation": "Aktivitäten sind ein Frühindikator, aber keine Umsatzschätzung."
+      }
+    ],
+    "answerLogic": [
+      "„Voraussichtlich erreicht\" verlangt eine Vorausschau.",
+      "Soll (Zielvorgabe) und Erwartung (Prognose) werden häufig verwechselt."
+    ],
+    "germanExplanation": "Die Prognose ist die Vorausschau, die Zielvorgabe der Sollwert, der Bericht die Auswertung des Geschehenen.",
+    "source": "knowledge.hubspot.com/de/forecast/, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-027",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Standardbericht deckt eine gewünschte Auswertung nicht ab. Was ist der nächste Schritt?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Einen benutzerdefinierten Bericht mit den benötigten Objekten, Eigenschaften und Filtern erstellen",
+        "correct": true,
+        "explanation": "Genau dafür gibt es benutzerdefinierte Berichte."
+      },
+      {
+        "id": "b",
+        "text": "Die Daten exportieren und außerhalb von HubSpot auswerten",
+        "correct": false,
+        "explanation": "Das erzeugt Datensilos und veraltete Stände."
+      },
+      {
+        "id": "c",
+        "text": "Eine neue Pipeline anlegen, um die Daten anders zu strukturieren",
+        "correct": false,
+        "explanation": "Die Prozessstruktur wegen eines Berichts zu ändern, ist der falsche Hebel."
+      },
+      {
+        "id": "d",
+        "text": "Auf die Auswertung verzichten",
+        "correct": false,
+        "explanation": "Der Bedarf bleibt bestehen."
+      }
+    ],
+    "answerLogic": [
+      "Erst Standardbericht prüfen, dann benutzerdefiniert bauen.",
+      "Export und Strukturänderung sind Umwege mit Folgekosten."
+    ],
+    "germanExplanation": "Umfang und Anzahl benutzerdefinierter Berichte hängen von der Edition ab.",
+    "source": "Eigene Aufgabenstellung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/hubspot-sales-software, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-sw-028",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Vertriebsbericht zeigt deutlich weniger Anrufe als tatsächlich geführt wurden. Was ist die wahrscheinlichste Ursache?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Anrufe wurden nicht als Aktivität protokolliert",
+        "correct": true,
+        "explanation": "Berichte greifen ausschließlich auf protokollierte Aktivitäten zu."
+      },
+      {
+        "id": "b",
+        "text": "Der Bericht ist auf das falsche Dashboard gelegt",
+        "correct": false,
+        "explanation": "Die Platzierung ändert die zugrunde liegenden Daten nicht."
+      },
+      {
+        "id": "c",
+        "text": "Die Deal-Phasen sind falsch gewichtet",
+        "correct": false,
+        "explanation": "Phasenwahrscheinlichkeiten haben mit Anrufzahlen nichts zu tun."
+      },
+      {
+        "id": "d",
+        "text": "Die Lebenszyklusphasen wurden nicht aktualisiert",
+        "correct": false,
+        "explanation": "Auch das betrifft die Anzahl protokollierter Anrufe nicht."
+      }
+    ],
+    "answerLogic": [
+      "Fehlende Zahlen im Bericht deuten fast immer auf fehlende Datenerfassung.",
+      "Prüfe zuerst die Datenquelle, dann die Darstellung."
+    ],
+    "germanExplanation": "Aktivitäten sind die Datengrundlage von Vertriebsberichten. Ohne Protokollierung fehlt die Auswertung.",
+    "source": "Eigene Aufgabenstellung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/hubspot-sales-software, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-sw-029",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Aussagen zu Zielvorgaben und Prognosen sind korrekt? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Zielvorgabe beschreibt den angestrebten Wert eines Zeitraums",
+        "correct": true,
+        "explanation": "Sie ist der Sollwert."
+      },
+      {
+        "id": "b",
+        "text": "Die Prognose beschreibt den voraussichtlich erreichten Wert",
+        "correct": true,
+        "explanation": "Sie ist die Erwartung."
+      },
+      {
+        "id": "c",
+        "text": "Prognose und Zielvorgabe sind zwei Namen für denselben Wert",
+        "correct": false,
+        "explanation": "Sie beantworten verschiedene Fragen."
+      },
+      {
+        "id": "d",
+        "text": "Die Prognose wird aus der Zielvorgabe berechnet",
+        "correct": false,
+        "explanation": "Sie entsteht aus den Deals in der Pipeline, nicht aus dem Ziel."
+      }
+    ],
+    "answerLogic": [
+      "Soll und Erwartung sauber trennen.",
+      "Optionen, die zwei Begriffe gleichsetzen, sind bei Abgrenzungsfragen fast immer falsch."
+    ],
+    "germanExplanation": "Im Pipeline-Review gehören beide Werte nebeneinander: Ziel, Prognose und die Lücke dazwischen.",
+    "source": "knowledge.hubspot.com/de/forecast/, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-sw-030",
+    "platform": "hubspot",
+    "certification": "hubspot-sales-software",
+    "examDomainId": "hs-sw-reporting",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welchen Zweck hat die Gesprächsanalyse aufgezeichneter Anrufe im Vertrieb?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Gespräche auswertbar machen, um Coaching und Einwandbehandlung zu verbessern",
+        "correct": true,
+        "explanation": "Sie liefert Transkripte und Auswertungen als Coaching-Grundlage."
+      },
+      {
+        "id": "b",
+        "text": "Die Arbeitszeit der Vertriebsmitarbeitenden kontrollieren",
+        "correct": false,
+        "explanation": "Das ist weder der dokumentierte Zweck noch fachlich sinnvoll."
+      },
+      {
+        "id": "c",
+        "text": "Anrufe automatisch in Deals umwandeln",
+        "correct": false,
+        "explanation": "Deals entstehen dadurch nicht automatisch."
+      },
+      {
+        "id": "d",
+        "text": "Die Dealwahrscheinlichkeit je Phase neu berechnen",
+        "correct": false,
+        "explanation": "Phasenwahrscheinlichkeiten werden in der Pipeline gepflegt."
+      }
+    ],
+    "answerLogic": [
+      "Der Zweck ist Befähigung, nicht Überwachung.",
+      "Rechtliche Anforderungen an Aufzeichnungen sind zusätzlich zu beachten."
+    ],
+    "germanExplanation": "Gesprächsanalyse ist ein Enablement-Werkzeug; die Verfügbarkeit hängt von Edition und Lizenz ab.",
+    "source": "Eigene Aufgabenstellung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/hubspot-sales-software, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-001",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-grundlagen",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Reihenfolge beschreibt die Käuferreise korrekt?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Bewusstsein, Überlegung, Entscheidung",
+        "correct": true,
+        "explanation": "So ist die Käuferreise definiert."
+      },
+      {
+        "id": "b",
+        "text": "Überlegung, Bewusstsein, Entscheidung",
+        "correct": false,
+        "explanation": "Ohne Problembewusstsein gibt es nichts zu überlegen."
+      },
+      {
+        "id": "c",
+        "text": "Entscheidung, Bewusstsein, Überlegung",
+        "correct": false,
+        "explanation": "Die Entscheidung steht am Ende, nicht am Anfang."
+      },
+      {
+        "id": "d",
+        "text": "Bewusstsein, Entscheidung, Überlegung",
+        "correct": false,
+        "explanation": "Die Überlegung liegt vor der Entscheidung."
+      }
+    ],
+    "answerLogic": [
+      "Die Reise beginnt beim Problem und endet beim Anbieter.",
+      "Jede Phase hat einen eigenen Informationsbedarf."
+    ],
+    "germanExplanation": "Bewusstsein (Problem), Überlegung (Lösungswege), Entscheidung (Anbieter) — daran richtet Inbound-Sales die eigene Arbeit aus.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-002",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-grundlagen",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Interessent beschreibt zum ersten Mal ein Problem und kennt noch keine Lösungskategorien. Was ist in dieser Phase angemessen?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Einordnung und Orientierung anbieten, etwa wie andere Unternehmen dieses Problem angehen",
+        "correct": true,
+        "explanation": "Das entspricht dem Informationsbedarf der Bewusstseinsphase."
+      },
+      {
+        "id": "b",
+        "text": "Eine ausführliche Produktdemo vereinbaren",
+        "correct": false,
+        "explanation": "Das greift zwei Phasen vor."
+      },
+      {
+        "id": "c",
+        "text": "Ein Preisangebot mit Rabatt bei schneller Entscheidung senden",
+        "correct": false,
+        "explanation": "Preis und Druck sind hier völlig verfrüht."
+      },
+      {
+        "id": "d",
+        "text": "Referenzkunden mit Vertragsdetails vorstellen",
+        "correct": false,
+        "explanation": "Anbietervergleiche gehören in die Entscheidungsphase."
+      }
+    ],
+    "answerLogic": [
+      "Die Phase des Käufers bestimmt den passenden Inhalt.",
+      "Wer zu früh das Produkt zeigt, wirkt wie ein Pitch zur Unzeit."
+    ],
+    "germanExplanation": "In der Bewusstseinsphase geht es um das Problem, nicht um das Produkt.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-003",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-grundlagen",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Was unterscheidet Inbound-Sales von einem klassisch abschlussgetriebenen Vorgehen?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Der Verkaufsprozess wird am Kaufprozess der Käuferschaft ausgerichtet",
+        "correct": true,
+        "explanation": "Das ist der Kern des Ansatzes."
+      },
+      {
+        "id": "b",
+        "text": "Es wird ausschließlich auf eingehende Anfragen reagiert und nie aktiv angesprochen",
+        "correct": false,
+        "explanation": "Inbound-Sales schließt aktive Ansprache ein — sie ist nur anders gebaut."
+      },
+      {
+        "id": "c",
+        "text": "Es wird auf Telefonate vollständig verzichtet",
+        "correct": false,
+        "explanation": "Der Kanal ist nicht das Unterscheidungsmerkmal."
+      },
+      {
+        "id": "d",
+        "text": "Es werden ausschließlich bestehende Kunden betreut",
+        "correct": false,
+        "explanation": "Neugeschäft bleibt zentral."
+      }
+    ],
+    "answerLogic": [
+      "„Ausschließlich\" und „nie\" sind typische Signalwörter falscher Optionen.",
+      "Der Unterschied liegt in der Ausrichtung, nicht im Kanal."
+    ],
+    "germanExplanation": "Inbound-Sales heißt nicht Passivität, sondern konsequente Orientierung am Kaufprozess.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-004",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-grundlagen",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Aussagen zur Käuferreise sind korrekt? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Sie beschreibt den Prozess aus Sicht der Käuferschaft",
+        "correct": true,
+        "explanation": "Das ist ihre Definition."
+      },
+      {
+        "id": "b",
+        "text": "Der eigene Vertriebsprozess sollte zu ihr passen",
+        "correct": true,
+        "explanation": "Genau das ist der Inbound-Gedanke."
+      },
+      {
+        "id": "c",
+        "text": "Sie ist identisch mit den Phasen der Deal-Pipeline",
+        "correct": false,
+        "explanation": "Die Pipeline ist die Innensicht des Anbieters."
+      },
+      {
+        "id": "d",
+        "text": "Sie endet mit der Rechnungsstellung",
+        "correct": false,
+        "explanation": "Sie endet mit der Kaufentscheidung."
+      }
+    ],
+    "answerLogic": [
+      "Außensicht und Innensicht sauber trennen.",
+      "Bei Mehrfachauswahl jede Option einzeln prüfen."
+    ],
+    "germanExplanation": "Käuferreise und Pipeline beschreiben denselben Vorgang aus zwei Perspektiven.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-005",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-identify",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Zwei Kontakte stehen zur Auswahl: Kontakt A passt exakt ins ideale Kundenprofil, zeigt aber seit Monaten keine Aktivität. Kontakt B passt nur teilweise, hat aber diese Woche dreimal die Preisseite besucht. Wen bearbeitest du zuerst?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Kontakt B, weil aktive Käufer mit erkennbaren Kaufsignalen Vorrang haben",
+        "correct": true,
+        "explanation": "Die Priorisierung aktiver vor passiven Käufern ist der Kern dieses Themenbereichs."
+      },
+      {
+        "id": "b",
+        "text": "Kontakt A, weil die Profilpassung wichtiger ist als jedes Verhalten",
+        "correct": false,
+        "explanation": "Passung ohne Bewegung führt selten kurzfristig zum Gespräch."
+      },
+      {
+        "id": "c",
+        "text": "Beide gleichzeitig mit derselben Standardnachricht",
+        "correct": false,
+        "explanation": "Das ignoriert beide Ausgangslagen und ist unpersonalisiert."
+      },
+      {
+        "id": "d",
+        "text": "Keinen von beiden, bis das Marketing sie qualifiziert hat",
+        "correct": false,
+        "explanation": "Das verschenkt ein aktuelles Kaufsignal."
+      }
+    ],
+    "answerLogic": [
+      "Kaufsignale schlagen kurzfristig die reine Profilpassung.",
+      "Passive Kontakte werden nicht verworfen, sondern später und anders angesprochen."
+    ],
+    "germanExplanation": "Aktive Käufer zuerst, passende passive Käufer danach mit anderem Aufhänger.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-006",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-identify",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Worin unterscheiden sich ideales Kundenprofil und Buyer Persona?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Das Profil beschreibt das Unternehmen, die Persona die Person darin",
+        "correct": true,
+        "explanation": "Das ist die Kernunterscheidung."
+      },
+      {
+        "id": "b",
+        "text": "Das Profil beschreibt die Person, die Persona das Unternehmen",
+        "correct": false,
+        "explanation": "Genau umgekehrt."
+      },
+      {
+        "id": "c",
+        "text": "Beide beschreiben dasselbe mit unterschiedlichen Namen",
+        "correct": false,
+        "explanation": "Sie arbeiten auf verschiedenen Ebenen."
+      },
+      {
+        "id": "d",
+        "text": "Das Profil gilt für Bestandskunden, die Persona für Neukunden",
+        "correct": false,
+        "explanation": "Die Unterscheidung verläuft nicht entlang des Kundenstatus."
+      }
+    ],
+    "answerLogic": [
+      "Firma oder Mensch — daran hängt die ganze Unterscheidung.",
+      "Optionen, die zwei Begriffe gleichsetzen, sind bei Abgrenzungsfragen fast nie richtig."
+    ],
+    "germanExplanation": "Das Profil steuert die Auswahl der Unternehmen, die Persona die Ansprache der Menschen darin.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-007",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-identify",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Beobachtung ist das stärkste Kaufsignal?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ein Interessent hat innerhalb einer Woche mehrfach die Preisübersicht geöffnet",
+        "correct": true,
+        "explanation": "Wiederholtes, kaufnahes Verhalten ist ein starkes Signal."
+      },
+      {
+        "id": "b",
+        "text": "Ein Kontakt hat vor einem Jahr einen Blogartikel gelesen",
+        "correct": false,
+        "explanation": "Alt und unspezifisch."
+      },
+      {
+        "id": "c",
+        "text": "Ein Unternehmen passt zur Zielbranche",
+        "correct": false,
+        "explanation": "Das ist Profilpassung, kein Signal."
+      },
+      {
+        "id": "d",
+        "text": "Ein Kontakt hat den Newsletter abonniert",
+        "correct": false,
+        "explanation": "Das zeigt Interesse am Thema, nicht am Kauf."
+      }
+    ],
+    "answerLogic": [
+      "Signalstärke ergibt sich aus Aktualität, Wiederholung und Kaufnähe.",
+      "Profilmerkmale sind keine Verhaltenssignale."
+    ],
+    "germanExplanation": "Kaufsignale entstehen aus beobachtbarem Verhalten; in HubSpot etwa aus Website-Besuchen, E-Mail-Interaktionen und der Dokumentnutzung.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-008",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-identify",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein passiver Kontakt passt perfekt ins ideale Kundenprofil. Wie gehst du sinnvoll vor?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Mit einem thematischen Aufhänger ansprechen, der an seine Situation anknüpft, ohne Kaufdruck",
+        "correct": true,
+        "explanation": "Passive Käufer brauchen Relevanz statt Abschlussdruck."
+      },
+      {
+        "id": "b",
+        "text": "Ihn disqualifizieren, weil keine Kaufsignale vorliegen",
+        "correct": false,
+        "explanation": "Fehlende Signale sind kein Ausschlusskriterium."
+      },
+      {
+        "id": "c",
+        "text": "Ihm dasselbe Angebot senden wie aktiven Käufern",
+        "correct": false,
+        "explanation": "Das ignoriert den unterschiedlichen Reifegrad."
+      },
+      {
+        "id": "d",
+        "text": "Ihn so lange täglich anrufen, bis er reagiert",
+        "correct": false,
+        "explanation": "Das erzeugt Reibung und beschädigt die Beziehung."
+      }
+    ],
+    "answerLogic": [
+      "Passiv heißt „noch nicht in Bewegung\", nicht „uninteressant\".",
+      "Der Reifegrad bestimmt Aufhänger und Frequenz."
+    ],
+    "germanExplanation": "Passive Käufer werden mit anderem Aufhänger und längerem Atem bearbeitet, nicht mit mehr Druck.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-009",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-identify",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Vertriebsteam arbeitet Listen strikt alphabetisch ab. Welche Kritik ist aus Inbound-Sales-Sicht berechtigt?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Reihenfolge ignoriert Kaufbereitschaft und Passung und verschenkt aktuelle Signale",
+        "correct": true,
+        "explanation": "Priorisierung nach Verhalten und Passung ist der Kern des Themenbereichs."
+      },
+      {
+        "id": "b",
+        "text": "Alphabetische Reihenfolge benachteiligt große Unternehmen",
+        "correct": false,
+        "explanation": "Das ist kein methodisches Argument."
+      },
+      {
+        "id": "c",
+        "text": "Listen sollten grundsätzlich nach Umsatz sortiert werden",
+        "correct": false,
+        "explanation": "Umsatzpotenzial allein ersetzt die Kaufbereitschaft nicht."
+      },
+      {
+        "id": "d",
+        "text": "Listen sollten gar nicht verwendet werden",
+        "correct": false,
+        "explanation": "Das Werkzeug ist nicht das Problem."
+      }
+    ],
+    "answerLogic": [
+      "Die Kritik muss an der Priorisierungslogik ansetzen.",
+      "Absolutforderungen wie „grundsätzlich\" sind selten die beste Antwort."
+    ],
+    "germanExplanation": "Priorisierung folgt Kaufsignalen und Profilpassung, nicht dem Alphabet.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-010",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Erstansprache entspricht am ehesten dem Inbound-Sales-Ansatz?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Bezug auf einen konkreten Auslöser beim Interessenten und ein passendes Mehrwertangebot",
+        "correct": true,
+        "explanation": "Aufhänger plus Mehrwert ist der Kern der Kontaktaufnahme."
+      },
+      {
+        "id": "b",
+        "text": "Eine ausführliche Vorstellung des eigenen Unternehmens und aller Produkte",
+        "correct": false,
+        "explanation": "Das ist Absendersicht statt Empfängersicht."
+      },
+      {
+        "id": "c",
+        "text": "Ein zeitlich befristeter Rabatt bereits in der ersten Nachricht",
+        "correct": false,
+        "explanation": "Preisdruck vor jedem Verständnis der Situation."
+      },
+      {
+        "id": "d",
+        "text": "Eine Standardnachricht mit eingesetztem Vornamen an 200 Kontakte",
+        "correct": false,
+        "explanation": "Ein Token ersetzt keine inhaltliche Relevanz."
+      }
+    ],
+    "answerLogic": [
+      "Empfängersicht schlägt Absendersicht.",
+      "Personalisierung ist inhaltlich, nicht technisch."
+    ],
+    "germanExplanation": "Guter Erstkontakt: erkennbarer Anlass, Bezug zur Situation, nützlicher Inhalt.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-011",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Interessent geht ans Telefon. Was ist der methodisch saubere Einstieg?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Anlass nennen, nach Zeit fragen und die Themen des Gesprächs abstimmen",
+        "correct": true,
+        "explanation": "Erlaubnis einholen schafft Verbindlichkeit und Aufmerksamkeit."
+      },
+      {
+        "id": "b",
+        "text": "Direkt mit der Produktvorstellung beginnen, solange die Person am Apparat ist",
+        "correct": false,
+        "explanation": "Das überrumpelt und erzeugt Abwehr."
+      },
+      {
+        "id": "c",
+        "text": "Zuerst nach dem Budget fragen",
+        "correct": false,
+        "explanation": "Budgetfragen ohne Kontext wirken übergriffig."
+      },
+      {
+        "id": "d",
+        "text": "Nach einem Termin für eine Demo fragen, bevor der Bedarf geklärt ist",
+        "correct": false,
+        "explanation": "Die Demo kommt nach der Exploration."
+      }
+    ],
+    "answerLogic": [
+      "Der Einstieg klärt Anlass, Zeit und Themen — in dieser Reihenfolge.",
+      "Was vor dem Verständnis kommt, ist meist zu früh."
+    ],
+    "germanExplanation": "Erlaubnis einholen ist kein Höflichkeitsritual, sondern Reibungsabbau im Gespräch.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-012",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Was beschreibt eine Kontaktkadenz?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Abfolge und die zeitlichen Abstände mehrerer Kontaktversuche",
+        "correct": true,
+        "explanation": "Das ist ihre Definition."
+      },
+      {
+        "id": "b",
+        "text": "Die Anzahl der Personen, die in einem Unternehmen angesprochen werden",
+        "correct": false,
+        "explanation": "Das beschreibt die Breite der Ansprache, nicht den Takt."
+      },
+      {
+        "id": "c",
+        "text": "Die Dauer eines einzelnen Verkaufsgesprächs",
+        "correct": false,
+        "explanation": "Das ist die Gesprächslänge."
+      },
+      {
+        "id": "d",
+        "text": "Die Zeit zwischen Erstkontakt und Abschluss",
+        "correct": false,
+        "explanation": "Das ist die Verkaufszykluslänge."
+      }
+    ],
+    "answerLogic": [
+      "Kadenz betrifft den Rhythmus.",
+      "In HubSpot wird sie über Sequenzschritte und Verzögerungen abgebildet."
+    ],
+    "germanExplanation": "Die Kadenz ist der Takt, der Aufhänger der Inhalt — beides gehört zusammen.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-013",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Nach fünf unpersonalisierten Nachrichten reagiert niemand. Was ist die inbound-konforme Schlussfolgerung?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Zielgruppe enger fassen, Aufhänger schärfen und Mehrwert deutlicher machen",
+        "correct": true,
+        "explanation": "Ausbleibende Reaktion ist meist ein Relevanzproblem."
+      },
+      {
+        "id": "b",
+        "text": "Die Frequenz verdoppeln, damit die Nachrichten auffallen",
+        "correct": false,
+        "explanation": "Mehr vom Falschen verstärkt das Problem."
+      },
+      {
+        "id": "c",
+        "text": "Die Nachrichten an eine größere Liste senden",
+        "correct": false,
+        "explanation": "Mehr Reichweite ohne Relevanz erzeugt nur mehr Ignoranz."
+      },
+      {
+        "id": "d",
+        "text": "Auf Nachfassen ganz verzichten",
+        "correct": false,
+        "explanation": "Der Fehler liegt im Inhalt, nicht im Nachfassen."
+      }
+    ],
+    "answerLogic": [
+      "Wenn niemand antwortet, fehlt Relevanz — nicht Lautstärke.",
+      "Die beste Antwort ändert Ansprache und Auswahl, nicht die Menge."
+    ],
+    "germanExplanation": "Fehlende Reaktion ist kein Einwand, sondern ein Signal für einen zu schwachen Aufhänger.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-014",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Elemente machen eine Erstansprache personalisiert? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Bezug auf die konkrete Rolle und Situation des Empfängers",
+        "correct": true,
+        "explanation": "Inhaltliche Passung."
+      },
+      {
+        "id": "b",
+        "text": "Ein Anlass, der für den Empfänger nachvollziehbar ist",
+        "correct": true,
+        "explanation": "Er begründet den Kontakt."
+      },
+      {
+        "id": "c",
+        "text": "Der eingesetzte Vorname über ein Personalisierungs-Token",
+        "correct": false,
+        "explanation": "Technik allein ist keine Personalisierung."
+      },
+      {
+        "id": "d",
+        "text": "Eine längere Nachricht mit mehr Produktdetails",
+        "correct": false,
+        "explanation": "Länge ersetzt keine Relevanz."
+      }
+    ],
+    "answerLogic": [
+      "Personalisierung wird am Inhalt gemessen, nicht an Platzhaltern oder Textlänge."
+    ],
+    "germanExplanation": "Token und Textlänge sind Form; Rolle, Situation und Anlass sind Inhalt.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-015",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-connect",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Aussage über das Verhältnis von Aufhänger und Pitch ist richtig?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Der Aufhänger nimmt die Perspektive des Empfängers ein, der Pitch die eigene",
+        "correct": true,
+        "explanation": "Deshalb steht der Aufhänger am Anfang."
+      },
+      {
+        "id": "b",
+        "text": "Aufhänger und Pitch sind austauschbare Begriffe",
+        "correct": false,
+        "explanation": "Sie unterscheiden sich in der Perspektive."
+      },
+      {
+        "id": "c",
+        "text": "Der Pitch gehört immer an den Anfang der Erstansprache",
+        "correct": false,
+        "explanation": "Das kehrt die Reihenfolge um."
+      },
+      {
+        "id": "d",
+        "text": "Ein Aufhänger ist nur bei Bestandskunden nötig",
+        "correct": false,
+        "explanation": "Gerade im Erstkontakt ist er entscheidend."
+      }
+    ],
+    "answerLogic": [
+      "Wessen Perspektive zuerst? Das entscheidet."
+    ],
+    "germanExplanation": "Erst Relevanz aus Sicht des Empfängers, dann eigene Inhalte.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-016",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Interessent sagt: „Wir wollen unsere Abschlussquote im nächsten Halbjahr von 18 auf 25 Prozent steigern.\" Was hast du damit erfahren?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ein Ziel mit Zahl und Zeitbezug",
+        "correct": true,
+        "explanation": "Ziel und Zeitrahmen sind darin enthalten."
+      },
+      {
+        "id": "b",
+        "text": "Eine Herausforderung",
+        "correct": false,
+        "explanation": "Das Hindernis wurde noch nicht genannt."
+      },
+      {
+        "id": "c",
+        "text": "Einen Einwand",
+        "correct": false,
+        "explanation": "Es richtet sich nichts gegen das eigene Angebot."
+      },
+      {
+        "id": "d",
+        "text": "Einen Plan",
+        "correct": false,
+        "explanation": "Der Weg dorthin wurde nicht beschrieben."
+      }
+    ],
+    "answerLogic": [
+      "Ziel = angestrebtes Ergebnis. Plan = Weg. Herausforderung = Hindernis.",
+      "Zahlen und Fristen kennzeichnen typischerweise Ziele."
+    ],
+    "germanExplanation": "Im Explorationsgespräch werden Ziele, Pläne, Herausforderungen und Zeitrahmen sauber auseinandergehalten.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-017",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Frage passt am besten, nachdem ein Ziel genannt wurde?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "„Wie wollten Sie dieses Ziel bisher erreichen?\"",
+        "correct": true,
+        "explanation": "Damit wird der bisherige Plan erhoben."
+      },
+      {
+        "id": "b",
+        "text": "„Wann können wir den Vertrag aufsetzen?\"",
+        "correct": false,
+        "explanation": "Abschlussfragen sind hier verfrüht."
+      },
+      {
+        "id": "c",
+        "text": "„Darf ich Ihnen unsere Funktionen zeigen?\"",
+        "correct": false,
+        "explanation": "Präsentation vor Exploration."
+      },
+      {
+        "id": "d",
+        "text": "„Welches Budget haben Sie eingeplant?\"",
+        "correct": false,
+        "explanation": "Budget ohne Verständnis von Plan und Hindernis führt zu Preisgesprächen ohne Basis."
+      }
+    ],
+    "answerLogic": [
+      "Nach dem Ziel folgt der Plan, dann die Herausforderung.",
+      "Fragen, die zum Abschluss springen, überspringen die Methodik."
+    ],
+    "germanExplanation": "Die Abfolge Ziel, Plan, Herausforderung, Zeitrahmen strukturiert das Explorationsgespräch.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-018",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Interessent nennt ein Ziel, aber keinen Zeitrahmen. Welche Folge hat das für die weitere Bearbeitung?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Verbindlichkeit bleibt offen — der Zeitrahmen muss aktiv erfragt werden",
+        "correct": true,
+        "explanation": "Ohne Zeitbezug lässt sich weder priorisieren noch planen."
+      },
+      {
+        "id": "b",
+        "text": "Der Deal kann trotzdem mit dem Quartalsende als Abschlussdatum angelegt werden",
+        "correct": false,
+        "explanation": "Das Abschlussdatum bildet dann das eigene Ziel ab, nicht das des Käufers."
+      },
+      {
+        "id": "c",
+        "text": "Der Kontakt sollte disqualifiziert werden",
+        "correct": false,
+        "explanation": "Ein fehlender Zeitrahmen ist kein Ausschlussgrund."
+      },
+      {
+        "id": "d",
+        "text": "Der Zeitrahmen ergibt sich automatisch aus der Lebenszyklusphase",
+        "correct": false,
+        "explanation": "Phasen enthalten keine Terminaussage."
+      }
+    ],
+    "answerLogic": [
+      "Fehlende Information wird erfragt, nicht ersetzt.",
+      "Abschlussdaten aus dem eigenen Quartalsrhythmus verzerren die Prognose."
+    ],
+    "germanExplanation": "Der Zeitrahmen gehört dem Käufer; im CRM sollte das Abschlussdatum ihn abbilden.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-019",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Was unterscheidet eine Herausforderung von einem Einwand?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Herausforderung richtet sich auf das Ziel des Käufers, der Einwand gegen das eigene Angebot",
+        "correct": true,
+        "explanation": "Das ist die entscheidende Unterscheidung."
+      },
+      {
+        "id": "b",
+        "text": "Die Herausforderung wird vom Verkäufer formuliert, der Einwand vom Käufer",
+        "correct": false,
+        "explanation": "Beide kommen von der Käuferseite."
+      },
+      {
+        "id": "c",
+        "text": "Ein Einwand tritt nur im Preisgespräch auf",
+        "correct": false,
+        "explanation": "Einwände können jederzeit auftreten."
+      },
+      {
+        "id": "d",
+        "text": "Beide bezeichnen dasselbe",
+        "correct": false,
+        "explanation": "Sie erfordern unterschiedliche Reaktionen."
+      }
+    ],
+    "answerLogic": [
+      "Wogegen richtet sich die Aussage? Gegen das Ziel oder gegen mein Angebot?"
+    ],
+    "germanExplanation": "Wer beides verwechselt, verteidigt sich, wo Verständnis gefragt wäre.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-020",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Techniken gehören zum aktiven Zuhören? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Das Gesagte in eigenen Worten zusammenfassen",
+        "correct": true,
+        "explanation": "Zusammenfassen sichert Verständnis."
+      },
+      {
+        "id": "b",
+        "text": "Gezielt nachfragen, wenn etwas unklar bleibt",
+        "correct": true,
+        "explanation": "Nachfragen klärt Annahmen."
+      },
+      {
+        "id": "c",
+        "text": "Die eigenen Kernbotschaften mehrfach wiederholen",
+        "correct": false,
+        "explanation": "Das ist Senden, nicht Zuhören."
+      },
+      {
+        "id": "d",
+        "text": "Die Fragenliste unverändert abarbeiten",
+        "correct": false,
+        "explanation": "Das ignoriert die Antworten."
+      }
+    ],
+    "answerLogic": [
+      "Zuhören zeigt sich in Reaktion auf das Gehörte."
+    ],
+    "germanExplanation": "Gutes Zuhören ist im CRM sichtbar: Die Notizen enthalten die Worte des Käufers.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-021",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-advise",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Wie beginnt eine beratende Präsentation methodisch korrekt?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Mit einer Zusammenfassung der genannten Ziele, Herausforderungen und des Zeitrahmens zur Bestätigung",
+        "correct": true,
+        "explanation": "So wird die Empfehlung auf geprüften Annahmen aufgebaut."
+      },
+      {
+        "id": "b",
+        "text": "Mit der Unternehmenshistorie und den wichtigsten Kennzahlen",
+        "correct": false,
+        "explanation": "Das interessiert den Käufer an dieser Stelle nicht."
+      },
+      {
+        "id": "c",
+        "text": "Mit einer vollständigen Funktionsübersicht",
+        "correct": false,
+        "explanation": "Das ist eine Standarddemo, keine Beratung."
+      },
+      {
+        "id": "d",
+        "text": "Mit dem Preis, um Zeit zu sparen",
+        "correct": false,
+        "explanation": "Der Preis ohne Nutzenbezug provoziert Einwände."
+      }
+    ],
+    "answerLogic": [
+      "Die Präsentation knüpft an das Explorationsgespräch an.",
+      "Wird die Zusammenfassung korrigiert, ist das ein Gewinn."
+    ],
+    "germanExplanation": "Personalisierte Präsentationen zeigen nur die Teile der Lösung, die zu den genannten Zielen passen.",
+    "source": "academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-is-022",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-advise",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Interessent sagt: „Das ist deutlich teurer als erwartet.\" Was ist die methodisch beste erste Reaktion?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Nachfragen, worauf sich die Erwartung stützt und welchen Nutzen er dem Ergebnis beimisst",
+        "correct": true,
+        "explanation": "Erst verstehen, dann argumentieren."
+      },
+      {
+        "id": "b",
+        "text": "Sofort einen Rabatt anbieten",
+        "correct": false,
+        "explanation": "Das entwertet das Angebot und klärt nichts."
+      },
+      {
+        "id": "c",
+        "text": "Den Preis mit dem Wettbewerb vergleichen",
+        "correct": false,
+        "explanation": "Das verschiebt das Gespräch auf fremdes Terrain."
+      },
+      {
+        "id": "d",
+        "text": "Auf die Zahlungsziele verweisen und zum Abschluss kommen",
+        "correct": false,
+        "explanation": "Das umgeht den Einwand, statt ihn zu klären."
+      }
+    ],
+    "answerLogic": [
+      "Ein Einwand ist eine Information — zuerst verstehen.",
+      "Sofortrabatte sind in Prüfungsfragen fast nie die beste Antwort."
+    ],
+    "germanExplanation": "Einwände zeigen Klärungsbedarf; die Reaktion beginnt mit Verstehen, nicht mit Nachlass.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-023",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-advise",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Was macht ein gutes Nutzenargument aus?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Es verbindet eine konkrete Funktion mit einem zuvor genannten Ziel des Käufers",
+        "correct": true,
+        "explanation": "Nutzen entsteht erst durch den Zielbezug."
+      },
+      {
+        "id": "b",
+        "text": "Es zählt möglichst viele Funktionen auf",
+        "correct": false,
+        "explanation": "Das ist eine Merkmalsliste."
+      },
+      {
+        "id": "c",
+        "text": "Es betont, dass die Lösung Marktführer ist",
+        "correct": false,
+        "explanation": "Das ist ein Anbieterargument."
+      },
+      {
+        "id": "d",
+        "text": "Es nennt zuerst den Preisvorteil",
+        "correct": false,
+        "explanation": "Preis ist kein Nutzen an sich."
+      }
+    ],
+    "answerLogic": [
+      "Nutzen = Funktion + Ziel des Käufers."
+    ],
+    "germanExplanation": "Ohne Zielbezug bleibt jede Funktion eine Behauptung.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-024",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-advise",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Gespräch endet mit dem Satz „Wir melden uns dann.\" Was ist die richtige Konsequenz?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Einen verbindlichen nächsten Schritt mit Datum und Zuständigkeit vereinbaren",
+        "correct": true,
+        "explanation": "Ohne Termin und Zuständigkeit bleibt das Gespräch folgenlos."
+      },
+      {
+        "id": "b",
+        "text": "Das Gespräch als Erfolg werten und den Deal in die nächste Phase verschieben",
+        "correct": false,
+        "explanation": "Der Phasenwechsel bildet keinen realen Fortschritt ab."
+      },
+      {
+        "id": "c",
+        "text": "Wöchentlich nachfassen, bis eine Antwort kommt",
+        "correct": false,
+        "explanation": "Das erzeugt Reibung ohne Verabredung."
+      },
+      {
+        "id": "d",
+        "text": "Den Kontakt disqualifizieren",
+        "correct": false,
+        "explanation": "Es fehlt lediglich die Verbindlichkeit."
+      }
+    ],
+    "answerLogic": [
+      "Ein nächster Schritt braucht Datum und Zuständigkeit.",
+      "Phasenwechsel ohne realen Fortschritt verfälschen die Prognose."
+    ],
+    "germanExplanation": "Der nächste Schritt gehört als Aufgabe oder Termin ins CRM, nicht als vage Notiz.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-is-025",
+    "platform": "hubspot",
+    "certification": "hubspot-inbound-sales",
+    "examDomainId": "hs-is-explore",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Interessent beschreibt ausführlich seine Ziele, weicht aber jeder Frage nach dem Zeitrahmen aus. Wie ist das einzuordnen?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Als Hinweis auf fehlende Dringlichkeit, der aktiv angesprochen werden sollte",
+        "correct": true,
+        "explanation": "Ohne Zeitbezug fehlt die Verbindlichkeit — das gehört benannt."
+      },
+      {
+        "id": "b",
+        "text": "Als klares Kaufsignal, weil die Ziele so ausführlich geschildert wurden",
+        "correct": false,
+        "explanation": "Ausführlichkeit allein ist kein Kaufsignal."
+      },
+      {
+        "id": "c",
+        "text": "Als Einwand gegen das Angebot",
+        "correct": false,
+        "explanation": "Es richtet sich nichts gegen die Lösung."
+      },
+      {
+        "id": "d",
+        "text": "Als Grund, sofort ein Angebot mit Frist zu senden",
+        "correct": false,
+        "explanation": "Künstlicher Zeitdruck ersetzt keine echte Dringlichkeit."
+      }
+    ],
+    "answerLogic": [
+      "Ausweichen beim Zeitrahmen ist selbst eine Information.",
+      "Dringlichkeit entsteht aus Konsequenzen, nicht aus Fristen des Anbieters."
+    ],
+    "germanExplanation": "Fehlt der Zeitrahmen dauerhaft, ist die Chance unverbindlich — das gehört offen angesprochen und im CRM realistisch abgebildet.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kurs- und Lernzielstruktur, academy.hubspot.de/courses/inbound-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-001",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-identify",
+    "format": "scenario-question",
+    "difficulty": "easy",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Was ist unter Reibung im Sinne dieses Kurses zu verstehen?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Alles, was Team oder Käuferschaft ausbremst, ohne zum Ergebnis beizutragen",
+        "correct": true,
+        "explanation": "Das ist die Kerndefinition des Kurses."
+      },
+      {
+        "id": "b",
+        "text": "Der berechtigte Widerstand eines Interessenten gegen ein Angebot",
+        "correct": false,
+        "explanation": "Das ist ein Einwand, kein Prozessproblem."
+      },
+      {
+        "id": "c",
+        "text": "Der unvermeidbare Aufwand jedes Verkaufsabschlusses",
+        "correct": false,
+        "explanation": "Reibung ist gerade der vermeidbare Anteil."
+      },
+      {
+        "id": "d",
+        "text": "Der Wettbewerbsdruck im Markt",
+        "correct": false,
+        "explanation": "Äußere Marktbedingungen sind keine Prozessreibung."
+      }
+    ],
+    "answerLogic": [
+      "Der Test lautet: Trägt dieser Schritt zum Ergebnis bei?",
+      "Einwand, Aufwand und Reibung werden gern verwechselt."
+    ],
+    "germanExplanation": "Reibung ist vermeidbar und intern beeinflussbar — das unterscheidet sie von Marktbedingungen und Einwänden.",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-fs-002",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-identify",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Team diskutiert seit Wochen über Lösungen, hat aber nie erhoben, wie der Prozess tatsächlich abläuft. Was ist der richtige erste Schritt?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Eine Prozessaufnahme des Ist-Zustands inklusive Wartezeiten und Doppelarbeit",
+        "correct": true,
+        "explanation": "Reibungspunkte identifizieren steht am Anfang, nicht die Lösungsdiskussion."
+      },
+      {
+        "id": "b",
+        "text": "Sofort eine Automatisierung für den auffälligsten Schritt bauen",
+        "correct": false,
+        "explanation": "Automatisierung ohne Diagnose zementiert einen schlechten Prozess."
+      },
+      {
+        "id": "c",
+        "text": "Neue Mitarbeitende einstellen, um den Engpass zu überbrücken",
+        "correct": false,
+        "explanation": "Mehr Personal auf einen kaputten Prozess erhöht die Kosten, nicht die Wirkung."
+      },
+      {
+        "id": "d",
+        "text": "Die Zielvorgaben erhöhen, damit mehr Tempo entsteht",
+        "correct": false,
+        "explanation": "Druck ersetzt keine Diagnose."
+      }
+    ],
+    "answerLogic": [
+      "Die Kursreihenfolge lautet: erst identifizieren, dann aktivieren.",
+      "Wer ohne Diagnose automatisiert, beschleunigt seine Fehler."
+    ],
+    "germanExplanation": "Die Prozessaufnahme ist die Grundlage jeder Reibungsanalyse.",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-fs-003",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-identify",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Was unterscheidet Bearbeitungszeit von Durchlaufzeit?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Bearbeitungszeit misst aktive Arbeit, die Durchlaufzeit die gesamte vergangene Zeit inklusive Wartezeiten",
+        "correct": true,
+        "explanation": "Die Differenz zeigt die Reibung."
+      },
+      {
+        "id": "b",
+        "text": "Beide bezeichnen dasselbe in unterschiedlichen Abteilungen",
+        "correct": false,
+        "explanation": "Sie messen Verschiedenes."
+      },
+      {
+        "id": "c",
+        "text": "Die Durchlaufzeit misst nur die Zeit bis zur ersten Reaktion",
+        "correct": false,
+        "explanation": "Das ist die Reaktionszeit."
+      },
+      {
+        "id": "d",
+        "text": "Die Bearbeitungszeit umfasst auch die Wartezeit beim Kunden",
+        "correct": false,
+        "explanation": "Wartezeiten zählen zur Durchlaufzeit."
+      }
+    ],
+    "answerLogic": [
+      "Wartezeit ist der entscheidende Unterschied.",
+      "Gerade die Lücke zwischen beiden Werten ist der interessante Befund."
+    ],
+    "germanExplanation": "Ein Vorgang mit 40 Minuten Arbeit und 12 Tagen Durchlaufzeit zeigt, wo Reibung sitzt.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-004",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-identify",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Beobachtungen sind typische Reibungsindikatoren? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Dieselben Daten werden in zwei Systemen erfasst",
+        "correct": true,
+        "explanation": "Doppelarbeit ohne Wertbeitrag."
+      },
+      {
+        "id": "b",
+        "text": "Anfragen bleiben liegen, weil die Zuständigkeit unklar ist",
+        "correct": true,
+        "explanation": "Klassischer Übergabefehler."
+      },
+      {
+        "id": "c",
+        "text": "Ein Interessent entscheidet sich nach sorgfältiger Prüfung gegen das Angebot",
+        "correct": false,
+        "explanation": "Das ist eine legitime Kaufentscheidung."
+      },
+      {
+        "id": "d",
+        "text": "Ein Deal dauert länger, weil ein Gremium beteiligt ist",
+        "correct": false,
+        "explanation": "Das ist eine Eigenschaft des Kaufprozesses, keine vermeidbare Reibung."
+      }
+    ],
+    "answerLogic": [
+      "Reibung ist vermeidbar und intern verursacht.",
+      "Nicht jede Verzögerung ist Reibung."
+    ],
+    "germanExplanation": "Reibungsindikatoren sind Doppelarbeit, unklare Zuständigkeiten und Wartezeiten ohne Wertbeitrag.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-005",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-identify",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Warum wird das Schwungrad dem klassischen Verkaufstrichter gegenübergestellt?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Weil im Schwungrad zufriedene Kundschaft neues Wachstum antreibt, statt am Ende des Prozesses zu verschwinden",
+        "correct": true,
+        "explanation": "Das ist der zentrale Unterschied der Modelle."
+      },
+      {
+        "id": "b",
+        "text": "Weil das Schwungrad mehr Phasen enthält als der Trichter",
+        "correct": false,
+        "explanation": "Die Phasenzahl ist nicht der Punkt."
+      },
+      {
+        "id": "c",
+        "text": "Weil der Trichter nur im Marketing verwendet wird",
+        "correct": false,
+        "explanation": "Beide Modelle betreffen den gesamten Prozess."
+      },
+      {
+        "id": "d",
+        "text": "Weil das Schwungrad ausschließlich Bestandskunden betrachtet",
+        "correct": false,
+        "explanation": "Es umfasst Gewinnung und Bindung."
+      }
+    ],
+    "answerLogic": [
+      "Der Unterschied liegt darin, was nach dem Abschluss passiert.",
+      "Reibung bremst das Rad, Kraft treibt es an."
+    ],
+    "germanExplanation": "Im Schwungrad wirken zwei Hebel: Kraft hinzufügen und Reibung entfernen.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-006",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-enable",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Team erreicht seine Ziele nicht. Die Analyse zeigt: Pro Woche gehen rund acht Stunden je Person für manuelle Berichte und doppelte Dateneingabe drauf. Was ist die kursgemäße Reaktion?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Das System optimieren: Berichte automatisieren und doppelte Erfassung abschaffen",
+        "correct": true,
+        "explanation": "Genau das meint „Mitarbeitende unterstützen, indem das System optimiert wird\"."
+      },
+      {
+        "id": "b",
+        "text": "Die Wochenziele erhöhen, damit mehr Ergebnis entsteht",
+        "correct": false,
+        "explanation": "Das erhöht den Druck auf einen ineffizienten Prozess."
+      },
+      {
+        "id": "c",
+        "text": "Die Berichtspflicht ausweiten, um die Ursachen besser zu verstehen",
+        "correct": false,
+        "explanation": "Mehr Verwaltung verschärft genau das Problem."
+      },
+      {
+        "id": "d",
+        "text": "Leistungsschwächere Personen ersetzen",
+        "correct": false,
+        "explanation": "Das Problem liegt im System, nicht bei den Personen."
+      }
+    ],
+    "answerLogic": [
+      "Der Kurs verlangt, am System anzusetzen, nicht an der Anstrengung.",
+      "Optionen, die Druck oder Verwaltung erhöhen, sind hier nie richtig."
+    ],
+    "germanExplanation": "Sales Enablement heißt: gute Arbeit leichter machen, statt mehr Anstrengung zu fordern.",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-fs-007",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-enable",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Warum sollte Standardisierung vor Automatisierung kommen?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Weil uneinheitliche Abläufe sich kaum sinnvoll automatisieren lassen",
+        "correct": true,
+        "explanation": "Erst der verlässliche Ablauf, dann die Maschine."
+      },
+      {
+        "id": "b",
+        "text": "Weil Automatisierung teurer ist als Standardisierung",
+        "correct": false,
+        "explanation": "Kosten sind nicht das Argument."
+      },
+      {
+        "id": "c",
+        "text": "Weil Standardisierung gesetzlich vorgeschrieben ist",
+        "correct": false,
+        "explanation": "Eine solche Pflicht gibt es nicht."
+      },
+      {
+        "id": "d",
+        "text": "Weil Automatisierung nur in Enterprise-Editionen verfügbar ist",
+        "correct": false,
+        "explanation": "Das ist sachlich falsch und nicht der Grund."
+      }
+    ],
+    "answerLogic": [
+      "Die Reihenfolge folgt der Logik: vereinheitlichen, dann automatisieren.",
+      "Wird ein chaotischer Prozess automatisiert, entsteht schnelleres Chaos."
+    ],
+    "germanExplanation": "Automatisierung verstärkt den bestehenden Prozess — im Guten wie im Schlechten.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-008",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-enable",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Eingehende Anfragen bleiben regelmäßig zwei Tage unbearbeitet, weil unklar ist, wer zuständig ist. Was löst das Problem an der Wurzel?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Eine regelbasierte Lead-Verteilung mit klaren Zuständigkeiten",
+        "correct": true,
+        "explanation": "Unklare Zuständigkeit ist die Ursache, nicht die Geschwindigkeit einzelner Personen."
+      },
+      {
+        "id": "b",
+        "text": "Eine tägliche Erinnerungs-E-Mail an alle Teammitglieder",
+        "correct": false,
+        "explanation": "Das behandelt das Symptom."
+      },
+      {
+        "id": "c",
+        "text": "Ein Bericht über durchschnittliche Reaktionszeiten",
+        "correct": false,
+        "explanation": "Er misst das Problem, löst es aber nicht."
+      },
+      {
+        "id": "d",
+        "text": "Die Erhöhung der Zielvorgabe für Reaktionszeiten",
+        "correct": false,
+        "explanation": "Ein Ziel ohne Zuständigkeitsregel ändert nichts."
+      }
+    ],
+    "answerLogic": [
+      "Frage immer: Behebt die Option die Ursache oder nur das Symptom?",
+      "Messen ist nicht lösen."
+    ],
+    "germanExplanation": "Klare, automatisch angewandte Regeln entfernen den Reibungspunkt „unklare Zuständigkeit\".",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-009",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-enable",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Neue Mitarbeitende brauchen im Schnitt fünf Monate bis zur vollen Produktivität. Welche Maßnahme passt zum Enablement-Gedanken?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Eine strukturierte Einarbeitung mit Leitfäden, Vorlagen und dokumentierten Best Practices",
+        "correct": true,
+        "explanation": "Wissen wird ins System gelegt, statt es individuell erarbeiten zu lassen."
+      },
+      {
+        "id": "b",
+        "text": "Höhere Zielvorgaben in den ersten Monaten",
+        "correct": false,
+        "explanation": "Das erhöht den Druck, nicht die Befähigung."
+      },
+      {
+        "id": "c",
+        "text": "Erst nach sechs Monaten Kundenkontakt zulassen",
+        "correct": false,
+        "explanation": "Das verlängert die Zeit bis zum ersten Beitrag."
+      },
+      {
+        "id": "d",
+        "text": "Nur noch erfahrene Mitarbeitende einstellen",
+        "correct": false,
+        "explanation": "Das umgeht das Problem, statt es zu lösen."
+      }
+    ],
+    "answerLogic": [
+      "Enablement macht Wissen zugänglich, statt es neu erfinden zu lassen.",
+      "Lange Einarbeitung ist ein Reibungspunkt mit direkter Umsatzwirkung."
+    ],
+    "germanExplanation": "Leitfäden, Vorlagen und dokumentierte Best Practices verkürzen die Zeit bis zum ersten Ergebnis.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-010",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-enable",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Maßnahmen gehören zum Enablement-Themenbereich? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Wiederkehrende Routineschritte automatisieren",
+        "correct": true,
+        "explanation": "Entlastet ohne Qualitätsverlust."
+      },
+      {
+        "id": "b",
+        "text": "Wiederkehrende Aufgaben standardisieren und dokumentieren",
+        "correct": true,
+        "explanation": "Macht gute Arbeit wiederholbar."
+      },
+      {
+        "id": "c",
+        "text": "Aktivitätszahlen einzelner Personen wöchentlich veröffentlichen",
+        "correct": false,
+        "explanation": "Das ist Kontrolle, keine Befähigung."
+      },
+      {
+        "id": "d",
+        "text": "Provisionen kürzen, wenn Ziele verfehlt werden",
+        "correct": false,
+        "explanation": "Sanktionen verbessern das System nicht."
+      }
+    ],
+    "answerLogic": [
+      "Enablement verbessert Rahmenbedingungen, nicht den Druck.",
+      "Kontroll- und Sanktionsoptionen sind in diesem Themenbereich nie richtig."
+    ],
+    "germanExplanation": "Der Themenbereich heißt „Mitarbeitende unterstützen, indem das System optimiert wird\".",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-fs-011",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Was bedeutet Käuferausrichtung im Sinne des Kurses?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Den Verkaufsprozess so bauen, wie die Käuferschaft tatsächlich kaufen möchte",
+        "correct": true,
+        "explanation": "Das ist der Kern des Themenbereichs."
+      },
+      {
+        "id": "b",
+        "text": "Den Verkaufsprozess an den Stärken des eigenen Produkts ausrichten",
+        "correct": false,
+        "explanation": "Das ist Produktausrichtung."
+      },
+      {
+        "id": "c",
+        "text": "Die Zielvorgaben gleichmäßig auf das Team verteilen",
+        "correct": false,
+        "explanation": "Das betrifft die interne Steuerung."
+      },
+      {
+        "id": "d",
+        "text": "Nur noch Kunden ansprechen, die bereits kaufen wollen",
+        "correct": false,
+        "explanation": "Ausrichtung heißt nicht Verzicht auf Akquise."
+      }
+    ],
+    "answerLogic": [
+      "Wessen Ablauf bestimmt den Prozess? Das ist die Frage.",
+      "Interne Logik erzeugt Käuferreibung."
+    ],
+    "germanExplanation": "Offizieller Themenbereich: „Ausrichtung des Vertriebs auf die Zielkunden\".",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-fs-012",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Interessenten müssen ihre Situation nacheinander drei verschiedenen Personen erklären. Wie ist das zu bewerten?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Als Käuferreibung, verursacht durch mangelhafte Übergaben und fehlende geteilte Daten",
+        "correct": true,
+        "explanation": "Mehrfaches Erklären ist ein klassischer Reibungspunkt auf Käuferseite."
+      },
+      {
+        "id": "b",
+        "text": "Als sinnvolle Qualitätssicherung durch mehrere Perspektiven",
+        "correct": false,
+        "explanation": "Die Last trägt der Käufer, der Nutzen ist gering."
+      },
+      {
+        "id": "c",
+        "text": "Als notwendige Folge von Spezialisierung",
+        "correct": false,
+        "explanation": "Spezialisierung erfordert keine Wiederholung, wenn Daten geteilt werden."
+      },
+      {
+        "id": "d",
+        "text": "Als unvermeidbarer Aufwand im B2B-Vertrieb",
+        "correct": false,
+        "explanation": "Vermeidbar durch dokumentierte Übergaben und CRM-Nutzung."
+      }
+    ],
+    "answerLogic": [
+      "Wer trägt die Last? Liegt sie beim Käufer, ist es Käuferreibung.",
+      "„Unvermeidbar\" ist bei Prozessfragen selten richtig."
+    ],
+    "germanExplanation": "Käuferreibung ist besonders teuer, weil Betroffene sich selten beschweren — sie gehen einfach.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-013",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Marketing meldet 400 übergebene Leads, der Vertrieb sagt, davon seien höchstens 30 brauchbar. Was löst diesen Dauerkonflikt strukturell?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Eine gemeinsame Service-Level-Vereinbarung mit einer verbindlichen Definition qualifizierter Leads",
+        "correct": true,
+        "explanation": "Erst die gemeinsame Definition macht die Diskussion überprüfbar."
+      },
+      {
+        "id": "b",
+        "text": "Die Leadzahl des Marketings als Zielvorgabe erhöhen",
+        "correct": false,
+        "explanation": "Mehr Leads derselben Qualität verschärfen das Problem."
+      },
+      {
+        "id": "c",
+        "text": "Den Vertrieb verpflichten, alle Leads zu kontaktieren",
+        "correct": false,
+        "explanation": "Das erzwingt unproduktive Arbeit."
+      },
+      {
+        "id": "d",
+        "text": "Beide Teams getrennt berichten lassen",
+        "correct": false,
+        "explanation": "Das verfestigt das Silodenken."
+      }
+    ],
+    "answerLogic": [
+      "Konflikte über Qualität brauchen eine gemeinsame Definition.",
+      "Optionen, die Mengen erhöhen, lösen Qualitätsprobleme nie."
+    ],
+    "germanExplanation": "Die Service-Level-Vereinbarung macht wechselseitige Erwartungen messbar und beendet Wortstreitigkeiten.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-014",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Datenquelle zeigt am direktesten, wo der eigene Prozess für Käufer mühsam ist?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Kundenfeedback, insbesondere aus Verlustanalysen verlorener Deals",
+        "correct": true,
+        "explanation": "Es liefert die Außensicht auf den Prozess."
+      },
+      {
+        "id": "b",
+        "text": "Die Aktivitätszahlen des Vertriebsteams",
+        "correct": false,
+        "explanation": "Sie zeigen interne Bewegung, keine Käufersicht."
+      },
+      {
+        "id": "c",
+        "text": "Die Wettbewerbsanalyse",
+        "correct": false,
+        "explanation": "Sie beschreibt den Markt, nicht den eigenen Prozess."
+      },
+      {
+        "id": "d",
+        "text": "Die Umsatzprognose",
+        "correct": false,
+        "explanation": "Sie zeigt Erwartungen, keine Reibungsursachen."
+      }
+    ],
+    "answerLogic": [
+      "Käuferreibung zeigt sich am besten in der Käufersicht.",
+      "Verlorene Deals sind die ehrlichste Quelle."
+    ],
+    "germanExplanation": "Verlustanalysen machen sichtbar, wo der Prozess die Entscheidung erschwert hat.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-015",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Ein Serviceteam kennt die im Verkauf gemachten Zusagen nicht, weshalb Neukunden früh enttäuscht werden. Welche Wirkung hat das im Schwungrad-Modell?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Die Reibung bremst das Schwungrad, weil unzufriedene Kundschaft kein weiteres Wachstum antreibt",
+        "correct": true,
+        "explanation": "Genau das beschreibt der Reibungsbegriff im Schwungrad."
+      },
+      {
+        "id": "b",
+        "text": "Keine, solange der Umsatz im laufenden Quartal stimmt",
+        "correct": false,
+        "explanation": "Die Wirkung zeigt sich in Folgegeschäft und Empfehlungen."
+      },
+      {
+        "id": "c",
+        "text": "Die Wirkung betrifft ausschließlich das Serviceteam",
+        "correct": false,
+        "explanation": "Sie betrifft den gesamten Wachstumskreislauf."
+      },
+      {
+        "id": "d",
+        "text": "Sie erhöht die Abschlussquote im Neugeschäft",
+        "correct": false,
+        "explanation": "Das Gegenteil ist zu erwarten."
+      }
+    ],
+    "answerLogic": [
+      "Im Schwungrad wirkt sich jede Reibung auf den nächsten Umlauf aus.",
+      "Übergabefehler sind Reibung an der Schnittstelle."
+    ],
+    "germanExplanation": "Übergaben zwischen Vertrieb und Service sind ein häufiger und teurer Reibungspunkt.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-016",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-align",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Maßnahmen bauen Reibung an Übergaben ab? (Mehrfachauswahl)",
+    "type": "multiple-select",
+    "options": [
+      {
+        "id": "a",
+        "text": "Definierte Übergabepunkte mit festgelegten Informationen und Zuständigkeiten",
+        "correct": true,
+        "explanation": "Klarheit an der Schnittstelle ist die wirksamste Maßnahme."
+      },
+      {
+        "id": "b",
+        "text": "Gemeinsam genutzte Daten im CRM statt getrennter Ablagen",
+        "correct": true,
+        "explanation": "Verhindert Informationsverlust und Mehrfacherklärungen."
+      },
+      {
+        "id": "c",
+        "text": "Getrennte Kennzahlen je Team ohne gemeinsame Ziele",
+        "correct": false,
+        "explanation": "Das fördert Silodenken."
+      },
+      {
+        "id": "d",
+        "text": "Zusätzliche Abstimmungsrunden für jeden Einzelfall",
+        "correct": false,
+        "explanation": "Das erzeugt neue Reibung statt sie abzubauen."
+      }
+    ],
+    "answerLogic": [
+      "Gute Übergaben sind definiert und datengestützt.",
+      "Mehr Meetings sind selten die Antwort auf Prozessprobleme."
+    ],
+    "germanExplanation": "Reibung entsteht vor allem an den Rändern zwischen Teams.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-017",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-transform",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Was kennzeichnet eine Lernkultur im Sinne des Kurses?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Erkenntnisse werden regelmäßig geteilt und fließen in Prozesse und Inhalte zurück",
+        "correct": true,
+        "explanation": "Lernen ist Teil der Routine, nicht ein Termin."
+      },
+      {
+        "id": "b",
+        "text": "Es gibt ein jährliches Schulungsbudget je Person",
+        "correct": false,
+        "explanation": "Budget allein erzeugt keine Kultur."
+      },
+      {
+        "id": "c",
+        "text": "Fehler werden konsequent sanktioniert, damit sie sich nicht wiederholen",
+        "correct": false,
+        "explanation": "Das führt dazu, dass Fehler verschwiegen werden."
+      },
+      {
+        "id": "d",
+        "text": "Alle Mitarbeitenden absolvieren dieselbe Grundschulung",
+        "correct": false,
+        "explanation": "Einheitliche Schulung ist keine Lernkultur."
+      }
+    ],
+    "answerLogic": [
+      "Kultur zeigt sich im Alltag, nicht im Schulungsplan.",
+      "Sanktionen beenden den Informationsfluss."
+    ],
+    "germanExplanation": "Offizieller Themenbereich: „Das Team durch eine Kultur des Lernens verändern\".",
+    "source": "academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "bestätigt"
+  },
+  {
+    "id": "hs-q-fs-018",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-transform",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Worin unterscheidet sich Coaching von Schulung?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Coaching begleitet einzelne Personen an ihren konkreten Fällen, Schulung vermittelt allen dieselben Inhalte",
+        "correct": true,
+        "explanation": "Individuell und fallbezogen versus kollektiv und allgemein."
+      },
+      {
+        "id": "b",
+        "text": "Coaching findet online statt, Schulung in Präsenz",
+        "correct": false,
+        "explanation": "Das Format ist nicht der Unterschied."
+      },
+      {
+        "id": "c",
+        "text": "Coaching ist für Führungskräfte, Schulung für Mitarbeitende",
+        "correct": false,
+        "explanation": "Beides richtet sich an alle Ebenen."
+      },
+      {
+        "id": "d",
+        "text": "Coaching dient der Leistungskontrolle",
+        "correct": false,
+        "explanation": "Ziel ist Befähigung, nicht Kontrolle."
+      }
+    ],
+    "answerLogic": [
+      "Individuell und fallbezogen ist das Merkmal von Coaching.",
+      "Kontrolloptionen sind in diesem Kurs nie die richtige Antwort."
+    ],
+    "germanExplanation": "Gesprächsaufzeichnungen und Analysen dienen als Coaching-Grundlage, nicht als Überwachungsinstrument.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-019",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-transform",
+    "format": "scenario-question",
+    "difficulty": "hard",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "In einem Team gewinnt eine Person deutlich häufiger Deals als alle anderen. Was ist die kursgemäße Konsequenz?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ihr Vorgehen als Best Practice dokumentieren und im Team übertragbar machen",
+        "correct": true,
+        "explanation": "So wird individuelles Wissen zum System des Teams."
+      },
+      {
+        "id": "b",
+        "text": "Ihr die schwierigsten Deals zuweisen, um den Umsatz zu sichern",
+        "correct": false,
+        "explanation": "Das nutzt die Person aus, ohne das Team zu verbessern."
+      },
+      {
+        "id": "c",
+        "text": "Die Zielvorgaben aller anderen auf ihr Niveau anheben",
+        "correct": false,
+        "explanation": "Ein Ziel ohne Befähigung erzeugt nur Druck."
+      },
+      {
+        "id": "d",
+        "text": "Nichts unternehmen, individuelle Stärke lässt sich nicht übertragen",
+        "correct": false,
+        "explanation": "Genau diese Übertragung ist Gegenstand des Themenbereichs."
+      }
+    ],
+    "answerLogic": [
+      "Wissen gehört ins System, nicht in einen einzelnen Kopf.",
+      "Ziele ohne Befähigung sind reiner Druck."
+    ],
+    "germanExplanation": "Dokumentierte Best Practices lassen sich als Leitfaden, Vorlage oder Snippet dauerhaft verfügbar machen.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  },
+  {
+    "id": "hs-q-fs-020",
+    "platform": "hubspot",
+    "certification": "hubspot-frictionless-sales",
+    "examDomainId": "hs-fs-transform",
+    "format": "scenario-question",
+    "difficulty": "medium",
+    "disclaimer": "Synthetische, assessmentähnliche Übungsfrage – keine Originalfrage einer HubSpot-Zertifizierung.",
+    "questionText": "Welche Kennzahl belegt am besten, dass Reibungsabbau gewirkt hat?",
+    "type": "single-choice",
+    "options": [
+      {
+        "id": "a",
+        "text": "Eine kürzere Durchlaufzeit bei gleichbleibender oder besserer Abschlussquote",
+        "correct": true,
+        "explanation": "Sie misst Wirkung auf Prozess und Ergebnis zugleich."
+      },
+      {
+        "id": "b",
+        "text": "Eine höhere Anzahl protokollierter Aktivitäten je Person",
+        "correct": false,
+        "explanation": "Mehr Aktivität ist Bewegung, nicht Wirkung."
+      },
+      {
+        "id": "c",
+        "text": "Ein größeres Vertriebsteam",
+        "correct": false,
+        "explanation": "Teamgröße sagt nichts über Reibung."
+      },
+      {
+        "id": "d",
+        "text": "Eine höhere Anzahl angelegter Deals",
+        "correct": false,
+        "explanation": "Ohne Abschlussbezug ist das keine Wirkungsaussage."
+      }
+    ],
+    "answerLogic": [
+      "Wirkung zeigt sich in Zeit und Ergebnis, nicht in Fleißzahlen.",
+      "Eine gute Kennzahl kombiniert Tempo und Qualität."
+    ],
+    "germanExplanation": "Transformationskennzahlen messen Wirkung beim Käufer und beim Team, nicht Aktivität.",
+    "source": "Eigene Formulierung auf Basis der offiziellen Kursstruktur, academy.hubspot.de/courses/frictionless-sales, abgerufen 11.09.2026",
+    "sourceStatus": "abgeleitet"
+  }
+]

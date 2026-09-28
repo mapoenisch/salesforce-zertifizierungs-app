@@ -1,6 +1,8 @@
 // sm2.js — Angepasster SM-2-Algorithmus für Spaced Repetition.
 // Beschreibung siehe 02_Produkt_und_Datenkonzept.md, Kapitel 5.
 
+import { platformOfCertification } from "./platforms.js";
+
 /**
  * Wandelt (korrekt/falsch + Sicherheit 1-5) in eine SM-2-Qualität (0-5) um.
  * @param {boolean} correct
@@ -91,6 +93,7 @@ export function introProgress(content, contentType, now = new Date()) {
     contentId: content.id,
     contentType,
     certification: content.certification,
+    platform: content.platform || platformOfCertification(content.certification),
     examDomainId: content.examDomainId,
     cefr: content.cefr,
     repetitions: 0,
@@ -112,6 +115,7 @@ export function emptyProgress(content, contentType) {
     contentId: content.id,
     contentType,
     certification: content.certification,
+    platform: content.platform || platformOfCertification(content.certification),
     examDomainId: content.examDomainId,
     cefr: content.cefr,
     repetitions: 0,

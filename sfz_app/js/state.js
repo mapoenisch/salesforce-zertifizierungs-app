@@ -1,6 +1,7 @@
 // state.js — Zentraler App-State (kein Framework, einfacher Store mit Pub/Sub).
 
 import * as contentLoader from "./contentLoader.js";
+import { PLATFORMS, platformConfig } from "./platforms.js";
 import * as db from "./db.js";
 
 const SETTINGS_KEY = "sfz-app-settings";
@@ -10,7 +11,8 @@ const defaultSettings = {
   dailySessionMinutesTarget: 30,
   startDate: new Date().toISOString().slice(0, 10),
   // certificationPath: null bedeutet "noch nicht gewählt" -> erzwingt das Onboarding.
-  // Drei mögliche Werte nach Onboarding: "foundations" | "administrator" | "administrator-full"
+  // Salesforce: "foundations" | "administrator" | "administrator-full"
+  // HubSpot: "hubspot-inbound-sales" | "hubspot-sales-software" | "hubspot-frictionless-sales" | "hubspot-all"
   // (siehe Produktkonzept, Kapitel 7 Nachtrag 2 — Salesforce verlangt keine formale Prüfungsvoraussetzung,
   // aber "administrator" setzt inhaltlich bestandenes Foundations-Wissen voraus; "administrator-full"
   // deckt beide Stoffgebiete in einem 12-Wochen-Plan ab, siehe pathCertifications()).
@@ -120,5 +122,14 @@ export function filterByCertification(items, certification) {
 export function pathCertifications(path) {
   if (path === "administrator-full") return ["foundations", "administrator"];
   if (path === "administrator") return ["administrator"];
+  // HubSpot-Ebene: "hubspot-all" bündelt alle drei Zertifizierungen, sonst ist der Lernpfad
+  // selbst das Content-Certification-Tag (siehe js/platforms.js).
+  if (path === "hubspot-all") return [...PLATFORMS.hubspot.certifications];
+  if (PLATFORMS.hubspot.certifications.includes(path)) return [path];
   return ["foundations"];
+}
+
+/** Plattform-Konfiguration des aktuell gewählten Lernpfads (Salesforce oder HubSpot). */
+export function activePlatform() {
+  return platformConfig(state.settings.certificationPath || "foundations");
 }
