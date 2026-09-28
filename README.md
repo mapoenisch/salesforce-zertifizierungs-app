@@ -31,7 +31,7 @@ Die Plattform und der Lernpfad werden beim ersten Start gewählt und lassen sich
 2. Im Ordner `sfz_app` das passende Startskript öffnen:
    - **macOS:** Rechtsklick auf `start-server-mac.command` → **Öffnen** (nur beim ersten Mal nötig, wegen Gatekeeper).
    - **Windows:** Doppelklick auf `start-server-windows.bat`; bei der SmartScreen-Warnung **Weitere Informationen → Trotzdem ausführen**.
-3. Die App öffnet sich automatisch unter `http://localhost:8000`.
+3. Die App öffnet sich automatisch unter `http://localhost:8000` (ist der Port belegt, nimmt das Skript den nächsten freien).
 
 Voraussetzung ist **Python 3** für den lokalen Webserver. Ein direkter Doppelklick auf `index.html` funktioniert nicht, weil Browser das Laden der JSON-Inhalte über `file://` blockieren.
 
