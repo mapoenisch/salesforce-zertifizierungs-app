@@ -3,14 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self';" />
   <title>Salesforce-Zertifizierungs-Trainer</title>
-  <script>
-    try {
-      const raw = localStorage.getItem("salesforce-trainer-settings") ?? localStorage.getItem("sfz-app-settings");
-      const theme = raw && JSON.parse(raw)?.theme;
-      if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
-    } catch {}
-  </script>
+  <script src="js/themeInit.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>

@@ -843,3 +843,36 @@ h1 {
     font-size: 0.9rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .progress-bar-track {
+    border: 1px solid ButtonBorder;
+  }
+  .progress-bar-fill {
+    background: Highlight;
+  }
+  .option-selected,
+  .confidence-selected,
+  .nav-link-active {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .option-correct {
+    outline: 2px solid Highlight;
+  }
+  .option-incorrect {
+    outline: 2px dashed CanvasText;
+  }
+  :focus-visible {
+    outline: 3px solid Highlight;
+  }
+}

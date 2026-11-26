@@ -93,19 +93,58 @@ function buildQueue() {
       (weights.get(b.content.examDomainId) || 0) - (weights.get(a.content.examDomainId) || 0);
   });
 
-  const candidates = dueForPath(certifications).slice(0, SESSION_LIMITS.due);
+  const due = dueForPath(certifications).slice(0, SESSION_LIMITS.due);
+  const freshItems = [];
   for (const type of ["vocabulary", "definition", "readingPassage"]) {
-    candidates.push(...fresh.filter((item) => item.contentType === type)
+    freshItems.push(...fresh.filter((item) => item.contentType === type)
       .slice(0, SESSION_LIMITS[type])
       .map((item) => ({ ...item, introMode: type === "vocabulary" })));
   }
 
+  return selectSessionItems(due, freshItems, state.settings.dailySessionMinutesTarget);
+}
+
+/**
+ * Balanciert fällige Wiederholungen und neue Inhalte innerhalb des Tagesbudgets (Minuten),
+ * damit lange Wiederholungs-Warteschlangen neue Inhalte in Runde 1 nicht vollständig verdrängen.
+ */
+export function selectSessionItems(dueCandidates, freshCandidates, minutesTarget) {
+  const cost = (item) => ESTIMATED_MINUTES[item.contentType] || 1;
+  const dueBudget = freshCandidates.length > 0 ? Math.floor(minutesTarget * 0.65) : minutesTarget;
+
+  const selectedDue = [];
+  const remainingDue = [];
   let minutes = 0;
-  return candidates.filter((item) => {
-    if (minutes + ESTIMATED_MINUTES[item.contentType] > state.settings.dailySessionMinutesTarget) return false;
-    minutes += ESTIMATED_MINUTES[item.contentType];
-    return true;
-  });
+
+  for (const item of dueCandidates) {
+    const c = cost(item);
+    const fitsDueBudget = minutes + c <= dueBudget || (selectedDue.length === 0 && minutes + c <= minutesTarget);
+    if (fitsDueBudget && minutes + c <= minutesTarget) {
+      selectedDue.push(item);
+      minutes += c;
+    } else {
+      remainingDue.push(item);
+    }
+  }
+
+  const selectedFresh = [];
+  for (const item of freshCandidates) {
+    const c = cost(item);
+    if (minutes + c <= minutesTarget) {
+      selectedFresh.push(item);
+      minutes += c;
+    }
+  }
+
+  for (const item of remainingDue) {
+    const c = cost(item);
+    if (minutes + c <= minutesTarget) {
+      selectedDue.push(item);
+      minutes += c;
+    }
+  }
+
+  return [...selectedDue, ...selectedFresh];
 }
 
 function showSaveError(host, restart) {

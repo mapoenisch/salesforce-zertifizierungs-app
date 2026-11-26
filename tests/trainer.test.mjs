@@ -3,7 +3,8 @@ import test from "node:test";
 import * as sm2 from "../sfz_app/js/sm2.js";
 import * as plan from "../sfz_app/js/weeklyPlan.js";
 import { dueItems, summarizeActivity } from "../sfz_app/js/learning.js";
-import { selectExamItems } from "../sfz_app/js/views/quiz.js";
+import { selectExamItems, expandExamItems } from "../sfz_app/js/views/quiz.js";
+import { selectSessionItems } from "../sfz_app/js/views/learn.js";
 import { validateBackup } from "../sfz_app/js/exportImport.js";
 
 process.env.TZ = "Europe/Berlin";
@@ -110,4 +111,40 @@ test("Import validiert Version, Inhalte und leere Sicherungen und akzeptiert gem
   assert.throws(() => validateBackup({ ...legacy, exportVersion: 2 }, items), /Version/);
   assert.throws(() => validateBackup({ ...legacy, learningProgress: [] }, items), /keinen Salesforce-Lernstand/);
   assert.throws(() => validateBackup({ ...legacy, learningProgress: [{ ...record, contentId: "unbekannt" }] }, items), /Aufgaben-ID/);
+});
+
+test("Tageseinheit reserviert Budget für neue Inhalte trotz vieler fälliger Passagen", () => {
+  const due = Array.from({ length: 10 }, (_, i) => ({ content: { id: "due-" + i }, contentType: "readingPassage" }));
+  const fresh = Array.from({ length: 5 }, (_, i) => ({ content: { id: "voc-" + i }, contentType: "vocabulary", introMode: true }));
+  const selected = selectSessionItems(due, fresh, 20);
+  const dueCount = selected.filter((x) => x.content.id.startsWith("due-")).length;
+  const freshCount = selected.filter((x) => x.content.id.startsWith("voc-")).length;
+  assert.ok(dueCount >= 1 && dueCount <= 4);
+  assert.ok(freshCount >= 1);
+  const onlyDue = selectSessionItems(due, [], 20);
+  assert.equal(onlyDue.length, 5);
+});
+
+test("Mini-Prüfung fächert mehrteilige Reading-Passagen vollständig auf", () => {
+  const pool = [
+    {
+      contentType: "readingPassage",
+      content: {
+        id: "rp-1",
+        scenario: "Scenario",
+        questions: [
+          { questionText: "Q1", options: [{ id: "a", text: "A", correct: true }] },
+          { questionText: "Q2", options: [{ id: "b", text: "B", correct: true }] }
+        ]
+      }
+    },
+    {
+      contentType: "question",
+      content: { id: "q-1", questionText: "Q3", options: [{ id: "c", text: "C", correct: true }] }
+    }
+  ];
+  const expanded = expandExamItems(pool);
+  assert.equal(expanded.length, 3);
+  assert.deepEqual(expanded.map((e) => e.key), ["rp-1#0", "rp-1#1", "q-1"]);
+  assert.equal(expanded[1].q.scenario, "Scenario");
 });

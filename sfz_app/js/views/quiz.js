@@ -268,22 +268,36 @@ export function selectExamItems(pool, domains, limit) {
 
 // ---------- Mini-Prüfung ----------
 
-function toExamQuestion(item) {
-  // Reading-Passagen werden auf ihre erste Teilfrage reduziert und bekommen das Szenario vorangestellt.
-  if (item.contentType === "readingPassage") {
-    const q = item.content.questions[0];
-    return { ...q, scenario: item.content.scenario, source: item.content };
+/** Fächert Reading-Passagen in alle Teilfragen auf, damit keine Teilfrage stillschweigend entfällt. */
+export function expandExamItems(pool) {
+  const expanded = [];
+  for (const item of pool) {
+    if (item.contentType === "readingPassage") {
+      const subQuestions = item.content.questions || [];
+      subQuestions.forEach((q, subIndex) => {
+        expanded.push({
+          item,
+          key: `${item.content.id}#${subIndex}`,
+          q: { ...q, scenario: item.content.scenario, source: item.content }
+        });
+      });
+    } else {
+      expanded.push({ item, key: item.content.id, q: { ...item.content, source: item.content } });
+    }
   }
-  return { ...item.content, source: item.content };
+  return expanded;
 }
 
 function startMiniExam(runHost, pool, showSetup) {
   const host = el("section", { class: "exam-run" });
   runHost.replaceChildren(host);
-  const examQuestions = pool.map((item) => ({ item, q: toExamQuestion(item) }));
+  const examQuestions = expandExamItems(pool);
   const answers = new Map();
+  const timeByKey = new Map();
   const deadline = Date.now() + MINI_EXAM_SECONDS * 1000;
   let current = 0;
+  let questionShownAt = performance.now();
+  let currentKey = examQuestions[0]?.key ?? null;
   let timerHandle;
   let pendingConfirmation;
   let lastTimerText = "";
@@ -362,10 +376,17 @@ function startMiniExam(runHost, pool, showSetup) {
     if (!seconds) submit(true);
   }
 
+  function recordElapsed() {
+    if (currentKey == null) return;
+    const elapsed = Math.max(0, performance.now() - questionShownAt);
+    timeByKey.set(currentKey, (timeByKey.get(currentKey) || 0) + elapsed);
+    questionShownAt = performance.now();
+  }
+
   function refreshStatus() {
     answerCount.textContent = `${answers.size} beantwortet · ${examQuestions.length - answers.size} offen`;
     for (const [index, button] of questionButtons.entries()) {
-      const answered = answers.has(examQuestions[index].item.content.id);
+      const answered = answers.has(examQuestions[index].key);
       button.setAttribute("aria-label", `Frage ${index + 1}, ${answered ? "beantwortet" : "offen"}`);
       button.classList.toggle("exam-jump-answered", answered);
       if (index === current) button.setAttribute("aria-current", "step");
@@ -375,9 +396,12 @@ function startMiniExam(runHost, pool, showSetup) {
 
   function goTo(index, moveFocus = true) {
     if (activeExam !== attempt) return;
+    if (moveFocus) recordElapsed();
     current = index;
-    const { item, q } = examQuestions[current];
-    const selected = answers.get(item.content.id) || new Set();
+    const { key, q } = examQuestions[current];
+    currentKey = key;
+    questionShownAt = performance.now();
+    const selected = answers.get(key) || new Set();
     const card = el("div", { class: "item-card exam-question" });
     const heading = el("h2", { class: "exam-question-heading", text: `Frage ${current + 1} von ${examQuestions.length}` });
     card.append(heading);
@@ -405,8 +429,8 @@ function startMiniExam(runHost, pool, showSetup) {
         if (!multi) selected.clear();
         if (multi && wasSelected) selected.delete(option.id);
         else selected.add(option.id);
-        if (selected.size) answers.set(item.content.id, selected);
-        else answers.delete(item.content.id);
+        if (selected.size) answers.set(key, selected);
+        else answers.delete(key);
         markSelection();
         refreshStatus();
       });
@@ -430,16 +454,17 @@ function startMiniExam(runHost, pool, showSetup) {
 
   async function submit(expired = false) {
     if (activeExam !== attempt || !host.isConnected) return;
+    recordElapsed();
     stop();
     const calculating = el("p", { attrs: { role: "status" }, text: "Mini-Prüfung wird ausgewertet…" });
     host.replaceChildren(calculating);
     focusContent(calculating, { page: true });
 
-    const graded = examQuestions.map(({ item, q }, index) => {
-      const selected = answers.get(item.content.id) || new Set();
+    const graded = examQuestions.map(({ item, key, q }, index) => {
+      const selected = answers.get(key) || new Set();
       const correctIds = q.options.filter((option) => option.correct).map((option) => option.id);
       const correct = correctIds.length === selected.size && correctIds.every((id) => selected.has(id));
-      return { item, q, index, selected, correct };
+      return { item, key, q, index, selected, correct };
     });
     const answered = graded.filter(({ selected }) => selected.size);
     const wrong = answered.filter(({ correct }) => !correct);
@@ -447,8 +472,24 @@ function startMiniExam(runHost, pool, showSetup) {
     const correctCount = answered.length - wrong.length;
     let saveError = false;
 
+    const byContentId = new Map();
+    for (const entry of graded) {
+      if (!entry.selected.size) continue;
+      const id = entry.item.content.id;
+      const existing = byContentId.get(id) || { item: entry.item, correct: true, responseTimeMs: 0 };
+      if (!entry.correct) existing.correct = false;
+      existing.responseTimeMs += Math.round(timeByKey.get(entry.key) || 0);
+      byContentId.set(id, existing);
+    }
+
     try {
-      if (answered.length) await saveAnswers(answered.map(({ item, correct }) => ({ item, result: { correct }, mode: "exam" })));
+      if (byContentId.size) {
+        await saveAnswers([...byContentId.values()].map(({ item, correct, responseTimeMs }) => ({
+          item,
+          result: { correct, responseTimeMs },
+          mode: "exam"
+        })));
+      }
     } catch {
       saveError = true;
     }
