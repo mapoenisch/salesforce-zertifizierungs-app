@@ -4,7 +4,7 @@ import { state, allLearnableContent, domainWeightMap, pathCertifications, refres
 import { dueForPath, saveAnswers } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { renderItem } from "../itemRenderer.js";
-import { el, clear, shuffle } from "../utils.js";
+import { el, clear, shuffle, focusContent } from "../utils.js";
 
 const SESSION_LIMITS = { due: 10, vocabulary: 5, definition: 3, readingPassage: 2 };
 const ESTIMATED_MINUTES = { vocabulary: 1, definition: 2, readingPassage: 4, question: 3 };
@@ -21,11 +21,9 @@ export async function render(container, ctx) {
   }
 
   const progressLabel = el("p", { class: "session-progress" });
-  const roundLabel = el("p", { class: "item-hint" });
   container.appendChild(el("p", { class: "item-hint", text:
-    `Tagesziel: ${state.settings.dailySessionMinutesTarget} Min. Die Rundenlänge beruht auf geschätzten Übungszeiten.`
+    `Tagesziel: ${state.settings.dailySessionMinutesTarget} Min.`
   }));
-  container.appendChild(roundLabel);
   container.appendChild(progressLabel);
   const itemHost = el("div");
   container.appendChild(itemHost);
@@ -41,8 +39,7 @@ export async function render(container, ctx) {
         await finishRound();
         return;
       }
-      roundLabel.textContent = `Runde ${cumulative.rounds}`;
-      progressLabel.textContent = `Element ${index + 1} von ${queue.length}`;
+      progressLabel.textContent = `Runde ${cumulative.rounds} · ${index + 1} von ${queue.length}`;
       const current = queue[index];
       renderItem(itemHost, current, {
         onAnswered: async (result) => {
@@ -73,7 +70,6 @@ export async function render(container, ctx) {
     const nextQueue = buildQueue();
     clear(itemHost);
     progressLabel.textContent = "";
-    roundLabel.textContent = "";
     renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, () => runRound(nextQueue));
   }
 
@@ -114,7 +110,9 @@ function buildQueue() {
 
 function showSaveError(host, restart) {
   clear(host);
-  host.appendChild(el("p", { attrs: { role: "alert" }, text: "Der Lernstand konnte nicht gespeichert werden." }));
+  const error = el("p", { attrs: { role: "alert" }, text: "Der Lernstand konnte nicht gespeichert werden." });
+  host.appendChild(error);
+  focusContent(error);
   host.appendChild(el("button", {
     class: "primary-btn", text: "Einheit neu laden", attrs: { type: "button" }, on: { click: restart }
   }));
@@ -151,6 +149,7 @@ function renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, onConti
   btnRow.appendChild(continueBtn);
   btnRow.appendChild(stopBtn);
   itemHost.appendChild(btnRow);
+  focusContent(card.querySelector("h2"));
 }
 
 function renderSummary(container, summary, ctx) {
@@ -181,4 +180,5 @@ function renderSummary(container, summary, ctx) {
   const backBtn = el("button", { class: "primary-btn", text: "Zurück zum Dashboard", attrs: { type: "button" } });
   backBtn.addEventListener("click", () => ctx.navigate("#/dashboard"));
   container.appendChild(backBtn);
+  focusContent(container.querySelector("h1"), { page: true });
 }

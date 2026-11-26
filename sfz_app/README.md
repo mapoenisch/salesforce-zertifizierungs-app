@@ -135,7 +135,7 @@ Eine Einheit läuft in Runden ab: Nach jeder Runde kann man freiwillig weiterler
 Zwei Modi für gezieltes Üben abseits der Tageseinheit:
 
 - **Freies Üben**: beliebig viele Fragen/Übungen nacheinander, mit umfangreichen Filtern (siehe unten) und der Option, einzelne Inhalte als "später wiederholen" zu markieren.
-- **Mini-Prüfung**: Bis zu zehn Szenariofragen oder Reading-Passagen, nach Exam-Gewichten aus dem Filterpool zusammengestellt. Die Prüfung läuft zehn Minuten. Die Auswertung zeigt richtige, falsche und offene Fragen. Beim Abbruch bleibt der Lernstand unverändert.
+- **Mini-Prüfung**: Bis zu zehn Szenariofragen oder Reading-Passagen, nach Exam-Gewichten aus dem Filterpool zusammengestellt. Die Prüfung läuft zehn Minuten. Timer und Zahl der offenen Fragen stehen über der Aufgabe. Über die Fragenübersicht kannst du direkt zu einer Frage springen. Abgeben mit offenen Fragen sowie Abbrechen oder Verlassen eines laufenden Versuchs erfordern eine Bestätigung. In der Auswertung kannst du falsche oder offene Fragen gezielt weiterüben.
 
 Unterstützte Fragetypen: Single Choice und Multiple Select. Beim Lernen und freien Üben kannst du deine Antwortsicherheit von 1 bis 5 angeben. Die Übungen erklären die Lösungen und erläutern bei Szenarien relevante Signalwörter. In Mini-Prüfungen speichert der Trainer die Korrektheit tatsächlich beantworteter Fragen. Antwortsicherheit und Antwortzeit bleiben dort leer.
 

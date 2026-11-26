@@ -38,15 +38,26 @@ function card(titleText) {
   return c;
 }
 
-function bullets(items) {
+function en(text) {
+  return el("span", { text, attrs: { lang: "en" } });
+}
+
+function mixedNodes(parts) {
+  return parts.map((p) => (typeof p === "string" ? document.createTextNode(p) : p));
+}
+
+function bullets(items, { englishTerms = false } = {}) {
   const list = el("ul");
-  items.forEach(({ term, text }) => {
+  items.forEach(({ term, text, parts }) => {
     const li = el("li");
     if (term) {
-      li.appendChild(el("strong", { text: term + " – " }));
+      li.appendChild(el("strong", { text: term, ...(englishTerms && { attrs: { lang: "en" } }) }));
+      li.appendChild(document.createTextNode(" – "));
+    }
+    if (parts) {
+      mixedNodes(parts).forEach((n) => li.appendChild(n));
+    } else if (text) {
       li.appendChild(document.createTextNode(text));
-    } else {
-      li.textContent = text;
     }
     list.appendChild(li);
   });
@@ -68,18 +79,24 @@ function section1() {
     el("p", {
       text:
         "„A sales manager from Universal Containers wants to assign leads that come in from its website to queues. " +
-        "What standard process can the app builder recommend?“"
+        "What standard process can the app builder recommend?“",
+      attrs: { lang: "en" }
     })
   );
   c.appendChild(quote);
 
   c.appendChild(
-    el("p", {
-      class: "item-hint",
-      text:
-        "Antwortoptionen u. a.: „Create a lead assignment rule that sort leads into queues.“ (richtig) · " +
-        "„Create a manual process…“ · „Create an Apex class…“ · „Create a default lead owner…“"
-    })
+    el("p", { class: "item-hint" }, mixedNodes([
+      "Antwortoptionen u. a.: „",
+      en("Create a lead assignment rule that sort leads into queues."),
+      "“ (richtig) · „",
+      en("Create a manual process…"),
+      "“ · „",
+      en("Create an Apex class…"),
+      "“ · „",
+      en("Create a default lead owner…"),
+      "“"
+    ]))
   );
 
   c.appendChild(el("h3", { text: "Die Zwei-Satz-Anatomie" }));
@@ -87,15 +104,17 @@ function section1() {
     bullets([
       {
         term: "Satz 1 – Setup-Satz",
-        text:
-          'fiktive Firma (meist „Universal Containers“) + Rolle + Bedürfnis/Problem ("wants to…", "needs to…", ' +
-          '"is concerned that…").'
+        parts: [
+          "fiktive Firma (meist „", en("Universal Containers"), "“) + Rolle + Bedürfnis/Problem („",
+          en("wants to…"), "“, „", en("needs to…"), "“, „", en("is concerned that…"), "“)."
+        ]
       },
       {
         term: "Satz 2 – Frage-Satz",
-        text:
-          'direkte Interrogativ-Frage nach der Lösung ("What standard process…", "Which two…", "What should the ' +
-          'administrator recommend?").'
+        parts: [
+          "direkte Interrogativ-Frage nach der Lösung („", en("What standard process…"), "“, „",
+          en("Which two…"), "“, „", en("What should the administrator recommend?"), "“)."
+        ]
       }
     ])
   );
@@ -158,12 +177,12 @@ function section2() {
       },
       {
         term: "identify / describe / determine",
-        text:
-          "Funktion: aus den offiziellen Exam Outlines selbst – zeigt die kognitive Stufe der Frage. Falle: " +
-          '"identify" verlangt Erkennen, "determine" verlangt Ableiten/Entscheiden – eine höhere Stufe als reines ' +
-          "Erkennen."
+        parts: [
+          "Funktion: aus den offiziellen Exam Outlines selbst – zeigt die kognitive Stufe der Frage. Falle: „",
+          en("identify"), "“ verlangt Erkennen, „", en("determine"), "“ verlangt Ableiten/Entscheiden – eine höhere Stufe als reines Erkennen."
+        ]
       }
-    ])
+    ], { englishTerms: true })
   );
   c.appendChild(wrap);
   return c;
@@ -175,23 +194,25 @@ function section3() {
     bullets([
       {
         term: "Negationen",
-        text:
-          '"should NOT", "cannot be modified", "is not recommended" – stehen in Antwortoptionen oft am Satzende ' +
-          "versteckt und verlangen doppelt genaues Lesen, da eine verneinte richtige Aussage leicht als falsch " +
-          "markiert wird und umgekehrt."
+        parts: [
+          "„", en("should NOT"), "“, „", en("cannot be modified"), "“, „", en("is not recommended"),
+          "“ – stehen in Antwortoptionen oft am Satzende versteckt und verlangen doppelt genaues Lesen, da eine verneinte richtige Aussage leicht als falsch markiert wird und umgekehrt."
+        ]
       },
       {
         term: "Modalverben nach Stärke geordnet",
-        text:
-          "must (zwingend) > should (empfohlen/Best Practice) > can/could (technisch möglich, nicht zwingend). Die " +
-          "Prüfung nutzt diese Abstufung gezielt, um zwischen „funktioniert“ und „ist die beste Lösung“ zu " +
-          "unterscheiden."
+        parts: [
+          en("must"), " (zwingend) > ", en("should"), " (empfohlen/Best Practice) > ", en("can/could"),
+          " (technisch möglich, nicht zwingend). Die Prüfung nutzt diese Abstufung gezielt, um zwischen „funktioniert“ und „ist die beste Lösung“ zu unterscheiden."
+        ]
       },
       {
         term: "Präpositionen mit Bedeutungsverschiebung",
-        text:
-          '"assigned to a queue" vs. "assigned by a rule" – die falsche Präposition ändert den technischen ' +
-          'Sachverhalt vollständig; wichtig bei Objektbeziehungen ("related to", "child of", "shared with").'
+        parts: [
+          "„", en("assigned to a queue"), "“ vs. „", en("assigned by a rule"),
+          "“ – die falsche Präposition ändert den technischen Sachverhalt vollständig; wichtig bei Objektbeziehungen („",
+          en("related to"), "“, „", en("child of"), "“, „", en("shared with"), "“)."
+        ]
       }
     ])
   );

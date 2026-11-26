@@ -63,18 +63,33 @@ function notify() {
   for (const fn of listeners) fn(state);
 }
 
-/** Initialisiert den App-State: lädt Content-JSONs und Fortschritt aus IndexedDB. */
+let initPromise = null;
+
+/** Initialisiert den App-State: lädt Content-JSONs und Fortschritt aus IndexedDB (dedupliziert). */
 export async function init() {
-  const [content, [progressList, activity]] = await Promise.all([
-    contentLoader.loadAll(),
-    db.readLearningData()
-  ]);
-  state.content = content;
-  state.progressByContentId = new Map(progressList.map((p) => [p.contentId, p]));
-  state.activity = activity;
-  state.ready = true;
-  notify();
-  return state;
+  if (state.ready) return state;
+  if (!initPromise) {
+    initPromise = Promise.all([
+      contentLoader.loadAll(),
+      db.readLearningData()
+    ]).then(([content, [progressList, activity]]) => {
+      state.content = content;
+      state.progressByContentId = new Map(progressList.map((p) => [p.contentId, p]));
+      state.activity = activity;
+      state.ready = true;
+      notify();
+      return state;
+    }).catch((err) => {
+      initPromise = null;
+      throw err;
+    });
+  }
+  return initPromise;
+}
+
+/** Lädt Lerninhalte im Hintergrund vor, ohne auf Fehler zu werfen. */
+export function preload() {
+  return init().catch(() => {});
 }
 
 export async function refreshLearningData() {

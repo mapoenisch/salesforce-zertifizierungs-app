@@ -18,6 +18,22 @@ export function clear(container) {
   while (container.firstChild) container.removeChild(container.firstChild);
 }
 
+/** Fokussiert neuen Inhalt, ohne ihn unter die klebende Navigation zu scrollen. */
+export function focusContent(element, { page = false } = {}) {
+  if (!element?.isConnected) return;
+  if (element.tabIndex < 0) element.setAttribute("tabindex", "-1");
+  element.focus({ preventScroll: true });
+  if (page) {
+    window.scrollTo(0, 0);
+    return;
+  }
+  const top = document.querySelector(".app-header")?.getBoundingClientRect().height || 0;
+  const rect = element.getBoundingClientRect();
+  if (rect.top < top + 8 || rect.bottom > window.innerHeight) {
+    window.scrollTo(0, Math.max(0, window.scrollY + rect.top - top - 16));
+  }
+}
+
 export function todayISO(date = new Date()) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");

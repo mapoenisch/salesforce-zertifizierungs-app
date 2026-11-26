@@ -3,59 +3,93 @@
 import { state, refreshLearningData, domainMap, pathCertifications } from "../state.js";
 import { markForReview, saveAnswers } from "../learning.js";
 import { renderItem } from "../itemRenderer.js";
-import { el, clear, shuffle, certLabel, disclaimerNote } from "../utils.js";
+import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDialog } from "../utils.js";
 
 const MINI_EXAM_COUNT = 10;
 const MINI_EXAM_SECONDS = 10 * 60;
-let cancelExam;
+let activeExam;
+
+export function hasActiveExam() {
+  return Boolean(activeExam);
+}
+
+export function confirmLeave() {
+  return activeExam?.confirmAbandon();
+}
 
 export function leave() {
-  cancelExam?.();
+  activeExam?.stop();
 }
 
 export async function render(container) {
   clear(container);
-  container.appendChild(el("h1", { text: "Frage- und Prüfungsmodus" }));
+  const setup = el("section");
+  const setupTitle = el("h1", { text: "Frage- und Prüfungsmodus" });
+  setup.appendChild(setupTitle);
+  container.appendChild(setup);
 
   await refreshLearningData();
   const activePath = state.settings.certificationPath;
   const certifications = pathCertifications(activePath);
-  // Bei Foundations-only/Administrator-only gibt es innerhalb des Pfads nur eine Zertifizierung —
-  // der Zertifizierungsfilter wird dann gar nicht erst angezeigt (fest auf den Pfad gesetzt), um
-  // Verwirrung zu vermeiden. Nur administrator-full bietet die Wahl zwischen Beide/Foundations/Administrator.
-  const filters = { certification: activePath === "administrator-full" ? "both" : activePath, examDomainId: "all", cefr: "both", format: "all", difficulty: "all", errorStatus: "all" };
-  const formHost = el("div", { class: "card" });
-  container.appendChild(formHost);
-  renderFilterForm(formHost, filters, activePath, certifications);
+  const filters = {
+    certification: activePath === "administrator-full" ? "both" : activePath,
+    examDomainId: "all", cefr: "both", format: "all", difficulty: "all", errorStatus: "all"
+  };
 
-  const actionsWrap = el("div", { class: "quiz-actions" });
+  const actions = el("div", { class: "quiz-actions" });
   const freeBtn = el("button", { class: "primary-btn", text: "Freies Üben starten", attrs: { type: "button" } });
-  const examBtn = el("button", { class: "secondary-btn", text: `Mini-Prüfung starten (${MINI_EXAM_COUNT} Fragen, ${MINI_EXAM_SECONDS / 60} Min.)`, attrs: { type: "button" } });
-  actionsWrap.appendChild(freeBtn);
-  actionsWrap.appendChild(examBtn);
-  container.appendChild(actionsWrap);
+  const examBtn = el("button", {
+    class: "secondary-btn",
+    text: `Mini-Prüfung starten (${MINI_EXAM_COUNT} Fragen, ${MINI_EXAM_SECONDS / 60} Min.)`,
+    attrs: { type: "button" }
+  });
+  actions.append(freeBtn, examBtn);
+  setup.appendChild(actions);
+
+  const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
+  setup.appendChild(status);
+  const formHost = el("details", { class: "quiz-filters" });
+  formHost.appendChild(el("summary", { text: "Übungen filtern" }));
+  const fields = el("div");
+  formHost.appendChild(fields);
+  renderFilterForm(fields, filters, activePath, certifications);
+  setup.appendChild(formHost);
+  fields.addEventListener("change", () => {
+    const count = filterPool(allQuizItems(), filters).length;
+    status.textContent = `${count} passende Übungen`;
+  });
 
   const runHost = el("div");
   container.appendChild(runHost);
 
+  function showSetup(message = "") {
+    runHost.replaceChildren();
+    setup.hidden = false;
+    status.textContent = message;
+    focusContent(setupTitle, { page: true });
+  }
+
   freeBtn.addEventListener("click", () => {
     const pool = filterPool(allQuizItems(), filters);
-    if (pool.length === 0) {
-      alert("Keine Inhalte für diese Filterkombination gefunden.");
+    if (!pool.length) {
+      status.textContent = "Keine passenden Übungen. Passe die Filter an.";
+      formHost.open = true;
       return;
     }
-    leave();
-    startFreePractice(runHost, shuffle(pool));
+    setup.hidden = true;
+    startFreePractice(runHost, shuffle(pool), showSetup);
   });
 
   examBtn.addEventListener("click", () => {
-    const pool = filterPool(allQuizItems().filter((i) => i.contentType === "question" || i.contentType === "readingPassage"), filters);
+    const pool = filterPool(allQuizItems().filter((item) =>
+      item.contentType === "question" || item.contentType === "readingPassage"), filters);
     if (pool.length < 3) {
-      alert("Zu wenige Fragen für diese Filterkombination (mindestens 3 nötig).");
+      status.textContent = "Für eine Mini-Prüfung brauchst du mindestens 3 Szenariofragen oder Reading-Passagen. Erweitere die Filter.";
+      formHost.open = true;
       return;
     }
-    leave();
-    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT));
+    setup.hidden = true;
+    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT), showSetup);
   });
 }
 
@@ -63,7 +97,6 @@ export async function render(container) {
 
 function renderFilterForm(host, filters, activePath, certifications) {
   clear(host);
-  host.appendChild(el("h2", { text: "Filter" }));
   // Domain-Auswahl nur mit Domains des aktiven Lernpfads bestücken (bei administrator-full: beide Domain-Sets).
   const domains = [...domainMap().values()].filter((d) => certifications.includes(d.certification));
 
@@ -137,7 +170,7 @@ function filterPool(items, filters) {
 
 // ---------- Freies Üben ----------
 
-function startFreePractice(runHost, pool) {
+function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
   const host = el("div");
   runHost.replaceChildren(host);
   let index = 0;
@@ -152,6 +185,8 @@ function startFreePractice(runHost, pool) {
   toolbar.appendChild(laterBtn);
   toolbar.appendChild(stopBtn);
 
+  const heading = el("h1", { text: title });
+  host.appendChild(heading);
   host.appendChild(progressLabel);
   host.appendChild(toolbar);
   host.appendChild(status);
@@ -161,10 +196,13 @@ function startFreePractice(runHost, pool) {
 
   function showFreeResult() {
     clear(host);
-    host.appendChild(el("div", { class: "card" }, [
-      el("h2", { text: "Freies Üben beendet" }),
-      el("p", { text: `${stats.correct} / ${stats.total} richtig` })
-    ]));
+    const resultHeading = el("h1", { text: "Übung beendet" });
+    const back = el("button", {
+      class: "primary-btn", text: "Zur Übungsauswahl",
+      attrs: { type: "button" }, on: { click: () => showSetup() }
+    });
+    host.append(resultHeading, el("p", { text: `${stats.correct} / ${stats.total} richtig` }), back);
+    focusContent(resultHeading, { page: true });
   }
 
   async function step() {
@@ -203,6 +241,7 @@ function startFreePractice(runHost, pool) {
   }
 
   step();
+  focusContent(heading, { page: true });
 }
 
 /** Verteilt die Plätze nach Exam-Gewicht und füllt bei kleinen Filterpools übrige Plätze auf. */
@@ -238,162 +277,246 @@ function toExamQuestion(item) {
   return { ...item.content, source: item.content };
 }
 
-function startMiniExam(runHost, pool) {
-  const host = el("div");
+function startMiniExam(runHost, pool, showSetup) {
+  const host = el("section", { class: "exam-run" });
   runHost.replaceChildren(host);
   const examQuestions = pool.map((item) => ({ item, q: toExamQuestion(item) }));
-  const answers = new Map(); // contentId -> Set(optionId)
-  let current = 0;
+  const answers = new Map();
   const deadline = Date.now() + MINI_EXAM_SECONDS * 1000;
-  let active = true;
+  let current = 0;
   let timerHandle;
+  let pendingConfirmation;
 
-  const timerEl = el("div", { class: "quiz-timer" });
-  const progressLabel = el("p", { class: "session-progress" });
+  const title = el("h1", { text: "Mini-Prüfung" });
+  const timer = el("p", { class: "quiz-timer", attrs: { role: "timer" } });
+  const answerCount = el("p", { attrs: { role: "status" } });
+  const stats = el("div", { class: "exam-stats" }, [answerCount, timer]);
   const qHost = el("div");
-  const navWrap = el("div", { class: "quiz-nav" });
-  const prevBtn = el("button", { class: "secondary-btn", text: "Zurück", attrs: { type: "button" } });
-  const nextBtn = el("button", { class: "secondary-btn", text: "Weiter", attrs: { type: "button" } });
+  const prev = el("button", { class: "secondary-btn", text: "Zurück", attrs: { type: "button" } });
+  const next = el("button", { class: "secondary-btn", text: "Weiter", attrs: { type: "button" } });
+  const actions = el("div", { class: "exam-actions" });
   const submitBtn = el("button", { class: "primary-btn", text: "Abgeben", attrs: { type: "button" } });
-  navWrap.appendChild(prevBtn);
-  navWrap.appendChild(nextBtn);
-  navWrap.appendChild(submitBtn);
   const cancelBtn = el("button", { class: "secondary-btn", text: "Prüfung abbrechen", attrs: { type: "button" } });
-  navWrap.appendChild(cancelBtn);
+  actions.append(submitBtn, cancelBtn);
 
-  host.appendChild(timerEl);
-  host.appendChild(progressLabel);
-  host.appendChild(qHost);
-  host.appendChild(navWrap);
+  const jump = el("details", { class: "exam-jump" }, [el("summary", { text: "Fragenübersicht" })]);
+  const jumpList = el("div", { class: "exam-jump-list" });
+  jump.appendChild(jumpList);
+  const questionButtons = examQuestions.map((_, index) => {
+    const button = el("button", { class: "secondary-btn", text: String(index + 1), attrs: { type: "button" } });
+    button.addEventListener("click", () => goTo(index));
+    jumpList.appendChild(button);
+    return button;
+  });
+  const navigation = el("div", { class: "quiz-nav" }, [prev, next]);
+  host.append(title, stats, qHost, navigation, jump, actions);
 
-  function stopExam() {
-    active = false;
-    clearInterval(timerHandle);
-    if (cancelExam === stopExam) cancelExam = null;
+  const attempt = { stop, confirmAbandon };
+  activeExam = attempt;
+  window.addEventListener("beforeunload", warnBeforeUnload);
+
+  function warnBeforeUnload(event) {
+    event.preventDefault();
+    event.returnValue = true;
   }
-  cancelExam = stopExam;
+
+  function stop() {
+    clearInterval(timerHandle);
+    pendingConfirmation?.abort();
+    window.removeEventListener("beforeunload", warnBeforeUnload);
+    if (activeExam === attempt) activeExam = null;
+  }
+
+  async function ask(message, options) {
+    if (pendingConfirmation || activeExam !== attempt) return false;
+    const controller = new AbortController();
+    pendingConfirmation = controller;
+    const confirmed = await confirmDialog(message, { ...options, signal: controller.signal });
+    pendingConfirmation = null;
+    if (activeExam !== attempt) return false;
+    if (Date.now() >= deadline) {
+      submit(true);
+      return false;
+    }
+    return confirmed;
+  }
+
+  function confirmAbandon() {
+    return ask("Die Prüfung läuft noch. Wenn du sie verlässt, wird dieser Versuch verworfen.", {
+      cancelText: "Weiterprüfen", confirmText: "Versuch verwerfen", danger: true
+    });
+  }
 
   function updateTimer() {
-    if (!host.isConnected || location.hash !== "#/quiz") {
-      stopExam();
+    if (!host.isConnected) {
+      stop();
       return;
     }
     const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-    timerEl.textContent = `Verbleibende Zeit: ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
-    if (!seconds) submit();
+    timer.textContent = `Restzeit ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+    if (!seconds) submit(true);
   }
-  timerHandle = setInterval(updateTimer, 250);
-  updateTimer();
 
-  prevBtn.addEventListener("click", () => { current -= 1; renderCurrent(true); });
-  nextBtn.addEventListener("click", () => { current += 1; renderCurrent(true); });
-  submitBtn.addEventListener("click", submit);
-  cancelBtn.addEventListener("click", () => {
-    stopExam();
-    clear(host);
-    host.appendChild(el("p", { attrs: { role: "status" }, text: "Mini-Prüfung abgebrochen." }));
-  });
+  function refreshStatus() {
+    answerCount.textContent = `${answers.size} beantwortet · ${examQuestions.length - answers.size} offen`;
+    for (const [index, button] of questionButtons.entries()) {
+      const answered = answers.has(examQuestions[index].item.content.id);
+      button.setAttribute("aria-label", `Frage ${index + 1}, ${answered ? "beantwortet" : "offen"}`);
+      button.classList.toggle("exam-jump-answered", answered);
+      if (index === current) button.setAttribute("aria-current", "step");
+      else button.removeAttribute("aria-current");
+    }
+  }
 
-  function renderCurrent(focus = false) {
-    progressLabel.textContent = `Frage ${current + 1} von ${examQuestions.length}`;
-    clear(qHost);
+  function goTo(index, moveFocus = true) {
+    if (activeExam !== attempt) return;
+    current = index;
     const { item, q } = examQuestions[current];
-    const card = el("div", { class: "item-card" });
-    card.appendChild(disclaimerNote());
-    if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
-    const question = el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en", tabindex: "-1" } });
-    card.appendChild(question);
-    const isMulti = q.type === "multiple-select";
-    if (isMulti) card.appendChild(el("p", { class: "item-hint", text: "Mehrfachauswahl möglich." }));
-
     const selected = answers.get(item.content.id) || new Set();
-    const optsWrap = el("div", { class: "item-options item-options-list", attrs: { role: "group", "aria-label": "Antwortoptionen" } });
-    q.options.forEach((opt) => {
-      const btn = el("button", {
-        class: "option-btn option-btn-wide" + (selected.has(opt.id) ? " option-selected" : ""),
-        text: opt.text,
-        attrs: { type: "button", lang: "en", "aria-pressed": String(selected.has(opt.id)) }
+    const card = el("div", { class: "item-card exam-question" });
+    const heading = el("h2", { class: "exam-question-heading", text: `Frage ${current + 1} von ${examQuestions.length}` });
+    card.append(heading);
+    if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
+    card.appendChild(el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
+    const multi = q.type === "multiple-select";
+    if (multi) card.appendChild(el("p", { class: "item-hint", text: "Wähle alle zutreffenden Antworten." }));
+
+    const options = el("div", {
+      class: "item-options item-options-list", attrs: { role: "group", "aria-label": "Antwortoptionen" }
+    });
+    for (const option of q.options) {
+      const button = el("button", {
+        class: "option-btn option-btn-wide",
+        text: option.text,
+        attrs: { type: "button", lang: "en" }
       });
-      btn.dataset.optionId = opt.id;
-      btn.addEventListener("click", () => {
-        if (!active || Date.now() >= deadline) {
+      button.dataset.optionId = option.id;
+      button.addEventListener("click", () => {
+        if (activeExam !== attempt || Date.now() >= deadline) {
           updateTimer();
           return;
         }
-        const set = answers.get(item.content.id) || new Set();
-        if (isMulti) {
-          if (set.has(opt.id)) set.delete(opt.id); else set.add(opt.id);
-        } else {
-          set.clear();
-          set.add(opt.id);
-        }
-        answers.set(item.content.id, set);
-        for (const option of optsWrap.children) {
-          const pressed = set.has(option.dataset.optionId);
-          option.classList.toggle("option-selected", pressed);
-          option.setAttribute("aria-pressed", String(pressed));
-        }
+        const wasSelected = selected.has(option.id);
+        if (!multi) selected.clear();
+        if (multi && wasSelected) selected.delete(option.id);
+        else selected.add(option.id);
+        if (selected.size) answers.set(item.content.id, selected);
+        else answers.delete(item.content.id);
+        markSelection();
+        refreshStatus();
       });
-      optsWrap.appendChild(btn);
-    });
-    card.appendChild(optsWrap);
-    qHost.appendChild(card);
-    prevBtn.disabled = current === 0;
-    nextBtn.disabled = current === examQuestions.length - 1;
-    if (focus) question.focus();
+      options.appendChild(button);
+    }
+    function markSelection() {
+      for (const button of options.children) {
+        const pressed = selected.has(button.dataset.optionId);
+        button.classList.toggle("option-selected", pressed);
+        button.setAttribute("aria-pressed", String(pressed));
+      }
+    }
+    markSelection();
+    card.append(options);
+    qHost.replaceChildren(card);
+    prev.disabled = current === 0;
+    next.disabled = current === examQuestions.length - 1;
+    refreshStatus();
+    if (moveFocus) focusContent(heading);
   }
 
-  async function submit() {
-    if (!active || !host.isConnected || location.hash !== "#/quiz") return;
-    stopExam();
-    clear(host);
-    host.appendChild(el("p", { attrs: { role: "status" }, text: "Mini-Prüfung wird ausgewertet…" }));
+  async function submit(expired = false) {
+    if (activeExam !== attempt || !host.isConnected) return;
+    stop();
+    const calculating = el("p", { attrs: { role: "status" }, text: "Mini-Prüfung wird ausgewertet…" });
+    host.replaceChildren(calculating);
+    focusContent(calculating, { page: true });
 
-    let correctCount = 0;
-    const reviewCards = [];
-    const answered = [];
-    for (const { item, q } of examQuestions) {
+    const graded = examQuestions.map(({ item, q }, index) => {
       const selected = answers.get(item.content.id) || new Set();
-      const correctIds = new Set(q.options.filter((o) => o.correct).map((o) => o.id));
-      const correct = correctIds.size === selected.size && [...correctIds].every((id) => selected.has(id));
-      if (correct) correctCount += 1;
-
-      if (selected.size) answered.push({ item, result: { correct }, mode: "exam" });
-
-      const card = el("div", { class: "item-card" });
-      const label = selected.size === 0 ? "Unbeantwortet" : correct ? "Richtig" : "Falsch";
-      card.appendChild(el("p", { class: correct ? "result-correct" : "item-hint", text: label }));
-      if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
-      card.appendChild(el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
-      q.options.forEach((opt) => {
-        const wasSelected = selected.has(opt.id);
-        card.appendChild(el("p", { class: "option-explanation" }, [
-          el("strong", { text: (opt.correct ? "✓ " : wasSelected ? "✗ " : "") + opt.text, attrs: { lang: "en" } }),
-          document.createTextNode(" – " + opt.explanation)
-        ]));
-      });
-      reviewCards.push(card);
-    }
+      const correctIds = q.options.filter((option) => option.correct).map((option) => option.id);
+      const correct = correctIds.length === selected.size && correctIds.every((id) => selected.has(id));
+      return { item, q, index, selected, correct };
+    });
+    const answered = graded.filter(({ selected }) => selected.size);
+    const wrong = answered.filter(({ correct }) => !correct);
+    const open = graded.filter(({ selected }) => !selected.size);
+    const correctCount = answered.length - wrong.length;
+    let saveError = false;
 
     try {
-      if (answered.length) await saveAnswers(answered);
+      if (answered.length) await saveAnswers(answered.map(({ item, correct }) => ({ item, result: { correct }, mode: "exam" })));
     } catch {
-      if (host.isConnected) {
-        clear(host);
-        host.appendChild(el("p", { attrs: { role: "alert" }, text: "Die Prüfungsantworten konnten nicht gespeichert werden." }));
-      }
-      return;
+      saveError = true;
     }
     if (!host.isConnected) return;
-    clear(host);
-    const pct = examQuestions.length ? Math.round((correctCount / examQuestions.length) * 100) : 0;
-    host.appendChild(el("div", { class: "card" }, [
-      el("h2", { text: "Mini-Prüfung ausgewertet" }),
-      el("p", { class: "big-number", text: `${correctCount} / ${examQuestions.length}` }),
-      el("p", { text: `${pct}% · ${answered.length - correctCount} falsch · ${examQuestions.length - answered.length} unbeantwortet` })
-    ]));
-    reviewCards.forEach((c) => host.appendChild(c));
+
+    const resultTitle = el("h1", { text: "Mini-Prüfung ausgewertet" });
+    const score = el("p", { class: "exam-score", text: `${correctCount} von ${graded.length} richtig` });
+    const breakdown = el("p", {
+      class: "item-hint",
+      text: `${Math.round(correctCount / graded.length * 100)} % · ${wrong.length} falsch · ${open.length} unbeantwortet`
+    });
+    const resultActions = el("div", { class: "exam-actions" });
+    const back = el("button", {
+      class: "secondary-btn", text: "Zur Übungsauswahl",
+      attrs: { type: "button" }, on: { click: () => showSetup() }
+    });
+    const review = [...wrong, ...open];
+    if (review.length) resultActions.appendChild(el("button", {
+      class: "primary-btn",
+      text: wrong.length ? "Fehler gezielt üben" : "Offene Fragen üben",
+      attrs: { type: "button" },
+      on: { click: () => startFreePractice(runHost, review.map(({ item }) => item), showSetup, "Gezielte Wiederholung") }
+    }));
+    resultActions.appendChild(back);
+
+    host.replaceChildren(resultTitle, score, breakdown);
+    if (expired) host.appendChild(el("p", { text: "Die Zeit ist abgelaufen. Deine bisherigen Antworten wurden ausgewertet." }));
+    if (saveError) host.appendChild(el("p", { attrs: { role: "alert" }, text: "Dein Ergebnis ist sichtbar. Der Lernstand konnte nicht gespeichert werden." }));
+    host.appendChild(resultActions);
+    const reviewHeading = el("h2", { text: "Antworten ansehen" });
+    host.appendChild(reviewHeading);
+    for (const result of [...wrong, ...open, ...graded.filter(({ correct }) => correct)]) {
+      host.appendChild(renderExamReview(result));
+    }
+    focusContent(resultTitle, { page: true });
   }
 
-  renderCurrent();
+  prev.addEventListener("click", () => goTo(current - 1));
+  next.addEventListener("click", () => goTo(current + 1));
+  submitBtn.addEventListener("click", async () => {
+    const open = examQuestions.length - answers.size;
+    if (open && !(await ask(`Noch ${open} von ${examQuestions.length} Fragen sind offen. Möchtest du jetzt abgeben?`, {
+      cancelText: "Weiterprüfen", confirmText: "Jetzt abgeben"
+    }))) return;
+    submit(Date.now() >= deadline);
+  });
+  cancelBtn.addEventListener("click", async () => {
+    if (!(await confirmAbandon())) return;
+    stop();
+    showSetup("Mini-Prüfung abgebrochen.");
+  });
+
+  goTo(0, false);
+  host.insertBefore(disclaimerNote(), qHost);
+  timerHandle = setInterval(updateTimer, 250);
+  updateTimer();
+  focusContent(title, { page: true });
+}
+
+function renderExamReview({ q, index, selected, correct }) {
+  const label = !selected.size ? "Unbeantwortet" : correct ? "Richtig" : "Falsch";
+  const detail = el("details", { class: "exam-review" });
+  detail.appendChild(el("summary", { text: `Frage ${index + 1} · ${label}` }));
+  if (q.scenario) detail.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
+  detail.appendChild(el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
+  for (const option of q.options) {
+    const verdict = option.correct ? "Richtige Option" : "Falsche Option";
+    detail.appendChild(el("p", { class: "option-explanation" }, [
+      el("strong", { text: option.text, attrs: { lang: "en" } }),
+      document.createTextNode(` · ${verdict}${selected.has(option.id) ? " · von dir gewählt" : ""}`),
+      el("br"),
+      document.createTextNode(option.explanation)
+    ]));
+  }
+  return detail;
 }

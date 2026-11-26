@@ -3,6 +3,8 @@
 import { state, domainMap, pathCertifications } from "../state.js";
 import { el, clear, certLabel } from "../utils.js";
 
+const PAGE_SIZE = 40;
+
 export async function render(container) {
   clear(container);
   container.appendChild(el("h1", { text: "Glossar" }));
@@ -12,7 +14,13 @@ export async function render(container) {
   // Bei Foundations-only/Administrator-only wird der Zertifizierungsfilter gar nicht erst angezeigt
   // (fest auf den Pfad gesetzt). Nur administrator-full bietet Beide/Foundations/Administrator zur Wahl.
   const filters = { search: "", certification: activePath === "administrator-full" ? "both" : activePath, examDomainId: "all", cefr: "both" };
-  const domains = [...domainMap().values()].filter((d) => certifications.includes(d.certification));
+  const domainsById = domainMap();
+  const domains = [...domainsById.values()].filter((d) => certifications.includes(d.certification));
+  const indexedVocab = state.content.vocabulary.map((v) => ({
+    v,
+    termLower: v.term.toLowerCase(),
+    explanationLower: v.germanExplanation.toLowerCase()
+  }));
 
   const formCard = el("div", { class: "card" });
   const searchInput = el("input", { attrs: { type: "text", placeholder: "Begriff suchen…" } });
@@ -34,6 +42,9 @@ export async function render(container) {
   formCard.appendChild(row);
   container.appendChild(formCard);
 
+  const countStatus = el("p", { class: "glossary-count", attrs: { role: "status" } });
+  container.appendChild(countStatus);
+
   const listHost = el("div", { class: "glossary-list" });
   container.appendChild(listHost);
 
@@ -41,27 +52,53 @@ export async function render(container) {
 
   function renderList() {
     clear(listHost);
-    const items = state.content.vocabulary.filter((v) => {
-      if (filters.certification !== "both" && v.certification !== filters.certification) return false;
-      if (filters.examDomainId !== "all" && v.examDomainId !== filters.examDomainId) return false;
-      if (filters.cefr !== "both" && v.cefr !== filters.cefr) return false;
-      if (filters.search && !v.term.toLowerCase().includes(filters.search) && !v.germanExplanation.toLowerCase().includes(filters.search)) return false;
-      return true;
-    });
+    const matches = indexedVocab
+      .filter(({ v, termLower, explanationLower }) => {
+        if (filters.certification !== "both" && v.certification !== filters.certification) return false;
+        if (filters.examDomainId !== "all" && v.examDomainId !== filters.examDomainId) return false;
+        if (filters.cefr !== "both" && v.cefr !== filters.cefr) return false;
+        if (filters.search && !termLower.includes(filters.search) && !explanationLower.includes(filters.search)) return false;
+        return true;
+      })
+      .map(({ v }) => v);
 
-    if (items.length === 0) {
+    if (matches.length === 0) {
+      countStatus.textContent = "0 Treffer";
       listHost.appendChild(el("p", { text: "Keine Treffer." }));
       return;
     }
 
-    items.forEach((v) => listHost.appendChild(renderCard(v)));
+    let rendered = 0;
+    function appendBatch() {
+      const nextSlice = matches.slice(rendered, rendered + PAGE_SIZE);
+      const frag = document.createDocumentFragment();
+      nextSlice.forEach((v) => frag.appendChild(renderCard(v, domainsById.get(v.examDomainId))));
+      listHost.appendChild(frag);
+      rendered += nextSlice.length;
+      countStatus.textContent = rendered < matches.length
+        ? `${rendered} von ${matches.length} Begriffen angezeigt`
+        : `${matches.length} ${matches.length === 1 ? "Begriff" : "Begriffe"}`;
+      if (rendered < matches.length) {
+        const moreBtn = el("button", {
+          class: "secondary-btn",
+          text: `Weitere Begriffe anzeigen (${matches.length - rendered} verbleibend)`,
+          attrs: { type: "button" }
+        });
+        moreBtn.addEventListener("click", () => {
+          moreBtn.remove();
+          appendBatch();
+        });
+        listHost.appendChild(moreBtn);
+      }
+    }
+
+    appendBatch();
   }
 
   renderList();
 }
 
-function renderCard(v) {
-  const domain = domainMap().get(v.examDomainId);
+function renderCard(v, domain) {
   const progress = state.progressByContentId.get(v.id);
   const statusText = !progress
     ? "Noch nicht gelernt"
@@ -76,7 +113,7 @@ function renderCard(v) {
   const exampleSentence = v.clozeSentence.replace("____", v.term);
 
   const card = el("div", { class: "card glossary-card" });
-  card.appendChild(el("h3", { text: v.term, attrs: { lang: "en" } }));
+  card.appendChild(el("h2", { text: v.term, attrs: { lang: "en" } }));
   card.appendChild(el("p", { class: "item-hint", text: `${certLabel(v.certification)} · ${domain?.name || v.examDomainId} · CEFR ${v.cefr}` }));
   card.appendChild(el("p", {}, [el("strong", { text: "Deutsch: " }), document.createTextNode(v.germanExplanation)]));
   card.appendChild(el("p", {}, [el("strong", { text: "Kontext: " }), document.createTextNode(v.salesforceContext)]));

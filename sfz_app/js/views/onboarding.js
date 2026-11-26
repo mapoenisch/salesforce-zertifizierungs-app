@@ -26,67 +26,73 @@ const ADMINISTRATOR = {
 const PATHS = [
   {
     id: "foundations",
-    title: FOUNDATIONS.name,
+    title: "Foundations",
     subtitle: "Einstieg ohne Salesforce-Vorkenntnisse",
     exam: FOUNDATIONS,
     buttonLabel: "Foundations wählen",
-    focus: "Zwölf Wochen Foundations · englische Leseübungen überwiegend auf B1."
+    focus: "12 Wochen Foundations · Leseübungen überwiegend B1."
   },
   {
     id: "administrator",
-    title: ADMINISTRATOR.name,
+    title: "Administrator",
     subtitle: "Für Lernende mit Foundations-Grundwissen",
     exam: ADMINISTRATOR,
     buttonLabel: "Administrator wählen",
-    focus: "Zwölf Wochen Administrator · englische Leseübungen auf B1 und B2."
+    focus: "12 Wochen Administrator · Leseübungen auf B1 und B2."
   },
   {
     id: "administrator-full",
     title: "Administrator inklusive Foundations",
-    subtitle: "Gemeinsamer Lernpfad für beide Themen",
+    subtitle: "Für den Einstieg in beide Themen",
     exam: ADMINISTRATOR,
     buttonLabel: "Administrator inkl. Foundations wählen",
-    focus: "Woche 1–5 Foundations, Woche 6–12 Administrator · englische Leseübungen auf B1 und B2."
+    focus: "5 Wochen Grundlagen, 7 Wochen Administration · Leseübungen auf B1 und B2."
   }
 ];
 
 export async function render(container, ctx) {
   clear(container);
-  container.appendChild(el("h1", { text: "Willkommen — welchen Lernpfad möchtest du starten?" }));
+  container.appendChild(el("h1", { text: "Wähle deinen Lernpfad" }));
   container.appendChild(el("p", {
-    text: "Salesforce nennt für beide Prüfungen keine formale Voraussetzung. Für Administrator empfiehlt Salesforce mindestens sechs Monate praktische Administrator-Erfahrung. Foundations-Grundwissen hilft beim Einstieg in den reinen Administrator-Lernpfad."
+    text: "Du kannst den Pfad später in den Einstellungen wechseln. Dein Lernfortschritt bleibt erhalten."
   }));
 
-  const cardsWrap = el("div", { class: "onboarding-cards" });
-
-  PATHS.forEach((path) => {
-    const card = el("section", { class: "onboarding-card" });
-    card.appendChild(el("h2", { text: path.title }));
-    card.appendChild(el("p", { class: "item-hint", text: path.subtitle }));
-    const list = el("ul");
-    const { questions, minutes, passing, fee, retakeFee, guide } = path.exam;
-    const retake = retakeFee ? `${retakeFee} USD` : "kostenlos";
-    [
-      `${questions} gewertete Multiple-Choice-Fragen plus bis zu fünf ungewertete · ${minutes} Minuten`,
-      `${passing} % Bestehensgrenze in der englischen Prüfung · ${fee} USD, Wiederholung ${retake} (jeweils ggf. zzgl. Steuern)`,
-      path.focus
-    ].forEach((text) => list.appendChild(el("li", { text })));
-    card.appendChild(list);
-    card.appendChild(el("a", { text: "Offizieller Exam Guide", attrs: { href: guide, target: "_blank", rel: "noopener", "aria-label": `Offizieller Exam Guide · ${path.exam.name}` } }));
-    const chooseBtn = el("button", { class: "primary-btn onboarding-choose-btn", text: path.buttonLabel, attrs: { type: "button" } });
-    chooseBtn.addEventListener("click", () => {
+  const cards = el("div", { class: "onboarding-cards" });
+  for (const path of PATHS) {
+    const choose = el("button", { class: "primary-btn onboarding-choose-btn", text: path.buttonLabel, attrs: { type: "button" } });
+    choose.addEventListener("click", () => {
       saveSettings({ certificationPath: path.id });
       ctx.navigate("#/dashboard");
     });
-    card.appendChild(chooseBtn);
-    cardsWrap.appendChild(card);
-  });
+    cards.appendChild(el("section", { class: "onboarding-card" }, [
+      el("h2", { text: path.title }),
+      el("p", { class: "onboarding-fit", text: path.subtitle }),
+      el("p", { class: "item-hint", text: path.focus }),
+      choose,
+      examDetails(path.exam)
+    ]));
+  }
+  container.appendChild(cards);
+}
 
-  container.appendChild(cardsWrap);
-  container.appendChild(
-    el("p", {
-      class: "item-hint",
-      text: "Du kannst deinen Lernpfad jederzeit in den Einstellungen wechseln — dein bisheriger Fortschritt bleibt dabei erhalten."
+function examDetails(exam) {
+  const { name, questions, minutes, passing, fee, retakeFee, guide } = exam;
+  const retake = retakeFee ? `${retakeFee} USD` : "kostenlos";
+  const facts = [
+    `${questions} gewertete Multiple-Choice-Fragen plus bis zu fünf ungewertete · ${minutes} Minuten`,
+    `${passing} % Bestehensgrenze in der englischen Prüfung`,
+    `${fee} USD Prüfungsgebühr, Wiederholung ${retake} (jeweils ggf. zzgl. Steuern)`,
+    "Salesforce nennt keine formale Prüfungsvoraussetzung."
+  ];
+  if (exam === ADMINISTRATOR) facts.push("Salesforce empfiehlt mindestens sechs Monate praktische Erfahrung in der Administration.");
+
+  return el("details", { class: "onboarding-details" }, [
+    el("summary", { text: "Prüfungsdetails" }),
+    el("p", { text: name, attrs: { lang: "en" } }),
+    el("ul", {}, facts.map((text) => el("li", { text }))),
+    el("a", {
+      text: "Offizieller Exam Guide",
+      attrs: { href: guide, target: "_blank", rel: "noopener", "aria-label": `Offizieller Exam Guide · ${name}` }
     })
-  );
+  ]);
 }

@@ -2,7 +2,7 @@
 // und ruft nach Abschluss onAnswered({correct, confidence, responseTimeMs}) auf.
 // Wird sowohl vom Lernmodus (learn.js) als auch vom freien Üben (quiz.js) genutzt.
 
-import { el, clear, shuffle, disclaimerNote } from "./utils.js";
+import { el, clear, shuffle, disclaimerNote, focusContent } from "./utils.js";
 
 /**
  * @param {HTMLElement} container
@@ -20,6 +20,7 @@ export function renderItem(container, item, { onAnswered }) {
   else if (contentType === "question") renderQuestion(container, content, {}, startTime, onAnswered);
   else if (contentType === "readingPassage") renderReadingPassage(container, content, startTime, onAnswered);
   else container.appendChild(el("p", { text: "Unbekannter Inhaltstyp." }));
+  focusContent(container.querySelector("h2"));
 }
 
 // ---------- Neue Vokabel kennenlernen (Karteikarte, keine Abfrage) ----------
@@ -30,8 +31,7 @@ export function renderItem(container, item, { onAnswered }) {
 
 function renderVocabularyIntro(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card vocab-intro-card" });
-  card.appendChild(el("h3", { class: "item-kicker", text: "Neue Vokabel" }));
-  card.appendChild(el("p", { class: "vocab-intro-term", text: content.term, attrs: { lang: "en" } }));
+  card.appendChild(el("h2", { class: "vocab-intro-term", text: content.term, attrs: { lang: "en" } }));
   const exampleSentence = content.clozeSentence.replace("____", content.term);
   card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), el("span", { text: exampleSentence, attrs: { lang: "en" } })]));
   card.appendChild(el("p", {}, [el("strong", { text: "Deutsch: " }), document.createTextNode(content.germanExplanation)]));
@@ -57,14 +57,23 @@ function renderVocabularyIntro(container, content, startTime, onAnswered) {
   );
   card.appendChild(continueBtn);
   container.appendChild(card);
-  continueBtn.focus();
+}
+
+function markOptionState(btn, isCorrect, isChosenWrong) {
+  if (isCorrect) {
+    btn.classList.add("option-correct");
+    btn.appendChild(el("span", { class: "option-result-tag", text: "✓ Richtig", attrs: { lang: "de" } }));
+  } else if (isChosenWrong) {
+    btn.classList.add("option-incorrect");
+    btn.appendChild(el("span", { class: "option-result-tag", text: "✗ Falsch gewählt", attrs: { lang: "de" } }));
+  }
 }
 
 // ---------- Vokabel im Kontext ----------
 
 function renderVocabulary(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card" });
-  card.appendChild(el("h3", { class: "item-kicker", text: "Vokabel im Kontext" }));
+  card.appendChild(el("h2", { class: "item-title", text: "Vokabel im Kontext" }));
   card.appendChild(el("p", { class: "item-cloze", text: content.clozeSentence, attrs: { lang: "en" } }));
 
   const optionsWrap = el("div", { class: "item-options" });
@@ -72,15 +81,15 @@ function renderVocabulary(container, content, startTime, onAnswered) {
 
   shuffle(content.options).forEach((opt) => {
     const btn = el("button", { class: "option-btn", text: opt, attrs: { type: "button", lang: "en" } });
+    btn.dataset.option = opt;
     btn.addEventListener("click", () => {
       if (answered) return;
       answered = true;
       const correct = opt === content.correctOption;
       [...optionsWrap.children].forEach((b) => {
         b.disabled = true;
-        if (b.textContent === content.correctOption) b.classList.add("option-correct");
+        markOptionState(b, b.dataset.option === content.correctOption, !correct && b === btn);
       });
-      if (!correct) btn.classList.add("option-incorrect");
       showVocabExplanation(card, content, correct, startTime, onAnswered);
     });
     optionsWrap.appendChild(btn);
@@ -93,6 +102,12 @@ function renderVocabulary(container, content, startTime, onAnswered) {
 function showVocabExplanation(card, content, correct, startTime, onAnswered) {
   const panel = el("div", { class: "explanation-panel" });
   panel.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig!" : "Nicht ganz." }));
+  if (!correct) {
+    panel.appendChild(el("p", {}, [
+      el("strong", { text: "Richtige Antwort: " }),
+      el("span", { text: content.correctOption, attrs: { lang: "en" } })
+    ]));
+  }
   panel.appendChild(el("p", {}, [el("strong", { text: "Erklärung: " }), document.createTextNode(content.germanExplanation)]));
   panel.appendChild(el("p", {}, [el("strong", { text: "Salesforce-Kontext: " }), document.createTextNode(content.salesforceContext)]));
   panel.appendChild(el("p", { class: "memory-hook" }, [el("strong", { text: "Merksatz: " }), document.createTextNode(content.memoryHook)]));
@@ -110,7 +125,7 @@ function showVocabExplanation(card, content, correct, startTime, onAnswered) {
 
 function renderDefinition(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card" });
-  card.appendChild(el("h3", { class: "item-kicker", text: "Definitions-Matching" }));
+  card.appendChild(el("h2", { class: "item-title", text: "Definitions-Matching" }));
   card.appendChild(el("p", { class: "item-term", text: content.term, attrs: { lang: "en" } }));
   card.appendChild(el("p", { class: "item-hint", text: "Wähle die passende Definition (auch mit Tab + Enter bedienbar)." }));
 
@@ -120,18 +135,24 @@ function renderDefinition(container, content, startTime, onAnswered) {
 
   allDefs.forEach((defText) => {
     const btn = el("button", { class: "option-btn option-btn-wide", text: defText, attrs: { type: "button", lang: "en" } });
+    btn.dataset.option = defText;
     btn.addEventListener("click", () => {
       if (answered) return;
       answered = true;
       const correct = defText === content.definition;
       [...optionsWrap.children].forEach((b) => {
         b.disabled = true;
-        if (b.textContent === content.definition) b.classList.add("option-correct");
+        markOptionState(b, b.dataset.option === content.definition, !correct && b === btn);
       });
-      if (!correct) btn.classList.add("option-incorrect");
 
       const panel = el("div", { class: "explanation-panel" });
       panel.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig!" : "Nicht ganz." }));
+      if (!correct) {
+        panel.appendChild(el("p", {}, [
+          el("strong", { text: "Richtige Definition: " }),
+          el("span", { text: content.definition, attrs: { lang: "en" } })
+        ]));
+      }
       panel.appendChild(el("p", {}, [el("strong", { text: "Erklärung: " }), document.createTextNode(content.germanExplanation)]));
       card.appendChild(panel);
       appendConfidenceAndContinue(card, correct, startTime, onAnswered);
@@ -155,7 +176,7 @@ function renderDefinition(container, content, startTime, onAnswered) {
  */
 function renderQuestion(container, questionContent, opts, startTime, onAnswered) {
   const card = el("div", { class: "item-card" });
-  card.appendChild(el("h3", { class: "item-kicker", text: "Szenario-Frage" }));
+  card.appendChild(el(opts.skipConfidence ? "h3" : "h2", { class: "item-title", text: "Szenario-Frage" }));
   if (!opts.disclaimerAlreadyShown) {
     card.appendChild(disclaimerNote());
     if (questionContent.scenario) card.appendChild(el("p", { class: "item-scenario", text: questionContent.scenario, attrs: { lang: "en" } }));
@@ -208,8 +229,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
     [...optionsWrap.children].forEach((btn) => {
       btn.disabled = true;
       const opt = options.find((o) => o.id === btn.dataset.optId);
-      if (opt.correct) btn.classList.add("option-correct");
-      else if (selected.has(opt.id)) btn.classList.add("option-incorrect");
+      markOptionState(btn, opt.correct, !opt.correct && selected.has(opt.id));
     });
 
     const panel = el("div", { class: "explanation-panel" });
@@ -245,7 +265,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
         { once: true }
       );
       card.appendChild(continueBtn);
-      continueBtn.focus();
+      focusContent(panel.querySelector("p"));
     } else {
       appendConfidenceAndContinue(card, correct, startTime, onAnswered);
     }
@@ -258,7 +278,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
 
 function renderReadingPassage(container, content, startTime, onAnswered) {
   const wrap = el("div", { class: "item-card" });
-  wrap.appendChild(el("h3", { class: "item-kicker", text: "Szenario lesen und beantworten" }));
+  wrap.appendChild(el("h2", { class: "item-title", text: "Szenario lesen und beantworten" }));
   wrap.appendChild(disclaimerNote());
   wrap.appendChild(el("p", { class: "item-scenario", text: content.scenario, attrs: { lang: "en" } }));
   container.appendChild(wrap);
@@ -297,6 +317,7 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
       if (!result.correct) allCorrect = false;
       index += 1;
       next();
+      if (index < questions.length) focusContent(questionHost.querySelector("h3"));
     });
   }
 
@@ -344,5 +365,5 @@ function appendConfidenceAndContinue(host, correct, startTime, onAnswered) {
   );
   wrap.appendChild(continueBtn);
   host.appendChild(wrap);
-  continueBtn.focus();
+  focusContent(host.querySelector(".result-correct, .result-incorrect") || wrap.querySelector("p"));
 }
