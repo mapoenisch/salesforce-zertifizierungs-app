@@ -1,10 +1,14 @@
 // db.js — IndexedDB-Wrapper für Lernfortschritt (SM-2) und Aktivitätslog.
 // Kein externes Framework, native IndexedDB-API, Promise-basiert.
 
-const DB_NAME = "sfz-app-db";
+import { belongsToTrainer } from "./learningScope.js";
+
+const DB_NAME = "salesforce-trainer-db";
 const DB_VERSION = 1;
 const STORE_PROGRESS = "learningProgress";
 const STORE_ACTIVITY = "activityLog";
+const STORE_MIGRATIONS = "migrations";
+const LEGACY_MIGRATION = "combined-trainer";
 
 let dbPromise = null;
 
@@ -19,6 +23,7 @@ export function openDB() {
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
+      db.createObjectStore(STORE_MIGRATIONS);
 
       if (!db.objectStoreNames.contains(STORE_PROGRESS)) {
         const progressStore = db.createObjectStore(STORE_PROGRESS, { keyPath: "contentId" });
@@ -33,7 +38,7 @@ export function openDB() {
       }
     };
 
-    request.onsuccess = (event) => resolve(event.target.result);
+    request.onsuccess = () => migrateLegacyData(request.result).then(() => resolve(request.result), reject);
     request.onerror = (event) => reject(event.target.error);
   });
   return dbPromise;
@@ -80,18 +85,6 @@ export async function getDueProgress(todayISO) {
     .sort((a, b) => a.nextReviewDate.localeCompare(b.nextReviewDate));
 }
 
-/** Löscht den kompletten learningProgress-Store (für JSON-Import). */
-export async function clearProgress() {
-  const store = await tx(STORE_PROGRESS, "readwrite");
-  await promisifyRequest(store.clear());
-}
-
-/** Schreibt mehrere Fortschrittsdatensätze auf einmal (für JSON-Import). */
-export async function bulkPutProgress(records) {
-  const store = await tx(STORE_PROGRESS, "readwrite");
-  await Promise.all(records.map((r) => promisifyRequest(store.put(r))));
-}
-
 // ---------- activityLog ----------
 
 /**
@@ -111,14 +104,73 @@ export async function getAllActivity() {
   return promisifyRequest(store.getAll());
 }
 
-/** Löscht den kompletten activityLog-Store (für JSON-Import). */
-export async function clearActivity() {
-  const store = await tx(STORE_ACTIVITY, "readwrite");
-  await promisifyRequest(store.clear());
+function commitTransaction(transaction) {
+  return new Promise((resolve, reject) => {
+    transaction.oncomplete = resolve;
+    transaction.onabort = () => reject(transaction.error || new Error("Speichervorgang abgebrochen."));
+  });
 }
 
-/** Schreibt mehrere Aktivitäts-Einträge auf einmal (für JSON-Import). */
-export async function bulkPutActivity(records) {
-  const store = await tx(STORE_ACTIVITY, "readwrite");
-  await Promise.all(records.map((r) => promisifyRequest(store.put(r))));
+async function readLegacyData() {
+  const legacy = await new Promise((resolve, reject) => {
+    const request = indexedDB.open("sfz-app-db");
+    // Eine neue Datenbank an dieser Adresse enthält keinen alten Lernstand.
+    request.onupgradeneeded = () => request.transaction.abort();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => {
+      if (request.error?.name === "AbortError") resolve(null);
+      else reject(request.error);
+    };
+  });
+  if (!legacy) return [[], []];
+  try {
+    const transaction = legacy.transaction([STORE_PROGRESS, STORE_ACTIVITY], "readonly");
+    const records = await Promise.all([STORE_PROGRESS, STORE_ACTIVITY].map((name) =>
+      promisifyRequest(transaction.objectStore(name).getAll())
+    ));
+    return records.map((entries) => entries.filter(belongsToTrainer));
+  } finally {
+    legacy.close();
+  }
+}
+
+async function migrateLegacyData(db) {
+  const check = db.transaction(STORE_MIGRATIONS).objectStore(STORE_MIGRATIONS);
+  if (await promisifyRequest(check.get(LEGACY_MIGRATION))) return;
+
+  const [progress, activity] = await readLegacyData();
+  const transaction = db.transaction([STORE_MIGRATIONS, STORE_PROGRESS, STORE_ACTIVITY], "readwrite");
+  const committed = commitTransaction(transaction);
+  const markers = transaction.objectStore(STORE_MIGRATIONS);
+  const marker = markers.get(LEGACY_MIGRATION);
+  // Die Markierung wird mit den Daten geschrieben. Parallel geöffnete Tabs übernehmen sie nur einmal.
+  marker.onsuccess = () => {
+    if (marker.result) return;
+    const progressStore = transaction.objectStore(STORE_PROGRESS);
+    const activityStore = transaction.objectStore(STORE_ACTIVITY);
+    progress.forEach((record) => progressStore.put(record));
+    activity.forEach((record) => activityStore.put(record));
+    markers.put(true, LEGACY_MIGRATION);
+  };
+  await committed;
+}
+
+/** Ersetzt beide Lernstand-Speicher gemeinsam. */
+export async function replaceLearningData(progress, activity) {
+  const db = await openDB();
+  const transaction = db.transaction([STORE_PROGRESS, STORE_ACTIVITY], "readwrite");
+  const committed = commitTransaction(transaction);
+  const progressStore = transaction.objectStore(STORE_PROGRESS);
+  const activityStore = transaction.objectStore(STORE_ACTIVITY);
+  try {
+    progressStore.clear();
+    activityStore.clear();
+    progress.forEach((record) => progressStore.put(record));
+    activity.forEach((record) => activityStore.put(record));
+  } catch (error) {
+    transaction.abort();
+    await committed.catch(() => {});
+    throw error;
+  }
+  await committed;
 }

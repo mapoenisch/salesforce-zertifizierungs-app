@@ -1,7 +1,6 @@
 // views/glossary.js — Durchsuchbares Glossar aller Vokabeln mit Filtern und persönlichem Wiederholungsstatus.
 
-import { state, domainMap, pathCertifications, activePlatform } from "../state.js";
-import { platformConfig, platformOfContent } from "../platforms.js";
+import { state, domainMap, pathCertifications } from "../state.js";
 import { el, clear, certLabel } from "../utils.js";
 
 export async function render(container) {
@@ -10,11 +9,9 @@ export async function render(container) {
 
   const activePath = state.settings.certificationPath;
   const certifications = pathCertifications(activePath);
-  const platform = activePlatform();
-  // Deckt der Lernpfad mehrere Zertifizierungen ab (administrator-full, hubspot-all), lässt sich
-  // zwischen ihnen filtern; sonst ist der Filter fest auf die eine Zertifizierung des Pfads gesetzt.
-  const multiCert = certifications.length > 1;
-  const filters = { search: "", certification: multiCert ? "both" : certifications[0], examDomainId: "all", cefr: "both" };
+  // Bei Foundations-only/Administrator-only wird der Zertifizierungsfilter gar nicht erst angezeigt
+  // (fest auf den Pfad gesetzt). Nur administrator-full bietet Beide/Foundations/Administrator zur Wahl.
+  const filters = { search: "", certification: activePath === "administrator-full" ? "both" : activePath, examDomainId: "all", cefr: "both" };
   const domains = [...domainMap().values()].filter((d) => certifications.includes(d.certification));
 
   const formCard = el("div", { class: "card" });
@@ -23,19 +20,17 @@ export async function render(container) {
   formCard.appendChild(el("label", { class: "filter-field" }, [el("span", { text: "Suche" }), searchInput]));
 
   const row = el("div", { class: "filter-row" });
-  if (multiCert) {
+  if (activePath === "administrator-full") {
     row.appendChild(selectField("Zertifizierung", filters, "certification", [
-      ["both", "Alle im Lernpfad"], ...certifications.map((c) => [c, certLabel(c)])
+      ["both", "Beide (Foundations + Administrator)"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
     ], renderListRef));
   }
-  row.appendChild(selectField(platform.domainLabel, filters, "examDomainId", [
+  row.appendChild(selectField("Exam-Domain", filters, "examDomainId", [
     ["all", "Alle"], ...domains.map((d) => [d.id, `${d.name} (${certLabel(d.certification)})`])
   ], renderListRef));
-  if (platform.usesCefr) {
-    row.appendChild(selectField("CEFR-Level", filters, "cefr", [
-      ["both", "Beide"], ["B1", "B1"], ["B2", "B2"]
-    ], renderListRef));
-  }
+  row.appendChild(selectField("CEFR-Level", filters, "cefr", [
+    ["both", "Beide"], ["B1", "B1"], ["B2", "B2"]
+  ], renderListRef));
   formCard.appendChild(row);
   container.appendChild(formCard);
 
@@ -47,8 +42,6 @@ export async function render(container) {
   function renderList() {
     clear(listHost);
     const items = state.content.vocabulary.filter((v) => {
-      // Grundfilter: nur Inhalte des aktiven Lernpfads — trennt Salesforce- und HubSpot-Ebene.
-      if (!certifications.includes(v.certification)) return false;
       if (filters.certification !== "both" && v.certification !== filters.certification) return false;
       if (filters.examDomainId !== "all" && v.examDomainId !== filters.examDomainId) return false;
       if (filters.cefr !== "both" && v.cefr !== filters.cefr) return false;
@@ -84,13 +77,9 @@ function renderCard(v) {
 
   const card = el("div", { class: "card glossary-card" });
   card.appendChild(el("h3", { text: v.term }));
-  const cfg = platformConfig(platformOfContent(v));
-  const meta = [certLabel(v.certification), domain?.name || v.examDomainId];
-  if (cfg.usesCefr && v.cefr) meta.push(`CEFR ${v.cefr}`);
-  card.appendChild(el("p", { class: "item-hint", text: meta.join(" · ") }));
+  card.appendChild(el("p", { class: "item-hint", text: `${certLabel(v.certification)} · ${domain?.name || v.examDomainId} · CEFR ${v.cefr}` }));
   card.appendChild(el("p", {}, [el("strong", { text: "Deutsch: " }), document.createTextNode(v.germanExplanation)]));
-  const ctxText = v[cfg.contextField] || v.platformContext || v.salesforceContext || "";
-  if (ctxText) card.appendChild(el("p", {}, [el("strong", { text: "Kontext: " }), document.createTextNode(ctxText)]));
+  card.appendChild(el("p", {}, [el("strong", { text: "Kontext: " }), document.createTextNode(v.salesforceContext)]));
   card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), document.createTextNode(exampleSentence)]));
   if (v.confusableTerms?.length) {
     card.appendChild(el("p", { class: "confusable" }, [el("strong", { text: "Verwechslungsgefahr: " }), document.createTextNode(v.confusableTerms.join(", "))]));

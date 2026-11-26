@@ -1,6 +1,6 @@
 // app.js — Einstiegspunkt: initialisiert State, Theme und den Hash-Router.
 
-import { state, init, activePlatform } from "./js/state.js";
+import { state, init } from "./js/state.js";
 import * as onboarding from "./js/views/onboarding.js";
 import * as dashboard from "./js/views/dashboard.js";
 import * as learn from "./js/views/learn.js";
@@ -48,12 +48,7 @@ function buildNav() {
   navRoot.textContent = "";
   // Solange kein Lernpfad gewählt ist, gibt es keine Navigation — das Onboarding ist die einzige Ansicht.
   if (!state.settings.certificationPath) return;
-  const platform = activePlatform();
-  const titleEl = document.querySelector(".app-title");
-  if (titleEl) titleEl.textContent = platform.appTitle;
   for (const [hash, label] of Object.entries(navLabels)) {
-    // Der Bereich "Prüfungsenglisch" gehört nur zu Plattformen mit englischsprachiger Prüfung.
-    if (hash === "#/exam-english" && !platform.hasEnglishTraining) continue;
     const link = document.createElement("a");
     link.href = hash;
     link.textContent = label;
@@ -71,11 +66,6 @@ async function renderRoute() {
   }
 
   const hash = location.hash || "#/dashboard";
-  // Lernpfade mit deutschsprachiger Prüfung (HubSpot) haben keinen Prüfungsenglisch-Bereich.
-  if (hash === "#/exam-english" && !activePlatform().hasEnglishTraining) {
-    location.hash = "#/dashboard";
-    return;
-  }
   const view = routes[hash] || dashboard;
   buildNav();
   try {
@@ -94,7 +84,7 @@ async function boot() {
   appRoot.textContent = "Lade Lerninhalte…";
   await init();
   window.addEventListener("hashchange", renderRoute);
-  if (!state.settings.certificationPath) {
+  if (!state.settings.certificationPath && location.hash !== "#/onboarding") {
     location.hash = "#/onboarding";
   } else if (!location.hash) {
     location.hash = "#/dashboard";

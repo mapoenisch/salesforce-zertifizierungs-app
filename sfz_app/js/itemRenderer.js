@@ -3,24 +3,6 @@
 // Wird sowohl vom Lernmodus (learn.js) als auch vom freien Üben (quiz.js) genutzt.
 
 import { el, clear, shuffle, disclaimerNote } from "./utils.js";
-import { platformConfig, platformOfContent } from "./platforms.js";
-
-/** Label und Text des Plattformkontexts einer Vokabel (Salesforce- bzw. HubSpot-Kontext). */
-function contextParts(content) {
-  const cfg = platformConfig(platformOfContent(content));
-  const text = content[cfg.contextField] || content.platformContext || content.salesforceContext || "";
-  return { label: cfg.contextLabel, text };
-}
-
-/** Analyseliste unter einer Antwort: Signalwörter (Salesforce) bzw. Ausschlusslogik (HubSpot). */
-function analysisBlock(items, heading) {
-  const wrap = el("div", { class: "signal-words" });
-  wrap.appendChild(el("strong", { text: heading }));
-  const list = el("ul");
-  items.forEach((s) => list.appendChild(el("li", { text: s })));
-  wrap.appendChild(list);
-  return wrap;
-}
 
 /**
  * @param {HTMLElement} container
@@ -53,10 +35,7 @@ function renderVocabularyIntro(container, content, startTime, onAnswered) {
   const exampleSentence = content.clozeSentence.replace("____", content.term);
   card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), document.createTextNode(exampleSentence)]));
   card.appendChild(el("p", {}, [el("strong", { text: "Deutsch: " }), document.createTextNode(content.germanExplanation)]));
-  const introCtx = contextParts(content);
-  if (introCtx.text) {
-    card.appendChild(el("p", {}, [el("strong", { text: introCtx.label + ": " }), document.createTextNode(introCtx.text)]));
-  }
+  card.appendChild(el("p", {}, [el("strong", { text: "Salesforce-Kontext: " }), document.createTextNode(content.salesforceContext)]));
   card.appendChild(el("p", { class: "memory-hook" }, [el("strong", { text: "Merksatz: " }), document.createTextNode(content.memoryHook)]));
   if (content.confusableTerms?.length) {
     card.appendChild(el("p", { class: "confusable" }, [
@@ -115,10 +94,7 @@ function showVocabExplanation(card, content, correct, startTime, onAnswered) {
   const panel = el("div", { class: "explanation-panel" });
   panel.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig!" : "Nicht ganz." }));
   panel.appendChild(el("p", {}, [el("strong", { text: "Erklärung: " }), document.createTextNode(content.germanExplanation)]));
-  const explCtx = contextParts(content);
-  if (explCtx.text) {
-    panel.appendChild(el("p", {}, [el("strong", { text: explCtx.label + ": " }), document.createTextNode(explCtx.text)]));
-  }
+  panel.appendChild(el("p", {}, [el("strong", { text: "Salesforce-Kontext: " }), document.createTextNode(content.salesforceContext)]));
   panel.appendChild(el("p", { class: "memory-hook" }, [el("strong", { text: "Merksatz: " }), document.createTextNode(content.memoryHook)]));
   if (content.confusableTerms?.length) {
     panel.appendChild(el("p", { class: "confusable" }, [
@@ -180,7 +156,7 @@ function renderDefinition(container, content, startTime, onAnswered) {
 function renderQuestion(container, questionContent, opts, startTime, onAnswered) {
   const card = el("div", { class: "item-card" });
   card.appendChild(el("h3", { class: "item-kicker", text: "Szenario-Frage" }));
-  if (!opts.disclaimerAlreadyShown) card.appendChild(disclaimerNote(questionContent.disclaimer));
+  if (!opts.disclaimerAlreadyShown) card.appendChild(disclaimerNote());
   card.appendChild(el("p", { class: "item-question", text: questionContent.questionText || questionContent.text }));
 
   const isMulti = questionContent.type === "multiple-select";
@@ -238,11 +214,12 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
       ]));
     });
     if (questionContent.signalWordAnalysis?.length) {
-      panel.appendChild(analysisBlock(questionContent.signalWordAnalysis, "Signalwort-Analyse:"));
-    }
-    // HubSpot-Inhalte trainieren kein Englisch, sondern die Ausschlusslogik der Antwortoptionen.
-    if (questionContent.answerLogic?.length) {
-      panel.appendChild(analysisBlock(questionContent.answerLogic, "Ausschlusslogik:"));
+      const sig = el("div", { class: "signal-words" });
+      sig.appendChild(el("strong", { text: "Signalwort-Analyse:" }));
+      const list = el("ul");
+      questionContent.signalWordAnalysis.forEach((s) => list.appendChild(el("li", { text: s })));
+      sig.appendChild(list);
+      panel.appendChild(sig);
     }
     if (questionContent.germanExplanation) {
       panel.appendChild(el("p", {}, [el("strong", { text: "Fachliche Erklärung: " }), document.createTextNode(questionContent.germanExplanation)]));
@@ -274,8 +251,8 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
 
 function renderReadingPassage(container, content, startTime, onAnswered) {
   const wrap = el("div", { class: "item-card" });
-  wrap.appendChild(el("h3", { class: "item-kicker", text: platformConfig(platformOfContent(content)).scenarioKicker }));
-  wrap.appendChild(disclaimerNote(content.disclaimer));
+  wrap.appendChild(el("h3", { class: "item-kicker", text: "Szenario lesen und beantworten" }));
+  wrap.appendChild(disclaimerNote());
   wrap.appendChild(el("p", { class: "item-scenario", text: content.scenario }));
   container.appendChild(wrap);
 
@@ -291,10 +268,12 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
       clear(questionHost);
       const panel = el("div", { class: "explanation-panel" });
       if (content.signalWordAnalysis?.length) {
-        panel.appendChild(analysisBlock(content.signalWordAnalysis, "Signalwort-Analyse (gesamte Passage):"));
-      }
-      if (content.answerLogic?.length) {
-        panel.appendChild(analysisBlock(content.answerLogic, "Ausschlusslogik (gesamtes Szenario):"));
+        const sig = el("div", { class: "signal-words" });
+        sig.appendChild(el("strong", { text: "Signalwort-Analyse (gesamte Passage):" }));
+        const list = el("ul");
+        content.signalWordAnalysis.forEach((s) => list.appendChild(el("li", { text: s })));
+        sig.appendChild(list);
+        panel.appendChild(sig);
       }
       if (content.germanExplanation) {
         panel.appendChild(el("p", {}, [el("strong", { text: "Fachliche Erklärung: " }), document.createTextNode(content.germanExplanation)]));

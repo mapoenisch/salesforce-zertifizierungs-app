@@ -55,49 +55,20 @@ export function shuffle(arr) {
   return copy;
 }
 
-const CERT_LABELS = {
-  foundations: "Foundations",
-  administrator: "Administrator",
-  "hubspot-sales-software": "Sales Hub Software",
-  "hubspot-inbound-sales": "Inbound Sales",
-  "hubspot-frictionless-sales": "Reibungsloser Vertrieb"
-};
-
 export function certLabel(cert) {
-  return CERT_LABELS[cert] || cert || "Foundations";
+  return cert === "administrator" ? "Administrator" : "Foundations";
 }
 
 /** Menschenlesbares Label für die drei Lernpfad-IDs (settings.certificationPath) — nicht zu verwechseln mit certLabel(), das die binäre Content-Certification einzelner Inhalte beschriftet. */
-const PATH_LABELS = {
-  foundations: "Salesforce Foundations",
-  administrator: "Salesforce Administrator (Foundations vorausgesetzt)",
-  "administrator-full": "Salesforce Administrator (inkl. Foundations)",
-  "hubspot-sales-software": "HubSpot Sales Hub Software",
-  "hubspot-inbound-sales": "HubSpot Inbound Sales",
-  "hubspot-frictionless-sales": "HubSpot Reibungsloser Vertrieb",
-  "hubspot-all": "HubSpot — alle drei Zertifizierungen"
-};
-
 export function pathLabel(path) {
-  return PATH_LABELS[path] || "Salesforce Foundations";
-}
-
-/**
- * Beschriftet die Gewichtung eines Themenbereichs. Salesforce nutzt die offiziellen
- * Exam-Weightings; HubSpot veröffentlicht keine Prozentgewichtungen, dort steht eine
- * redaktionell aus der offiziellen Lektionsdauer abgeleitete Priorität — sie wird auch so benannt.
- */
-export function domainWeightLabel(domain) {
-  if (!domain || typeof domain.weightPercent !== "number") return "";
-  return domain.priorityType === "editorialPriority"
-    ? `${domain.weightPercent} % redaktionell`
-    : `${domain.weightPercent} %`;
+  if (path === "administrator") return "Administrator (Foundations vorausgesetzt)";
+  if (path === "administrator-full") return "Administrator (inkl. Foundations)";
+  return "Foundations";
 }
 
 const DISCLAIMER = "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.";
-/** @param {string} [text] inhaltsspezifischer Hinweis (z. B. HubSpot-Wortlaut), sonst Standardtext. */
-export function disclaimerNote(text) {
-  return el("p", { class: "disclaimer", text: text || DISCLAIMER });
+export function disclaimerNote() {
+  return el("p", { class: "disclaimer", text: DISCLAIMER });
 }
 
 /**

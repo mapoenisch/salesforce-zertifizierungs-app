@@ -1,6 +1,6 @@
 // views/quiz.js — Frage-/Prüfungsmodus: freies Üben (mit Filtern) und zeitlimitierte Mini-Prüfung.
 
-import { state, refreshProgress, refreshActivity, domainMap, pathCertifications, activePlatform } from "../state.js";
+import { state, refreshProgress, refreshActivity, domainMap, pathCertifications } from "../state.js";
 import * as db from "../db.js";
 import * as sm2 from "../sm2.js";
 import { renderItem } from "../itemRenderer.js";
@@ -15,9 +15,10 @@ export async function render(container, ctx) {
 
   const activePath = state.settings.certificationPath;
   const certifications = pathCertifications(activePath);
-  // Deckt der Lernpfad mehrere Zertifizierungen ab (administrator-full, hubspot-all), lässt sich
-  // zwischen ihnen filtern; sonst ist der Filter fest auf die eine Zertifizierung des Pfads gesetzt.
-  const filters = { certification: certifications.length > 1 ? "both" : certifications[0], examDomainId: "all", cefr: "both", format: "all", difficulty: "all", errorStatus: "all" };
+  // Bei Foundations-only/Administrator-only gibt es innerhalb des Pfads nur eine Zertifizierung —
+  // der Zertifizierungsfilter wird dann gar nicht erst angezeigt (fest auf den Pfad gesetzt), um
+  // Verwirrung zu vermeiden. Nur administrator-full bietet die Wahl zwischen Beide/Foundations/Administrator.
+  const filters = { certification: activePath === "administrator-full" ? "both" : activePath, examDomainId: "all", cefr: "both", format: "all", difficulty: "all", errorStatus: "all" };
   const formHost = el("div", { class: "card" });
   container.appendChild(formHost);
   renderFilterForm(formHost, filters, activePath, certifications);
@@ -33,7 +34,7 @@ export async function render(container, ctx) {
   container.appendChild(runHost);
 
   freeBtn.addEventListener("click", () => {
-    const pool = filterPool(allQuizItems(), filters, certifications);
+    const pool = filterPool(allQuizItems(), filters);
     if (pool.length === 0) {
       alert("Keine Inhalte für diese Filterkombination gefunden.");
       return;
@@ -42,7 +43,7 @@ export async function render(container, ctx) {
   });
 
   examBtn.addEventListener("click", () => {
-    const pool = filterPool(allQuizItems().filter((i) => i.contentType === "question" || i.contentType === "readingPassage"), filters, certifications);
+    const pool = filterPool(allQuizItems().filter((i) => i.contentType === "question" || i.contentType === "readingPassage"), filters);
     if (pool.length < 3) {
       alert("Zu wenige Fragen für diese Filterkombination (mindestens 3 nötig).");
       return;
@@ -57,30 +58,27 @@ export async function render(container, ctx) {
 function renderFilterForm(host, filters, activePath, certifications) {
   clear(host);
   host.appendChild(el("h2", { text: "Filter" }));
-  const platform = activePlatform();
-  // Bereichsauswahl nur mit den Themenbereichen des aktiven Lernpfads bestücken.
+  // Domain-Auswahl nur mit Domains des aktiven Lernpfads bestücken (bei administrator-full: beide Domain-Sets).
   const domains = [...domainMap().values()].filter((d) => certifications.includes(d.certification));
 
   const row1 = el("div", { class: "filter-row" });
-  if (certifications.length > 1) {
+  if (activePath === "administrator-full") {
     row1.appendChild(selectField("Zertifizierung", filters, "certification", [
-      ["both", "Alle im Lernpfad"], ...certifications.map((c) => [c, certLabel(c)])
+      ["both", "Beide (Foundations + Administrator)"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
     ]));
   }
-  row1.appendChild(selectField(platform.domainLabel, filters, "examDomainId", [
+  row1.appendChild(selectField("Exam-Domain", filters, "examDomainId", [
     ["all", "Alle"], ...domains.map((d) => [d.id, `${d.name} (${certLabel(d.certification)})`])
   ]));
-  if (platform.usesCefr) {
-    row1.appendChild(selectField("CEFR-Level", filters, "cefr", [
-      ["both", "Beide"], ["B1", "B1"], ["B2", "B2"]
-    ]));
-  }
+  row1.appendChild(selectField("CEFR-Level", filters, "cefr", [
+    ["both", "Beide"], ["B1", "B1"], ["B2", "B2"]
+  ]));
   host.appendChild(row1);
 
   const row2 = el("div", { class: "filter-row" });
   row2.appendChild(selectField("Übungsformat", filters, "format", [
     ["all", "Alle"], ["vocabulary", "Vokabel im Kontext"], ["definition", "Definitions-Matching"],
-    ["question", "Szenario-Frage"], ["readingPassage", platform.scenarioKicker]
+    ["question", "Szenario-Frage"], ["readingPassage", "Reading-Passage"]
   ]));
   row2.appendChild(selectField("Schwierigkeit", filters, "difficulty", [
     ["all", "Alle"], ["easy", "Leicht"], ["medium", "Mittel"], ["hard", "Schwer"]
@@ -115,11 +113,9 @@ function allQuizItems() {
   ];
 }
 
-function filterPool(items, filters, certifications) {
+function filterPool(items, filters) {
   return items.filter((i) => {
     const c = i.content;
-    // Grundfilter: nur Inhalte des aktiven Lernpfads — trennt Salesforce- und HubSpot-Ebene.
-    if (certifications && certifications.length && !certifications.includes(c.certification)) return false;
     if (filters.certification !== "both" && c.certification !== filters.certification) return false;
     if (filters.examDomainId !== "all" && c.examDomainId !== filters.examDomainId) return false;
     if (filters.cefr !== "both" && c.cefr !== filters.cefr) return false;
@@ -247,7 +243,7 @@ function startMiniExam(host, pool, ctx) {
     clear(qHost);
     const { item, q } = examQuestions[current];
     const card = el("div", { class: "item-card" });
-    card.appendChild(disclaimerNote(item.content.disclaimer));
+    card.appendChild(disclaimerNote());
     if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario }));
     card.appendChild(el("p", { class: "item-question", text: q.questionText || q.text }));
     const isMulti = q.type === "multiple-select";
