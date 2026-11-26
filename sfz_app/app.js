@@ -27,15 +27,14 @@ const navLabels = {
   "#/learn": "Lernen",
   "#/quiz": "Prüfung",
   "#/glossary": "Glossar",
-  "#/exam-english": "Prüfungsenglisch",
-  "#/progress": "Fortschritt",
-  "#/settings": "Einstellungen"
+  "#/progress": "Fortschritt"
 };
 
 const appRoot = document.getElementById("app");
 const navRoot = document.getElementById("nav");
 const header = navRoot.parentElement;
 const navToggle = document.getElementById("nav-toggle");
+const settingsLink = document.getElementById("settings-link");
 
 function setMenuOpen(open) {
   header.classList.toggle("menu-open", open);
@@ -114,15 +113,27 @@ async function onHashChange() {
 function buildNav() {
   navRoot.textContent = "";
   setMenuOpen(false);
-  navToggle.hidden = !state.settings.certificationPath;
+  const hasPath = Boolean(state.settings.certificationPath);
+  navToggle.hidden = !hasPath;
+  navRoot.hidden = !hasPath;
+  if (settingsLink) settingsLink.hidden = !hasPath;
   // Solange kein Lernpfad gewählt ist, gibt es keine Navigation — das Onboarding ist die einzige Ansicht.
-  if (!state.settings.certificationPath) return;
+  if (!hasPath) return;
+
+  const activeRoute = (location.hash || "#/dashboard").split("?")[0];
+  if (settingsLink) {
+    const isSettings = activeRoute === "#/settings";
+    settingsLink.classList.toggle("nav-link-active", isSettings);
+    if (isSettings) settingsLink.setAttribute("aria-current", "page");
+    else settingsLink.removeAttribute("aria-current");
+  }
+
   for (const [hash, label] of Object.entries(navLabels)) {
     const link = document.createElement("a");
     link.href = hash;
     link.textContent = label;
     link.className = "nav-link";
-    if (location.hash === hash || (!location.hash && hash === "#/dashboard")) {
+    if (activeRoute === hash || (!location.hash && hash === "#/dashboard")) {
       link.classList.add("nav-link-active");
       link.setAttribute("aria-current", "page");
     }
@@ -137,6 +148,15 @@ function buildNav() {
     });
     navRoot.appendChild(link);
   }
+}
+
+if (settingsLink) {
+  settingsLink.addEventListener("click", (event) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (navToggle.getAttribute("aria-expanded") === "true") setMenuOpen(false);
+    if (currentHash !== "#/settings") navigate("#/settings");
+  });
 }
 
 const CONTENT_FREE_ROUTES = new Set(["#/onboarding", "#/exam-english"]);
@@ -162,7 +182,8 @@ async function renderRoute() {
   }
 
   const hash = location.hash || "#/dashboard";
-  if (!state.ready && !CONTENT_FREE_ROUTES.has(hash)) {
+  const routeKey = hash.split("?")[0];
+  if (!state.ready && !CONTENT_FREE_ROUTES.has(routeKey)) {
     appRoot.textContent = "Lade Lerninhalte…";
     try {
       await init();
@@ -172,7 +193,7 @@ async function renderRoute() {
     }
   }
 
-  const view = routes[hash] || dashboard;
+  const view = routes[routeKey] || dashboard;
   viewController?.abort();
   currentView?.leave?.();
   const controller = new AbortController();

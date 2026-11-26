@@ -5,9 +5,24 @@ import { el, clear, certLabel } from "../utils.js";
 
 const PAGE_SIZE = 40;
 
-export async function render(container) {
+export async function render(container, ctx) {
   clear(container);
-  container.appendChild(el("h1", { text: "Glossar" }));
+  const headRow = el("div", { class: "view-header-row" }, [
+    el("h1", { text: "Glossar" }),
+    el("a", {
+      class: "secondary-btn compact-link-btn",
+      text: "Leitfaden: Prüfungsenglisch",
+      attrs: { href: "#/exam-english" },
+      on: {
+        click: (ev) => {
+          if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+          ev.preventDefault();
+          ctx.navigate("#/exam-english");
+        }
+      }
+    })
+  ]);
+  container.appendChild(headRow);
 
   const activePath = state.settings.certificationPath;
   const certifications = pathCertifications(activePath);
@@ -30,7 +45,7 @@ export async function render(container) {
   const row = el("div", { class: "filter-row" });
   if (activePath === "administrator-full") {
     row.appendChild(selectField("Zertifizierung", filters, "certification", [
-      ["both", "Beide (Foundations + Administrator)"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
+      ["both", "Beide Pfade"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
     ], renderListRef));
   }
   row.appendChild(selectField("Exam-Domain", filters, "examDomainId", [
@@ -114,14 +129,28 @@ function renderCard(v, domain) {
 
   const card = el("div", { class: "card glossary-card" });
   card.appendChild(el("h2", { text: v.term, attrs: { lang: "en" } }));
-  card.appendChild(el("p", { class: "item-hint", text: `${certLabel(v.certification)} · ${domain?.name || v.examDomainId} · CEFR ${v.cefr}` }));
+  const cefrClass = v.cefr === "B2" ? "meta-pill meta-pill-b2" : "meta-pill meta-pill-b1";
+  const metaPills = el("div", { class: "meta-pills" }, [
+    el("span", { class: "meta-pill", text: certLabel(v.certification) }),
+    el("span", { class: "meta-pill", text: domain?.name || v.examDomainId }),
+    el("span", { class: cefrClass, text: `CEFR ${v.cefr}` })
+  ]);
+  card.appendChild(metaPills);
   card.appendChild(el("p", {}, [el("strong", { text: "Deutsch: " }), document.createTextNode(v.germanExplanation)]));
   card.appendChild(el("p", {}, [el("strong", { text: "Kontext: " }), document.createTextNode(v.salesforceContext)]));
   card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), el("span", { text: exampleSentence, attrs: { lang: "en" } })]));
   if (v.confusableTerms?.length) {
     card.appendChild(el("p", { class: "confusable" }, [el("strong", { text: "Verwechslungsgefahr: " }), el("span", { text: v.confusableTerms.join(", "), attrs: { lang: "en" } })]));
   }
-  card.appendChild(el("p", { class: "review-status" }, [el("strong", { text: "Status: " }), document.createTextNode(statusText)]));
+  const statusPillClass = !progress
+    ? "meta-pill"
+    : progress.flag === "relearn"
+    ? "meta-pill meta-pill-warn"
+    : "meta-pill meta-pill-status";
+  card.appendChild(el("p", { class: "review-status" }, [
+    el("strong", { text: "Status: " }),
+    el("span", { class: statusPillClass, text: statusText })
+  ]));
   return card;
 }
 

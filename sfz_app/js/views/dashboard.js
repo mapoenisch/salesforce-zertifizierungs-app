@@ -27,8 +27,11 @@ export async function render(container, ctx) {
   heroBtn.addEventListener("click", () => ctx.navigate("#/learn"));
   container.appendChild(heroBtn);
 
+  // Cockpit-KPI-Grid: Fällige Wiederholungen + Aktuelle Woche
+  const topGrid = el("div", { class: "cockpit-grid" });
+
   // Fällige Wiederholungen
-  container.appendChild(el("div", { class: "card" }, [
+  topGrid.appendChild(el("div", { class: "card" }, [
     el("h2", { text: "Fällige Wiederholungen" }),
     el("p", { class: "big-number", text: String(dueCount) }),
     el("p", { class: "item-hint", text: dueCount > 0 ? "Diese Inhalte warten auf Wiederholung." : "Aktuell nichts fällig — gute Gelegenheit für neue Inhalte." })
@@ -47,71 +50,90 @@ export async function render(container, ctx) {
       weekCard.appendChild(el("p", { text: `${label} · ${weekActual[actual]} diese Woche` }));
     }
   }
-  container.appendChild(weekCard);
+  topGrid.appendChild(weekCard);
+  container.appendChild(topGrid);
+
+  // Zweite Cockpit-Reihe: Monat + Zertifizierung/CEFR
+  const midGrid = el("div", { class: "cockpit-grid" });
   const monthly = weeklyPlan.computeMilestoneProgress(
     state.content.weeklyPlan, state.activity, state.settings.startDate, monthNumber, certification, certifications
   );
   const monthCard = el("div", { class: "card" }, [
-    el("h2", { text: `Monat ${monthNumber} · bisheriger Stand zum Meilenstein` }),
+    el("h2", { text: `Monat ${monthNumber} · Meilenstein` }),
     milestone && el("p", { class: "milestone", text: milestone })
   ]);
   for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
     monthCard.appendChild(soll_ist_row(label, monthly.actual[actual], monthly.target[target]));
   }
-  container.appendChild(monthCard);
+  midGrid.appendChild(monthCard);
 
   // Nur Inhalte des aktiven Lernpfads berücksichtigen (bei administrator-full: Foundations + Administrator zusammen)
   const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));
   const pathActivity = state.activity.filter((a) => certifications.includes(a.certification));
   const { answered } = summarizeActivity(pathActivity, state.progressByContentId);
 
-  const certCard = el("div", { class: "card" }, [
-    el("h2", { text: "Fortschritt je Zertifizierung" })
+  const overviewCard = el("div", { class: "card" }, [
+    el("h2", { text: "Abdeckung nach Pfad & CEFR" })
   ]);
   for (const cert of certifications) {
     const items = all.filter((item) => item.content.certification === cert);
     const count = items.filter((item) => answered.has(item.content.id)).length;
-    certCard.appendChild(progressBar(count / Math.max(1, items.length) * 100, `${certLabel(cert)} · ${count}/${items.length} bearbeitet`));
+    overviewCard.appendChild(progressBar(count / Math.max(1, items.length) * 100, `${certLabel(cert)} · ${count}/${items.length} bearbeitet`));
   }
-  container.appendChild(certCard);
-
-  // Fortschritt je Domain (nur Domains des aktiven Lernpfads)
-  const domains = domainMap();
-  const domainCard = el("div", { class: "card" });
-  domainCard.appendChild(el("h2", { text: "Fortschritt je Exam-Domain" }));
-  [...domains.values()]
-    .filter((d) => certifications.includes(d.certification))
-    .sort((a, b) => b.weightPercent - a.weightPercent)
-    .forEach((domain) => {
-      const items = all.filter((i) => i.content.examDomainId === domain.id);
-      if (!items.length) return;
-      const attempted = items.filter((i) => answered.has(i.content.id)).length;
-      const pct = (attempted / items.length) * 100;
-      domainCard.appendChild(progressBar(pct, `${domain.name} (${domain.weightPercent}%) — ${attempted}/${items.length} bearbeitet`));
-    });
-  container.appendChild(domainCard);
-
-  // Fortschritt B1 vs B2
-  const cefrCard = el("div", { class: "card" });
-  cefrCard.appendChild(el("h2", { text: "Fortschritt B1 vs. B2" }));
   ["B1", "B2"].forEach((cefr) => {
     const items = all.filter((i) => i.content.cefr === cefr);
     const attempted = items.filter((i) => answered.has(i.content.id)).length;
     const pct = items.length ? (attempted / items.length) * 100 : 0;
-    cefrCard.appendChild(progressBar(pct, `${cefr} — ${attempted}/${items.length} bearbeitet`));
+    overviewCard.appendChild(progressBar(pct, `CEFR ${cefr} — ${attempted}/${items.length} bearbeitet`));
   });
-  container.appendChild(cefrCard);
+  midGrid.appendChild(overviewCard);
+  container.appendChild(midGrid);
 
-  // Top-3 Schwachpunkte
+  // Fortschritt je Domain (nur Domains des aktiven Lernpfads, Top 4 sichtbar + Rest klappbar)
+  const domains = domainMap();
+  const domainCard = el("div", { class: "card" });
+  domainCard.appendChild(el("h2", { text: "Fortschritt je Exam-Domain" }));
+  const sortedDomains = [...domains.values()]
+    .filter((d) => certifications.includes(d.certification))
+    .sort((a, b) => b.weightPercent - a.weightPercent)
+    .map((domain) => {
+      const items = all.filter((i) => i.content.examDomainId === domain.id);
+      return { domain, items };
+    })
+    .filter(({ items }) => items.length > 0);
+
+  const renderDomainBar = ({ domain, items }) => {
+    const attempted = items.filter((i) => answered.has(i.content.id)).length;
+    const pct = (attempted / items.length) * 100;
+    return progressBar(pct, `${domain.name} (${domain.weightPercent}%) — ${attempted}/${items.length} bearbeitet`);
+  };
+
+  sortedDomains.slice(0, 4).forEach((entry) => domainCard.appendChild(renderDomainBar(entry)));
+  if (sortedDomains.length > 4) {
+    const more = el("details", { class: "domain-more" }, [
+      el("summary", { text: `Weitere ${sortedDomains.length - 4} Exam-Domains anzeigen` })
+    ]);
+    sortedDomains.slice(4).forEach((entry) => more.appendChild(renderDomainBar(entry)));
+    domainCard.appendChild(more);
+  }
+  container.appendChild(domainCard);
+
+  // Top-3 Schwachpunkte (als direkte Übungslinks)
   const weakCard = el("div", { class: "card" });
   weakCard.appendChild(el("h2", { text: "Top-3 Schwachpunkte" }));
   const weakDomains = computeWeakDomains(pathActivity, domains);
   if (weakDomains.length === 0) {
     weakCard.appendChild(el("p", { class: "item-hint", text: "Noch nicht genug Daten — starte deine erste Einheit." }));
   } else {
-    const list = el("ul");
+    const list = el("ul", { class: "weak-links-list" });
     weakDomains.slice(0, 3).forEach((w) => {
-      list.appendChild(el("li", { text: `${w.name}: ${w.accuracy}% Trefferquote (${w.total} Antworten)` }));
+      const btn = el("button", {
+        class: "weak-link-btn",
+        text: `${w.name}: ${w.accuracy}% Trefferquote (${w.total} Antworten) → Gezielt üben`,
+        attrs: { type: "button" }
+      });
+      btn.addEventListener("click", () => ctx.navigate(`#/quiz?domain=${encodeURIComponent(w.id)}`));
+      list.appendChild(el("li", {}, [btn]));
     });
     weakCard.appendChild(list);
   }
@@ -119,6 +141,9 @@ export async function render(container, ctx) {
 }
 
 function soll_ist_row(label, actual, target) {
+  if (target === 0 && actual === 0) {
+    return el("p", { class: "item-hint soll-empty", text: `${label}: Kein Soll in dieser Woche` });
+  }
   const pct = target > 0 ? (actual / target) * 100 : actual > 0 ? 100 : 0;
   return progressBar(pct, `${label}: ${actual} / ${target} (Soll)`);
 }
@@ -136,6 +161,7 @@ function computeWeakDomains(activity, domains) {
   return [...byDomain.entries()]
     .filter(([, v]) => v.total >= 3)
     .map(([domainId, v]) => ({
+      id: domainId,
       name: domains.get(domainId)?.name || domainId,
       accuracy: Math.round((v.correct / v.total) * 100),
       total: v.total

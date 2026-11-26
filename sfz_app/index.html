@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self';" />
   <title>Salesforce-Zertifizierungs-Trainer</title>
+  <link rel="icon" href="assets/logo.png" />
   <script src="js/themeInit.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -12,9 +13,19 @@
   <a class="skip-link" href="#app">Zum Inhalt springen</a>
 
   <header class="app-header">
-    <div class="app-title">Salesforce-Zertifizierungs-Trainer</div>
+    <div class="app-brand">
+      <img class="app-logo" src="assets/logo.png" alt="" width="36" height="36" />
+      <div class="app-title">Salesforce-Zertifizierungs-Trainer</div>
+    </div>
     <button id="nav-toggle" class="nav-toggle secondary-btn" type="button" aria-controls="nav" aria-expanded="false" hidden>Menü</button>
-    <nav id="nav" class="app-nav" aria-label="Hauptnavigation"></nav>
+    <nav id="nav" class="app-nav" aria-label="Hauptnavigation" hidden></nav>
+    <a id="settings-link" class="header-utility-link" href="#/settings" hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.77 1.02 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+      <span>Einstellungen</span>
+    </a>
   </header>
 
   <noscript>JavaScript wird zum Laden der Lerninhalte benötigt.</noscript>

@@ -56,6 +56,7 @@ function renderVocabularyIntro(container, content, startTime, onAnswered) {
     { once: true }
   );
   card.appendChild(continueBtn);
+  bindItemShortcuts(card, () => ({ onEnter: () => triggerContinueShortcut(card) }));
   container.appendChild(card);
 }
 
@@ -71,6 +72,39 @@ function markOptionState(btn, isCorrect, isChosenWrong) {
 
 // ---------- Vokabel im Kontext ----------
 
+let activeShortcutCleanup = null;
+
+function bindItemShortcuts(root, getHandlers) {
+  if (activeShortcutCleanup) activeShortcutCleanup();
+  function onKeydown(ev) {
+    if (!root.isConnected) {
+      cleanup();
+      return;
+    }
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    const tag = document.activeElement?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+    const handlers = getHandlers();
+    if (/^[1-9]$/.test(ev.key)) {
+      const n = Number(ev.key);
+      if (handlers.onNumber?.(n)) ev.preventDefault();
+    } else if (ev.key === "Enter" && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
+      if (handlers.onEnter?.()) ev.preventDefault();
+    }
+  }
+  function cleanup() {
+    document.removeEventListener("keydown", onKeydown);
+    if (activeShortcutCleanup === cleanup) activeShortcutCleanup = null;
+  }
+  document.addEventListener("keydown", onKeydown);
+  activeShortcutCleanup = cleanup;
+}
+
+function addOptionKeycap(btn, idx) {
+  if (idx < 9) btn.prepend(el("kbd", { class: "keycap", text: String(idx + 1), attrs: { "aria-hidden": "true" } }));
+}
+
 function renderVocabulary(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card" });
   card.appendChild(el("h2", { class: "item-title", text: "Vokabel im Kontext" }));
@@ -79,8 +113,11 @@ function renderVocabulary(container, content, startTime, onAnswered) {
   const optionsWrap = el("div", { class: "item-options" });
   let answered = false;
 
-  shuffle(content.options).forEach((opt) => {
-    const btn = el("button", { class: "option-btn", text: opt, attrs: { type: "button", lang: "en" } });
+  const optButtons = shuffle(content.options).map((opt, idx) => {
+    const btn = el("button", { class: "option-btn", attrs: { type: "button", lang: "en" } }, [
+      el("span", { class: "option-text", text: opt })
+    ]);
+    addOptionKeycap(btn, idx);
     btn.dataset.option = opt;
     btn.addEventListener("click", () => {
       if (answered) return;
@@ -93,7 +130,16 @@ function renderVocabulary(container, content, startTime, onAnswered) {
       showVocabExplanation(card, content, correct, startTime, onAnswered);
     });
     optionsWrap.appendChild(btn);
+    return btn;
   });
+
+  bindItemShortcuts(card, () => ({
+    onNumber: (n) => {
+      if (!answered && n <= optButtons.length) { optButtons[n - 1].click(); return true; }
+      return triggerConfidenceShortcut(card, n);
+    },
+    onEnter: () => triggerContinueShortcut(card)
+  }));
 
   card.appendChild(optionsWrap);
   container.appendChild(card);
@@ -123,18 +169,40 @@ function showVocabExplanation(card, content, correct, startTime, onAnswered) {
 
 // ---------- Definitions-Matching ----------
 
+function triggerConfidenceShortcut(root, n) {
+  if (n < 1 || n > 5) return false;
+  const btn = root.querySelector(`.confidence-btn:nth-of-type(${n})`);
+  if (!btn || btn.disabled) return false;
+  btn.click();
+  return true;
+}
+
+function triggerContinueShortcut(root) {
+  const btn = root.querySelector(".confidence-wrap .primary-btn, .passage-subquestion .primary-btn, .vocab-intro-card .primary-btn");
+  if (!btn || btn.disabled) return false;
+  btn.click();
+  return true;
+}
+
 function renderDefinition(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card" });
   card.appendChild(el("h2", { class: "item-title", text: "Definitions-Matching" }));
   card.appendChild(el("p", { class: "item-term", text: content.term, attrs: { lang: "en" } }));
-  card.appendChild(el("p", { class: "item-hint", text: "Wähle die passende Definition (auch mit Tab + Enter bedienbar)." }));
+  card.appendChild(el("p", { class: "item-hint" }, [
+    document.createTextNode("Wähle die passende Definition"),
+    el("span", { class: "pointer-fine-only", text: " (auch mit Tasten 1–4 oder Tab + Enter bedienbar)" }),
+    document.createTextNode(".")
+  ]));
 
   const allDefs = shuffle([content.definition, ...content.distractorDefinitions]);
   const optionsWrap = el("div", { class: "item-options item-options-list" });
   let answered = false;
 
-  allDefs.forEach((defText) => {
-    const btn = el("button", { class: "option-btn option-btn-wide", text: defText, attrs: { type: "button", lang: "en" } });
+  const optButtons = allDefs.map((defText, idx) => {
+    const btn = el("button", { class: "option-btn option-btn-wide", attrs: { type: "button", lang: "en" } }, [
+      el("span", { class: "option-text", text: defText })
+    ]);
+    addOptionKeycap(btn, idx);
     btn.dataset.option = defText;
     btn.addEventListener("click", () => {
       if (answered) return;
@@ -158,7 +226,16 @@ function renderDefinition(container, content, startTime, onAnswered) {
       appendConfidenceAndContinue(card, correct, startTime, onAnswered);
     });
     optionsWrap.appendChild(btn);
+    return btn;
   });
+
+  bindItemShortcuts(card, () => ({
+    onNumber: (n) => {
+      if (!answered && n <= optButtons.length) { optButtons[n - 1].click(); return true; }
+      return triggerConfidenceShortcut(card, n);
+    },
+    onEnter: () => triggerContinueShortcut(card)
+  }));
 
   card.appendChild(optionsWrap);
   container.appendChild(card);
@@ -175,8 +252,9 @@ function renderDefinition(container, content, startTime, onAnswered) {
  *   sondern nur ein einfacher "Weiter"-Button, der direkt {correct} zurückmeldet.
  */
 function renderQuestion(container, questionContent, opts, startTime, onAnswered) {
-  const card = el("div", { class: "item-card" });
-  card.appendChild(el(opts.skipConfidence ? "h3" : "h2", { class: "item-title", text: "Szenario-Frage" }));
+  const card = el("div", { class: opts.embedded ? "passage-subquestion" : "item-card" });
+  const headingText = opts.subTotal > 1 ? `Teilfrage ${opts.subIndex + 1} von ${opts.subTotal}` : "Szenario-Frage";
+  card.appendChild(el(opts.skipConfidence ? "h3" : "h2", { class: "item-title", text: headingText }));
   if (!opts.disclaimerAlreadyShown) {
     card.appendChild(disclaimerNote());
     if (questionContent.scenario) card.appendChild(el("p", { class: "item-scenario", text: questionContent.scenario, attrs: { lang: "en" } }));
@@ -192,8 +270,12 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
 
   const options = questionContent.options;
   let submitBtn;
-  options.forEach((opt) => {
-    const btn = el("button", { class: "option-btn option-btn-wide", text: opt.text, attrs: { type: "button", lang: "en", ...(isMulti && { "aria-pressed": "false" }) } });
+  const optButtons = options.map((opt, idx) => {
+    const btn = el("button", {
+      class: "option-btn option-btn-wide",
+      attrs: { type: "button", lang: "en", ...(isMulti && { "aria-pressed": "false" }) }
+    }, [el("span", { class: "option-text", text: opt.text })]);
+    addOptionKeycap(btn, idx);
     btn.addEventListener("click", () => {
       if (answered) return;
       if (isMulti) {
@@ -209,6 +291,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
     });
     optionsWrap.appendChild(btn);
     btn.dataset.optId = opt.id;
+    return btn;
   });
   card.appendChild(optionsWrap);
 
@@ -217,6 +300,19 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
     submitBtn.addEventListener("click", () => submit());
     card.appendChild(submitBtn);
   }
+
+  const shortcutScope = opts.shortcutScope || card;
+  bindItemShortcuts(shortcutScope, () => ({
+    onNumber: (n) => {
+      if (!answered && n <= optButtons.length) { optButtons[n - 1].click(); return true; }
+      if (!opts.skipConfidence) return triggerConfidenceShortcut(shortcutScope, n);
+      return false;
+    },
+    onEnter: () => {
+      if (!answered && isMulti && submitBtn && !submitBtn.disabled) { submitBtn.click(); return true; }
+      return triggerContinueShortcut(shortcutScope);
+    }
+  }));
 
   function submit() {
     if (answered) return;
@@ -281,19 +377,26 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
   wrap.appendChild(el("h2", { class: "item-title", text: "Szenario lesen und beantworten" }));
   wrap.appendChild(disclaimerNote());
   wrap.appendChild(el("p", { class: "item-scenario", text: content.scenario, attrs: { lang: "en" } }));
-  container.appendChild(wrap);
+
+  const recapList = el("ul", { class: "passage-recap", attrs: { hidden: "" } });
+  wrap.appendChild(recapList);
 
   const questions = content.questions || [];
   let index = 0;
   let allCorrect = true;
 
-  const questionHost = el("div");
-  container.appendChild(questionHost);
+  const questionHost = el("div", { class: "passage-question-host" });
+  wrap.appendChild(questionHost);
+  container.appendChild(wrap);
 
   function next() {
     if (index >= questions.length) {
       clear(questionHost);
       const panel = el("div", { class: "explanation-panel" });
+      panel.appendChild(el("p", {
+        class: allCorrect ? "result-correct" : "result-incorrect",
+        text: allCorrect ? "Alle Teilfragen richtig beantwortet!" : "Passage abgeschlossen — nicht alle Teilfragen waren richtig."
+      }));
       if (content.signalWordAnalysis?.length) {
         const sig = el("div", { class: "signal-words" });
         sig.appendChild(el("strong", { text: "Signalwort-Analyse (gesamte Passage):" }));
@@ -305,16 +408,30 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
       if (content.germanExplanation) {
         panel.appendChild(el("p", {}, [el("strong", { text: "Fachliche Erklärung: " }), document.createTextNode(content.germanExplanation)]));
       }
-      container.appendChild(panel);
-      appendConfidenceAndContinue(container, allCorrect, startTime, onAnswered);
+      wrap.appendChild(panel);
+      bindItemShortcuts(wrap, () => ({
+        onNumber: (n) => triggerConfidenceShortcut(wrap, n),
+        onEnter: () => triggerContinueShortcut(wrap)
+      }));
+      appendConfidenceAndContinue(wrap, allCorrect, startTime, onAnswered);
       return;
     }
     clear(questionHost);
     const q = questions[index];
-    const host = el("div");
-    questionHost.appendChild(host);
-    renderQuestion(host, q, { disclaimerAlreadyShown: true, skipConfidence: true }, startTime, (result) => {
+    renderQuestion(questionHost, q, {
+      disclaimerAlreadyShown: true,
+      skipConfidence: true,
+      embedded: true,
+      subIndex: index,
+      subTotal: questions.length,
+      shortcutScope: wrap
+    }, startTime, (result) => {
       if (!result.correct) allCorrect = false;
+      recapList.hidden = false;
+      recapList.appendChild(el("li", { class: result.correct ? "recap-correct" : "recap-incorrect" }, [
+        el("strong", { text: `Teilfrage ${index + 1}: ${result.correct ? "✓ Richtig" : "✗ Nicht ganz"}` }),
+        document.createTextNode(` — ${q.questionText || q.text}`)
+      ]));
       index += 1;
       next();
       if (index < questions.length) focusContent(questionHost.querySelector("h3"));

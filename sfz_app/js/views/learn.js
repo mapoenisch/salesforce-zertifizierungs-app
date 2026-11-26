@@ -1,7 +1,7 @@
 // views/learn.js — Tägliche Lerneinheit: fällige Wiederholungen, neue Vokabeln, Matching, Reading, Abschluss.
 
 import { state, allLearnableContent, domainWeightMap, pathCertifications, refreshLearningData } from "../state.js";
-import { dueForPath, saveAnswers } from "../learning.js";
+import { dueForPath, markForReview, saveAnswers } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { renderItem } from "../itemRenderer.js";
 import { el, clear, shuffle, focusContent } from "../utils.js";
@@ -20,18 +20,41 @@ export async function render(container, ctx) {
     return;
   }
 
-  const progressLabel = el("p", { class: "session-progress" });
-  container.appendChild(el("p", { class: "item-hint", text:
-    `Tagesziel: ${state.settings.dailySessionMinutesTarget} Min.`
-  }));
-  container.appendChild(progressLabel);
+  const progressLabel = el("p", { class: "session-progress session-meta-line" });
+  const refLink = el("a", {
+    class: "session-ref-link",
+    text: "Prüfungsenglisch",
+    attrs: { href: "#/exam-english" },
+    on: {
+      click: (ev) => {
+        if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+        ev.preventDefault();
+        ctx.navigate("#/exam-english");
+      }
+    }
+  });
+  const statusBar = el("div", { class: "session-status-bar" }, [progressLabel, refLink]);
+  container.appendChild(statusBar);
+
+  const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
+  container.appendChild(status);
+
   const itemHost = el("div");
   container.appendChild(itemHost);
 
+  const toolbar = el("div", { class: "quiz-toolbar session-toolbar-bottom" });
+  const laterBtn = el("button", { class: "secondary-btn", text: "Später wiederholen markieren", attrs: { type: "button" } });
+  const stopBtn = el("button", { class: "secondary-btn", text: "Einheit beenden", attrs: { type: "button" } });
+  toolbar.append(laterBtn, stopBtn);
+  container.appendChild(toolbar);
+
   const cumulative = { total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: 0 };
+  stopBtn.addEventListener("click", () => renderSummary(container, cumulative, ctx));
 
   async function runRound(queue) {
     cumulative.rounds += 1;
+    toolbar.hidden = false;
+    statusBar.hidden = false;
     let index = 0;
 
     async function step() {
@@ -39,8 +62,20 @@ export async function render(container, ctx) {
         await finishRound();
         return;
       }
-      progressLabel.textContent = `Runde ${cumulative.rounds} · ${index + 1} von ${queue.length}`;
+      progressLabel.textContent = `Tagesziel: ${state.settings.dailySessionMinutesTarget} Min. · Runde ${cumulative.rounds} · ${index + 1} von ${queue.length}`;
       const current = queue[index];
+      status.textContent = "";
+      laterBtn.onclick = async () => {
+        laterBtn.disabled = true;
+        try {
+          await markForReview(current);
+          if (queue[index] === current) status.textContent = "Für die Lerneinheit vorgemerkt.";
+        } catch {
+          if (queue[index] === current) status.textContent = "Die Markierung konnte nicht gespeichert werden.";
+        } finally {
+          laterBtn.disabled = false;
+        }
+      };
       renderItem(itemHost, current, {
         onAnswered: async (result) => {
           try {
@@ -70,6 +105,9 @@ export async function render(container, ctx) {
     const nextQueue = buildQueue();
     clear(itemHost);
     progressLabel.textContent = "";
+    status.textContent = "";
+    toolbar.hidden = true;
+    statusBar.hidden = true;
     renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, () => runRound(nextQueue));
   }
 

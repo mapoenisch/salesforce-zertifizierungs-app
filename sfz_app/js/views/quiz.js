@@ -21,19 +21,37 @@ export function leave() {
   activeExam?.stop();
 }
 
-export async function render(container) {
+export async function render(container, ctx) {
   clear(container);
   const setup = el("section");
   const setupTitle = el("h1", { text: "Frage- und Prüfungsmodus" });
-  setup.appendChild(setupTitle);
+  const headRow = el("div", { class: "view-header-row" }, [
+    setupTitle,
+    el("a", {
+      class: "secondary-btn compact-link-btn",
+      text: "Leitfaden: Prüfungsenglisch",
+      attrs: { href: "#/exam-english" },
+      on: {
+        click: (ev) => {
+          if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+          ev.preventDefault();
+          ctx.navigate("#/exam-english");
+        }
+      }
+    })
+  ]);
+  setup.appendChild(headRow);
   container.appendChild(setup);
 
   await refreshLearningData();
   const activePath = state.settings.certificationPath;
   const certifications = pathCertifications(activePath);
+  const queryParams = new URLSearchParams(location.hash.split("?")[1] || "");
+  const requestedDomain = queryParams.get("domain");
+  const validDomain = requestedDomain && domainMap().has(requestedDomain) ? requestedDomain : "all";
   const filters = {
     certification: activePath === "administrator-full" ? "both" : activePath,
-    examDomainId: "all", cefr: "both", format: "all", difficulty: "all", errorStatus: "all"
+    examDomainId: validDomain, cefr: "both", format: "all", difficulty: "all", errorStatus: "all"
   };
 
   const actions = el("div", { class: "quiz-actions" });
@@ -49,6 +67,13 @@ export async function render(container) {
   const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
   setup.appendChild(status);
   const formHost = el("details", { class: "quiz-filters" });
+  const initialCount = filterPool(allQuizItems(), filters).length;
+  if (validDomain !== "all") {
+    formHost.open = true;
+    status.textContent = `${initialCount} passende Übungen für die gewählte Domain`;
+  } else {
+    status.textContent = `${initialCount} passende Übungen verfügbar`;
+  }
   formHost.appendChild(el("summary", { text: "Übungen filtern" }));
   const fields = el("div");
   formHost.appendChild(fields);
@@ -103,7 +128,7 @@ function renderFilterForm(host, filters, activePath, certifications) {
   const row1 = el("div", { class: "filter-row" });
   if (activePath === "administrator-full") {
     row1.appendChild(selectField("Zertifizierung", filters, "certification", [
-      ["both", "Beide (Foundations + Administrator)"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
+      ["both", "Beide Pfade"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
     ]));
   }
   row1.appendChild(selectField("Exam-Domain", filters, "examDomainId", [
@@ -117,7 +142,8 @@ function renderFilterForm(host, filters, activePath, certifications) {
   const row2 = el("div", { class: "filter-row" });
   row2.appendChild(selectField("Übungsformat", filters, "format", [
     ["all", "Alle"], ["vocabulary", "Vokabel im Kontext"], ["definition", "Definitions-Matching"],
-    ["question", "Szenario-Frage"], ["readingPassage", "Reading-Passage"]
+    ["question", "Szenario-Frage"], ["readingPassage", "Reading-Passage (alle)"],
+    ["readingPassage-single", "Reading-Passage (1 Frage)"], ["readingPassage-multi", "Reading-Passage (mehrteilig)"]
   ]));
   row2.appendChild(selectField("Schwierigkeit", filters, "difficulty", [
     ["all", "Alle"], ["easy", "Leicht"], ["medium", "Mittel"], ["hard", "Schwer"]
@@ -158,7 +184,15 @@ function filterPool(items, filters) {
     if (filters.certification !== "both" && c.certification !== filters.certification) return false;
     if (filters.examDomainId !== "all" && c.examDomainId !== filters.examDomainId) return false;
     if (filters.cefr !== "both" && c.cefr !== filters.cefr) return false;
-    if (filters.format !== "all" && i.contentType !== filters.format) return false;
+    if (filters.format !== "all") {
+      if (filters.format === "readingPassage-single") {
+        if (i.contentType !== "readingPassage" || (c.questions?.length || 0) !== 1) return false;
+      } else if (filters.format === "readingPassage-multi") {
+        if (i.contentType !== "readingPassage" || (c.questions?.length || 0) <= 1) return false;
+      } else if (i.contentType !== filters.format) {
+        return false;
+      }
+    }
     if (filters.difficulty !== "all" && c.difficulty !== filters.difficulty) return false;
     const progress = state.progressByContentId.get(c.id);
     if (filters.errorStatus === "wrong" && progress?.lastResult !== "incorrect") return false;
@@ -230,6 +264,7 @@ function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
           await saveAnswers([{ item: current, result, mode: "practice" }]);
         } catch {
           status.textContent = "Die Antwort konnte nicht gespeichert werden. Starte das freie Üben erneut.";
+          focusContent(status);
           return;
         }
         stats.total += 1;

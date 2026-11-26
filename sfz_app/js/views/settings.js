@@ -52,15 +52,22 @@ export async function render(container, ctx) {
   container.appendChild(pathCard);
 
   // Tagesziel + Startdatum
-  const goalCard = el("div", { class: "card" });
+  const goalCard = el("div", { class: "card settings-goal-card" });
   goalCard.appendChild(el("h2", { text: "Lernziel" }));
+
+  const goalStatus = el("p", { class: "item-hint settings-goal-status", attrs: { role: "status" } });
 
   const minutesLabel = el("label", { class: "filter-field" });
   minutesLabel.appendChild(el("span", { text: "Tagesziel (Minuten)" }));
   const minutesInput = el("input", { attrs: { type: "number", min: "5", max: "120", value: String(state.settings.dailySessionMinutesTarget) } });
   minutesInput.addEventListener("change", () => {
     const minutes = minutesInput.valueAsNumber;
-    if (Number.isInteger(minutes) && minutes >= 5 && minutes <= 120) saveSettings({ dailySessionMinutesTarget: minutes });
+    if (Number.isInteger(minutes) && minutes >= 5 && minutes <= 120) {
+      saveSettings({ dailySessionMinutesTarget: minutes });
+      goalStatus.textContent = `Tagesziel auf ${minutes} Min. gespeichert.`;
+    } else {
+      goalStatus.textContent = "Ungültiges Tagesziel (erlaubt: 5 bis 120 Minuten) — vorheriger Wert wiederhergestellt.";
+    }
     minutesInput.value = state.settings.dailySessionMinutesTarget;
   });
   minutesLabel.appendChild(minutesInput);
@@ -70,11 +77,17 @@ export async function render(container, ctx) {
   startLabel.appendChild(el("span", { text: "Startdatum der 12-Wochen-Planung" }));
   const startInput = el("input", { attrs: { type: "date", value: state.settings.startDate } });
   startInput.addEventListener("change", () => {
-    if (isCalendarDate(startInput.value)) saveSettings({ startDate: startInput.value });
+    if (isCalendarDate(startInput.value)) {
+      saveSettings({ startDate: startInput.value });
+      goalStatus.textContent = `Startdatum auf ${startInput.value} gespeichert.`;
+    } else {
+      goalStatus.textContent = "Ungültiges Datum (erwartet JJJJ-MM-TT) — vorheriger Wert wiederhergestellt.";
+    }
     startInput.value = state.settings.startDate;
   });
   startLabel.appendChild(startInput);
   goalCard.appendChild(startLabel);
+  goalCard.appendChild(goalStatus);
 
   container.appendChild(goalCard);
 

@@ -45,7 +45,7 @@ const PATHS = [
     title: "Administrator inklusive Foundations",
     subtitle: "Für den Einstieg in beide Themen",
     exam: ADMINISTRATOR,
-    buttonLabel: "Administrator inkl. Foundations wählen",
+    buttonLabel: "Kombi-Pfad wählen",
     focus: "5 Wochen Grundlagen, 7 Wochen Administration · Leseübungen auf B1 und B2."
   }
 ];
