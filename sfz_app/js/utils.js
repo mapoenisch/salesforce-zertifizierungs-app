@@ -56,7 +56,16 @@ export function progressBar(percent, label) {
   const pct = Math.max(0, Math.min(100, Math.round(percent)));
   const wrap = el("div", { class: "progress-bar-wrap" });
   if (label) wrap.appendChild(el("div", { class: "progress-bar-label", text: `${label} (${pct}%)` }));
-  const track = el("div", { class: "progress-bar-track" });
+  const track = el("div", {
+    class: "progress-bar-track",
+    attrs: {
+      role: "progressbar",
+      "aria-valuemin": "0",
+      "aria-valuemax": "100",
+      "aria-valuenow": String(pct),
+      ...(label && { "aria-label": label })
+    }
+  });
   const fill = el("div", { class: "progress-bar-fill" });
   fill.style.width = pct + "%";
   track.appendChild(fill);

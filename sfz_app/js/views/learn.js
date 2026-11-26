@@ -141,7 +141,7 @@ function renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, onConti
   ]);
   itemHost.appendChild(card);
 
-  const btnRow = el("div", { class: "filter-row" });
+  const btnRow = el("div", { class: "quiz-actions" });
   const continueBtn = el("button", { class: "primary-btn", text: "Weiterlernen", attrs: { type: "button" } });
   continueBtn.addEventListener("click", () => onContinue());
   const stopBtn = el("button", { class: "secondary-btn", text: "Für heute beenden", attrs: { type: "button" } });

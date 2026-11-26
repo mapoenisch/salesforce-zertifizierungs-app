@@ -9,15 +9,18 @@ html[data-theme="dark"] {
   --text: #eef1f5;
   --text-muted: #a7b0bd;
   --border: #333d4c;
+  --border-control: #64748b;
   --accent: #3aa0ff;
   --accent-contrast: #06141f;
   --link: #83c5ff;
   --success: #3fbf6a;
   --success-bg: #14361f;
-  --error: #ef5a5a;
+  --error: #f46b6b;
   --danger-contrast: #190e10;
   --error-bg: #3a1616;
   --focus-ring: #ffd166;
+  --modal-backdrop: rgba(0, 0, 0, 0.55);
+  --modal-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
 }
 
 html[data-theme="light"] {
@@ -28,6 +31,7 @@ html[data-theme="light"] {
   --text: #171b21;
   --text-muted: #4b5563;
   --border: #d6dbe2;
+  --border-control: #768394;
   --accent: #0b6fd1;
   --accent-contrast: #ffffff;
   --link: #0758ad;
@@ -37,6 +41,8 @@ html[data-theme="light"] {
   --danger-contrast: #fff;
   --error-bg: #fbe6e6;
   --focus-ring: #b25b00;
+  --modal-backdrop: rgba(0, 0, 0, 0.45);
+  --modal-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -226,7 +232,7 @@ h1 {
 .secondary-btn {
   background: transparent;
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
 }
 .secondary-btn:hover {
   background: var(--bg-elevated);
@@ -296,7 +302,7 @@ h1 {
 
 .option-btn {
   background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   color: var(--text);
   border-radius: 8px;
   min-height: 44px;
@@ -403,7 +409,7 @@ h1 {
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   background: var(--bg-elevated);
   color: var(--text);
   cursor: pointer;
@@ -512,7 +518,7 @@ h1 {
 
 .progress-bar-track {
   background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   border-radius: 6px;
   height: 10px;
   overflow: hidden;
@@ -555,7 +561,7 @@ h1 {
   min-height: 44px;
   padding: 0.5rem;
   border-radius: 6px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   background: var(--bg-elevated);
   color: var(--text);
   text-overflow: ellipsis;
@@ -737,7 +743,7 @@ h1 {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--modal-backdrop);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -752,7 +758,7 @@ h1 {
   padding: 1.5rem;
   max-width: 420px;
   width: 100%;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--modal-shadow);
 }
 
 .modal-box p {
@@ -778,7 +784,7 @@ h1 {
 
 @media (max-width: 640px), (max-height: 500px) {
   .app-header {
-    position: static;
+    position: relative;
   }
 }
 

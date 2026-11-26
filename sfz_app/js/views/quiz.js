@@ -286,6 +286,7 @@ function startMiniExam(runHost, pool, showSetup) {
   let current = 0;
   let timerHandle;
   let pendingConfirmation;
+  let lastTimerText = "";
 
   const title = el("h1", { text: "Mini-Prüfung" });
   const timer = el("p", { class: "quiz-timer", attrs: { role: "timer" } });
@@ -353,7 +354,11 @@ function startMiniExam(runHost, pool, showSetup) {
       return;
     }
     const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-    timer.textContent = `Restzeit ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+    const nextText = `Restzeit ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+    if (nextText !== lastTimerText) {
+      lastTimerText = nextText;
+      timer.textContent = nextText;
+    }
     if (!seconds) submit(true);
   }
 

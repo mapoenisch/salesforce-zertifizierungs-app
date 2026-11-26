@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Salesforce-Zertifizierungs-Trainer</title>
+  <script>
+    try {
+      const raw = localStorage.getItem("salesforce-trainer-settings") ?? localStorage.getItem("sfz-app-settings");
+      const theme = raw && JSON.parse(raw)?.theme;
+      if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+    } catch {}
+  </script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
