@@ -1,5 +1,5 @@
 @echo off
-setlocal enabledelayedexpansion
+setlocal
 
 REM Startet einen einfachen lokalen Webserver fuer den Salesforce-Zertifizierungs-Trainer
 REM und oeffnet die App automatisch im Standardbrowser.
@@ -17,12 +17,13 @@ cd /d "%~dp0"
 
 set PORT=8000
 
-REM Freien Port suchen, falls 8000 schon belegt ist.
-:checkport
-netstat -ano | findstr ":%PORT% " >nul
-if %errorlevel%==0 (
-    set /a PORT+=1
-    goto checkport
+REM Ohne Portwechsel bleibt der Lernstand unter derselben Browseradresse erreichbar.
+netstat -ano -p TCP | findstr /R /C:":%PORT% .*:0 .*" >nul
+if not errorlevel 1 (
+    echo Port %PORT% ist bereits belegt. Wenn der Trainer schon laeuft, oeffne http://localhost:%PORT%.
+    echo Andernfalls beende den Dienst auf Port %PORT% und starte dieses Skript erneut.
+    pause
+    exit /b 1
 )
 
 echo Starte lokalen Server fuer den Salesforce-Zertifizierungs-Trainer...
@@ -38,13 +39,13 @@ start "" cmd /c "timeout /t 1 >nul & start http://localhost:%PORT%"
 REM Python-Befehl ermitteln (python oder py-Launcher) und Server starten.
 where python >nul 2>nul
 if %errorlevel%==0 (
-    python -m http.server %PORT%
+    python -m http.server %PORT% --bind 127.0.0.1
     goto :eof
 )
 
 where py >nul 2>nul
 if %errorlevel%==0 (
-    py -3 -m http.server %PORT%
+    py -3 -m http.server %PORT% --bind 127.0.0.1
     goto :eof
 )
 

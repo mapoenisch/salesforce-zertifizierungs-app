@@ -1,12 +1,13 @@
 // views/progress.js — Detaillierte Fortschrittsübersicht.
 
-import { state, allLearnableContent, domainMap, pathCertifications } from "../state.js";
-import * as db from "../db.js";
+import { state, allLearnableContent, domainMap, pathCertifications, refreshLearningData } from "../state.js";
+import { dueForPath, summarizeActivity } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { el, clear, progressBar, formatDuration, todayISO, pathLabel } from "../utils.js";
 
 export async function render(container) {
   clear(container);
+  await refreshLearningData();
   const certification = state.settings.certificationPath;
   const certifications = pathCertifications(certification);
   const domains = domainMap();
@@ -14,28 +15,29 @@ export async function render(container) {
   container.appendChild(el("p", { class: "active-path-banner", text: `Aktiver Lernpfad: ${pathLabel(certification)}` }));
 
   const activity = state.activity.filter((a) => certifications.includes(a.certification));
-  // Reines Kennenlernen einer neuen Vokabel (Karteikarte, keine Wertung) fließt nicht in
-  // Trefferquote/Sicherheit/Bearbeitungszeit ein — dafür gibt es unten den separaten Zähler.
-  const scoredActivity = activity.filter((a) => !a.isIntro);
+  const scoredActivity = activity.filter((a) => typeof a.correct === "boolean");
   const introducedCount = activity.filter((a) => a.isIntro).length;
   const total = scoredActivity.length;
   const correct = scoredActivity.filter((a) => a.correct).length;
   const accuracy = total ? Math.round((correct / total) * 100) : null;
-  const avgConfidence = total ? (scoredActivity.reduce((s, a) => s + (a.confidence || 0), 0) / total).toFixed(1) : "–";
-  const avgTime = total ? scoredActivity.reduce((s, a) => s + (a.responseTimeMs || 0), 0) / total : null;
+  // Frühere Mini-Prüfungen speicherten den festen Wert 3 ohne Zeitmessung oder Modus.
+  const selfReported = scoredActivity.filter((a) => !(a.mode == null && a.confidence === 3 &&
+    a.responseTimeMs == null && ["question", "readingPassage"].includes(a.contentType)));
+  const avgConfidence = averageOf(selfReported, "confidence");
+  const avgTime = averageOf(scoredActivity, "responseTimeMs");
 
   container.appendChild(el("div", { class: "card" }, [
     el("h2", { text: "Gesamtstatistik" }),
     el("p", { text: `Trefferquote: ${accuracy != null ? accuracy + "%" : "–"} (${correct}/${total} Antworten)` }),
-    el("p", { text: `Durchschnittliche Sicherheit: ${avgConfidence} / 5` }),
+    el("p", { text: `Durchschnittliche Sicherheit: ${avgConfidence == null ? "–" : avgConfidence.toFixed(1) + " / 5"}` }),
     el("p", { text: `Durchschnittliche Bearbeitungszeit: ${formatDuration(avgTime)}` }),
-    el("p", { class: "item-hint", text: `Neue Vokabeln kennengelernt (Karteikarte, noch nicht abgefragt): ${introducedCount}` })
+    el("p", { class: "item-hint", text: `Vokabeln als Karteikarte kennengelernt: ${introducedCount}` })
   ]));
 
   // Fällige/überfällige Wiederholungen
   const today = todayISO();
-  const due = (await db.getDueProgress(today)).filter((d) => certifications.includes(d.certification));
-  const overdue = due.filter((d) => d.nextReviewDate < today).length;
+  const due = dueForPath(certifications, today);
+  const overdue = due.filter(({ progress }) => progress.nextReviewDate && progress.nextReviewDate < today).length;
   container.appendChild(el("div", { class: "card" }, [
     el("h2", { text: "Wiederholungen" }),
     el("p", { text: `Fällig heute oder überfällig: ${due.length}` }),
@@ -51,12 +53,21 @@ export async function render(container) {
 
   const goalCard = el("div", { class: "card" });
   goalCard.appendChild(el("h2", { text: `Zielerreichung — Woche ${weekNumber}, Monat ${monthNumber}` }));
-  if (weekTarget) {
-    goalCard.appendChild(progressBar((weekActual.newVocab / Math.max(1, weekTarget.newVocabTarget)) * 100, `Neue Vokabeln: ${weekActual.newVocab}/${weekTarget.newVocabTarget}`));
-    goalCard.appendChild(progressBar((weekActual.reviews / Math.max(1, weekTarget.reviewsTarget)) * 100, `Wiederholungen: ${weekActual.reviews}/${weekTarget.reviewsTarget}`));
-    goalCard.appendChild(progressBar((weekActual.readingExercises / Math.max(1, weekTarget.readingExercisesTarget)) * 100, `Reading: ${weekActual.readingExercises}/${weekTarget.readingExercisesTarget}`));
+  for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
+    if (weekTarget) {
+      goalCard.appendChild(progressBar(targetPercent(weekActual[actual], weekTarget[target]), `${label} · ${weekActual[actual]}/${weekTarget[target]}`));
+    } else {
+      goalCard.appendChild(el("p", { text: `${label} · ${weekActual[actual]} diese Woche` }));
+    }
   }
-  if (milestone) goalCard.appendChild(el("p", { class: "milestone" }, [el("strong", { text: "Meilenstein: " }), document.createTextNode(milestone)]));
+  const monthly = weeklyPlan.computeMilestoneProgress(
+    state.content.weeklyPlan, activity, state.settings.startDate, monthNumber, certification, certifications
+  );
+  goalCard.appendChild(el("h3", { text: `Monat ${monthNumber} · kumulierter Stand zum Meilenstein` }));
+  if (milestone) goalCard.appendChild(el("p", { class: "milestone", text: milestone }));
+  for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
+    goalCard.appendChild(progressBar(targetPercent(monthly.actual[actual], monthly.target[target]), `${label} · ${monthly.actual[actual]}/${monthly.target[target]}`));
+  }
   goalCard.appendChild(el("p", { class: "item-hint", text: "Die Lernreifeanzeige ist ein Indikator für deinen Lernfortschritt, keine Garantie für das Bestehen der Prüfung." }));
   container.appendChild(goalCard);
 
@@ -75,7 +86,7 @@ export async function render(container) {
     text:
       reviewRatePercent != null
         ? `Wiederholungsquote: ${reviewRatePercent}% des Wochenziels erreicht (${weekActual.reviews}/${weekTarget.reviewsTarget} Wiederholungen)`
-        : "Wiederholungsquote: für diese Woche ist kein Wiederholungs-Wochenziel hinterlegt."
+        : `Wiederholungen diese Woche · ${weekActual.reviews} (kein Soll)`
   }));
   if (weekWeakDomains.length > 0) {
     reviewCard.appendChild(el("p", { text: "Schwächste Themen diese Woche:" }));
@@ -90,6 +101,7 @@ export async function render(container) {
 
   // Domain-Abdeckung nach Gewichtung (nur Domains des aktiven Lernpfads)
   const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));
+  const { answered, consolidated } = summarizeActivity(activity, state.progressByContentId);
   const domainCard = el("div", { class: "card" });
   domainCard.appendChild(el("h2", { text: "Domain-Abdeckung (nach offizieller Gewichtung)" }));
   [...domains.values()]
@@ -98,14 +110,27 @@ export async function render(container) {
     .forEach((domain) => {
       const items = all.filter((i) => i.content.examDomainId === domain.id);
       if (!items.length) return;
-      const mastered = items.filter((i) => {
-        const p = state.progressByContentId.get(i.content.id);
-        return p && p.repetitions >= 2 && p.lastResult === "correct";
-      }).length;
+      const mastered = items.filter((i) => consolidated.has(i.content.id)).length;
       const pct = (mastered / items.length) * 100;
       domainCard.appendChild(progressBar(pct, `${domain.name} (${domain.weightPercent}%) — gefestigt: ${mastered}/${items.length}`));
     });
+  domainCard.appendChild(el("p", {
+    class: "item-hint",
+    text: "Als gefestigt zählt eine Aufgabe nach richtigen Antworten an zwei verschiedenen Kalendertagen seit dem letzten Fehler."
+  }));
   container.appendChild(domainCard);
+
+  const formats = el("div", { class: "card" }, [el("h2", { text: "Fortschritt je Übungsformat" })]);
+  for (const [title, types] of [
+    ["Vokabel im Kontext", ["vocabulary"]],
+    ["Definitions-Matching", ["definition"]],
+    ["Szenario und Reading", ["readingPassage", "question"]]
+  ]) {
+    const items = all.filter((item) => types.includes(item.contentType));
+    const done = items.filter((item) => answered.has(item.content.id)).length;
+    formats.appendChild(progressBar(done / Math.max(1, items.length) * 100, `${title} · ${done}/${items.length} bearbeitet`));
+  }
+  container.appendChild(formats);
 
   // Schwachpunktanalyse
   const weakCard = el("div", { class: "card" });
@@ -113,7 +138,7 @@ export async function render(container) {
   const byDomain = new Map();
   for (const a of activity) {
     if (!a.examDomainId) continue;
-    if (a.isIntro) continue; // reines Kennenlernen einer Vokabel zählt nicht als Trefferquote
+    if (typeof a.correct !== "boolean") continue; // reines Kennenlernen einer Vokabel zählt nicht als Trefferquote
     if (!byDomain.has(a.examDomainId)) byDomain.set(a.examDomainId, { correct: 0, total: 0 });
     const e = byDomain.get(a.examDomainId);
     e.total += 1;
@@ -132,4 +157,14 @@ export async function render(container) {
     weakCard.appendChild(list);
   }
   container.appendChild(weakCard);
+}
+
+
+function averageOf(activity, key) {
+  const values = activity.map((event) => event[key]).filter(Number.isFinite);
+  return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
+}
+
+function targetPercent(actual, target) {
+  return target > 0 ? actual / target * 100 : actual > 0 ? 100 : 0;
 }

@@ -1,18 +1,23 @@
 // views/quiz.js — Frage-/Prüfungsmodus: freies Üben (mit Filtern) und zeitlimitierte Mini-Prüfung.
 
-import { state, refreshProgress, refreshActivity, domainMap, pathCertifications } from "../state.js";
-import * as db from "../db.js";
-import * as sm2 from "../sm2.js";
+import { state, refreshLearningData, domainMap, pathCertifications } from "../state.js";
+import { markForReview, saveAnswers } from "../learning.js";
 import { renderItem } from "../itemRenderer.js";
-import { el, clear, shuffle, todayISO, certLabel, disclaimerNote } from "../utils.js";
+import { el, clear, shuffle, certLabel, disclaimerNote } from "../utils.js";
 
 const MINI_EXAM_COUNT = 10;
 const MINI_EXAM_SECONDS = 10 * 60;
+let cancelExam;
 
-export async function render(container, ctx) {
+export function leave() {
+  cancelExam?.();
+}
+
+export async function render(container) {
   clear(container);
   container.appendChild(el("h1", { text: "Frage- und Prüfungsmodus" }));
 
+  await refreshLearningData();
   const activePath = state.settings.certificationPath;
   const certifications = pathCertifications(activePath);
   // Bei Foundations-only/Administrator-only gibt es innerhalb des Pfads nur eine Zertifizierung —
@@ -39,7 +44,8 @@ export async function render(container, ctx) {
       alert("Keine Inhalte für diese Filterkombination gefunden.");
       return;
     }
-    startFreePractice(runHost, shuffle(pool), ctx);
+    leave();
+    startFreePractice(runHost, shuffle(pool));
   });
 
   examBtn.addEventListener("click", () => {
@@ -48,8 +54,8 @@ export async function render(container, ctx) {
       alert("Zu wenige Fragen für diese Filterkombination (mindestens 3 nötig).");
       return;
     }
-    const selection = shuffle(pool).slice(0, Math.min(MINI_EXAM_COUNT, pool.length));
-    startMiniExam(runHost, selection, ctx);
+    leave();
+    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT));
   });
 }
 
@@ -131,10 +137,12 @@ function filterPool(items, filters) {
 
 // ---------- Freies Üben ----------
 
-function startFreePractice(host, pool, ctx) {
-  clear(host);
+function startFreePractice(runHost, pool) {
+  const host = el("div");
+  runHost.replaceChildren(host);
   let index = 0;
   const stats = { total: 0, correct: 0 };
+  const status = el("p", { attrs: { role: "status" } });
 
   const progressLabel = el("p", { class: "session-progress" });
   const itemHost = el("div");
@@ -146,6 +154,7 @@ function startFreePractice(host, pool, ctx) {
 
   host.appendChild(progressLabel);
   host.appendChild(toolbar);
+  host.appendChild(status);
   host.appendChild(itemHost);
 
   stopBtn.addEventListener("click", () => showFreeResult());
@@ -165,12 +174,26 @@ function startFreePractice(host, pool, ctx) {
     }
     progressLabel.textContent = `Frage ${index + 1} von ${pool.length}`;
     const current = pool[index];
+    status.textContent = "";
     laterBtn.onclick = async () => {
-      await markLater(current);
+      laterBtn.disabled = true;
+      try {
+        await markForReview(current);
+        if (pool[index] === current) status.textContent = "Für die Lerneinheit vorgemerkt.";
+      } catch {
+        if (pool[index] === current) status.textContent = "Die Markierung konnte nicht gespeichert werden.";
+      } finally {
+        laterBtn.disabled = false;
+      }
     };
     renderItem(itemHost, current, {
       onAnswered: async (result) => {
-        await persistAnswer(current, result);
+        try {
+          await saveAnswers([{ item: current, result, mode: "practice" }]);
+        } catch {
+          status.textContent = "Die Antwort konnte nicht gespeichert werden. Starte das freie Üben erneut.";
+          return;
+        }
         stats.total += 1;
         stats.correct += result.correct ? 1 : 0;
         index += 1;
@@ -182,11 +205,26 @@ function startFreePractice(host, pool, ctx) {
   step();
 }
 
-async function markLater(item) {
-  const existing = state.progressByContentId.get(item.content.id) || sm2.emptyProgress(item.content, item.contentType);
-  const updated = { ...existing, flag: "later" };
-  await db.putProgress(updated);
-  await refreshProgress();
+/** Verteilt die Plätze nach Exam-Gewicht und füllt bei kleinen Filterpools übrige Plätze auf. */
+export function selectExamItems(pool, domains, limit) {
+  const groups = new Map();
+  for (const item of shuffle(pool)) {
+    const id = item.content.examDomainId;
+    if (!groups.has(id)) groups.set(id, { items: [], weight: domains.get(id)?.weightPercent || 1, used: 0 });
+    groups.get(id).items.push(item);
+  }
+  const entries = [...groups.values()];
+  const totalWeight = entries.reduce((total, group) => total + group.weight, 0);
+  const selection = [];
+  const count = Math.min(limit, pool.length);
+  while (selection.length < count) {
+    const priority = (group) => count * group.weight / totalWeight - group.used;
+    const [next] = entries.filter((group) => group.items.length)
+      .sort((a, b) => priority(b) - priority(a));
+    selection.push(next.items.pop());
+    next.used += 1;
+  }
+  return shuffle(selection);
 }
 
 // ---------- Mini-Prüfung ----------
@@ -200,13 +238,15 @@ function toExamQuestion(item) {
   return { ...item.content, source: item.content };
 }
 
-function startMiniExam(host, pool, ctx) {
-  clear(host);
+function startMiniExam(runHost, pool) {
+  const host = el("div");
+  runHost.replaceChildren(host);
   const examQuestions = pool.map((item) => ({ item, q: toExamQuestion(item) }));
   const answers = new Map(); // contentId -> Set(optionId)
   let current = 0;
-  let secondsLeft = MINI_EXAM_SECONDS;
-  let submitted = false;
+  const deadline = Date.now() + MINI_EXAM_SECONDS * 1000;
+  let active = true;
+  let timerHandle;
 
   const timerEl = el("div", { class: "quiz-timer" });
   const progressLabel = el("p", { class: "session-progress" });
@@ -218,46 +258,68 @@ function startMiniExam(host, pool, ctx) {
   navWrap.appendChild(prevBtn);
   navWrap.appendChild(nextBtn);
   navWrap.appendChild(submitBtn);
+  const cancelBtn = el("button", { class: "secondary-btn", text: "Prüfung abbrechen", attrs: { type: "button" } });
+  navWrap.appendChild(cancelBtn);
 
   host.appendChild(timerEl);
   host.appendChild(progressLabel);
   host.appendChild(qHost);
   host.appendChild(navWrap);
 
-  const timerHandle = setInterval(() => {
-    secondsLeft -= 1;
-    timerEl.textContent = `Verbleibende Zeit: ${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, "0")}`;
-    if (secondsLeft <= 0) {
-      clearInterval(timerHandle);
-      submit();
+  function stopExam() {
+    active = false;
+    clearInterval(timerHandle);
+    if (cancelExam === stopExam) cancelExam = null;
+  }
+  cancelExam = stopExam;
+
+  function updateTimer() {
+    if (!host.isConnected || location.hash !== "#/quiz") {
+      stopExam();
+      return;
     }
-  }, 1000);
-  timerEl.textContent = `Verbleibende Zeit: ${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, "0")}`;
+    const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+    timerEl.textContent = `Verbleibende Zeit: ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+    if (!seconds) submit();
+  }
+  timerHandle = setInterval(updateTimer, 250);
+  updateTimer();
 
-  prevBtn.addEventListener("click", () => { current = Math.max(0, current - 1); renderCurrent(); });
-  nextBtn.addEventListener("click", () => { current = Math.min(examQuestions.length - 1, current + 1); renderCurrent(); });
-  submitBtn.addEventListener("click", () => { clearInterval(timerHandle); submit(); });
+  prevBtn.addEventListener("click", () => { current -= 1; renderCurrent(true); });
+  nextBtn.addEventListener("click", () => { current += 1; renderCurrent(true); });
+  submitBtn.addEventListener("click", submit);
+  cancelBtn.addEventListener("click", () => {
+    stopExam();
+    clear(host);
+    host.appendChild(el("p", { attrs: { role: "status" }, text: "Mini-Prüfung abgebrochen." }));
+  });
 
-  function renderCurrent() {
+  function renderCurrent(focus = false) {
     progressLabel.textContent = `Frage ${current + 1} von ${examQuestions.length}`;
     clear(qHost);
     const { item, q } = examQuestions[current];
     const card = el("div", { class: "item-card" });
     card.appendChild(disclaimerNote());
-    if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario }));
-    card.appendChild(el("p", { class: "item-question", text: q.questionText || q.text }));
+    if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
+    const question = el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en", tabindex: "-1" } });
+    card.appendChild(question);
     const isMulti = q.type === "multiple-select";
     if (isMulti) card.appendChild(el("p", { class: "item-hint", text: "Mehrfachauswahl möglich." }));
 
     const selected = answers.get(item.content.id) || new Set();
-    const optsWrap = el("div", { class: "item-options item-options-list" });
+    const optsWrap = el("div", { class: "item-options item-options-list", attrs: { role: "group", "aria-label": "Antwortoptionen" } });
     q.options.forEach((opt) => {
       const btn = el("button", {
         class: "option-btn option-btn-wide" + (selected.has(opt.id) ? " option-selected" : ""),
         text: opt.text,
-        attrs: { type: "button" }
+        attrs: { type: "button", lang: "en", "aria-pressed": String(selected.has(opt.id)) }
       });
+      btn.dataset.optionId = opt.id;
       btn.addEventListener("click", () => {
+        if (!active || Date.now() >= deadline) {
+          updateTimer();
+          return;
+        }
         const set = answers.get(item.content.id) || new Set();
         if (isMulti) {
           if (set.has(opt.id)) set.delete(opt.id); else set.add(opt.id);
@@ -266,75 +328,72 @@ function startMiniExam(host, pool, ctx) {
           set.add(opt.id);
         }
         answers.set(item.content.id, set);
-        renderCurrent();
+        for (const option of optsWrap.children) {
+          const pressed = set.has(option.dataset.optionId);
+          option.classList.toggle("option-selected", pressed);
+          option.setAttribute("aria-pressed", String(pressed));
+        }
       });
       optsWrap.appendChild(btn);
     });
     card.appendChild(optsWrap);
     qHost.appendChild(card);
     prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === examQuestions.length - 1;
+    if (focus) question.focus();
   }
 
   async function submit() {
-    if (submitted) return;
-    submitted = true;
+    if (!active || !host.isConnected || location.hash !== "#/quiz") return;
+    stopExam();
     clear(host);
+    host.appendChild(el("p", { attrs: { role: "status" }, text: "Mini-Prüfung wird ausgewertet…" }));
 
     let correctCount = 0;
     const reviewCards = [];
+    const answered = [];
     for (const { item, q } of examQuestions) {
       const selected = answers.get(item.content.id) || new Set();
       const correctIds = new Set(q.options.filter((o) => o.correct).map((o) => o.id));
       const correct = correctIds.size === selected.size && [...correctIds].every((id) => selected.has(id));
       if (correct) correctCount += 1;
 
-      await persistAnswer(item, { correct, confidence: 3, responseTimeMs: null });
+      if (selected.size) answered.push({ item, result: { correct }, mode: "exam" });
 
       const card = el("div", { class: "item-card" });
-      card.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig" : "Falsch" }));
-      if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario }));
-      card.appendChild(el("p", { class: "item-question", text: q.questionText || q.text }));
+      const label = selected.size === 0 ? "Unbeantwortet" : correct ? "Richtig" : "Falsch";
+      card.appendChild(el("p", { class: correct ? "result-correct" : "item-hint", text: label }));
+      if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
+      card.appendChild(el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
       q.options.forEach((opt) => {
         const wasSelected = selected.has(opt.id);
         card.appendChild(el("p", { class: "option-explanation" }, [
-          el("strong", { text: (opt.correct ? "✓ " : wasSelected ? "✗ " : "") + opt.text + ": " }),
-          document.createTextNode(opt.explanation)
+          el("strong", { text: (opt.correct ? "✓ " : wasSelected ? "✗ " : "") + opt.text, attrs: { lang: "en" } }),
+          document.createTextNode(" – " + opt.explanation)
         ]));
       });
       reviewCards.push(card);
     }
 
-    await refreshProgress();
-    await refreshActivity();
-
+    try {
+      if (answered.length) await saveAnswers(answered);
+    } catch {
+      if (host.isConnected) {
+        clear(host);
+        host.appendChild(el("p", { attrs: { role: "alert" }, text: "Die Prüfungsantworten konnten nicht gespeichert werden." }));
+      }
+      return;
+    }
+    if (!host.isConnected) return;
+    clear(host);
     const pct = examQuestions.length ? Math.round((correctCount / examQuestions.length) * 100) : 0;
     host.appendChild(el("div", { class: "card" }, [
       el("h2", { text: "Mini-Prüfung ausgewertet" }),
       el("p", { class: "big-number", text: `${correctCount} / ${examQuestions.length}` }),
-      el("p", { text: `${pct}%` })
+      el("p", { text: `${pct}% · ${answered.length - correctCount} falsch · ${examQuestions.length - answered.length} unbeantwortet` })
     ]));
     reviewCards.forEach((c) => host.appendChild(c));
   }
 
   renderCurrent();
-}
-
-async function persistAnswer(item, result) {
-  const existing = state.progressByContentId.get(item.content.id) || sm2.emptyProgress(item.content, item.contentType);
-  const isNew = !state.progressByContentId.get(item.content.id);
-  const update = sm2.computeNextProgress(existing, result);
-  const merged = { ...existing, ...update };
-  await db.putProgress(merged);
-  await db.logActivity({
-    contentId: item.content.id,
-    contentType: item.contentType,
-    certification: item.content.certification,
-    examDomainId: item.content.examDomainId,
-    isNew,
-    correct: result.correct,
-    confidence: result.confidence,
-    responseTimeMs: result.responseTimeMs
-  });
-  await refreshProgress();
-  await refreshActivity();
 }

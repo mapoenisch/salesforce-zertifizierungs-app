@@ -33,14 +33,14 @@ Falls trotz dieser Schritte nichts passiert: siehe Abschnitt 11 "Häufige Fragen
 **macOS:**
 
 1. Rechtsklick auf `start-server-mac.command` im Finder → **Öffnen** → im Dialog erneut **Öffnen** bestätigen (siehe Warnhinweis oben — nur beim allerersten Start nötig).
-2. Der Browser öffnet sich automatisch mit der App (`http://localhost:8000`, ggf. ein anderer freier Port).
+2. Der Browser öffnet sich automatisch mit der App (`http://localhost:8000`).
 3. Zum Beenden: das Terminal-Fenster schließen oder `Strg+C` drücken.
 
 **Windows:**
 
 1. Doppelklick auf `start-server-windows.bat` im Explorer.
 2. Bei der SmartScreen-Warnung: **Weitere Informationen** → **Trotzdem ausführen** (siehe Warnhinweis oben — nur beim allerersten Start nötig).
-3. Der Browser öffnet sich automatisch mit der App (`http://localhost:8000`, ggf. ein anderer freier Port).
+3. Der Browser öffnet sich automatisch mit der App (`http://localhost:8000`).
 4. Zum Beenden: das Konsolenfenster schließen oder `Strg+C` drücken.
 5. Voraussetzung: Python 3 muss installiert sein (https://www.python.org/downloads/), beim Installieren die Option "Add python.exe to PATH" aktivieren.
 
@@ -54,10 +54,10 @@ Falls `start-server-mac.command` bzw. `start-server-windows.bat` nicht funktioni
 
 ```bash
 cd /pfad/zum/Repository/sfz_app
-python3 -m http.server 8000
+python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Danach im Browser `http://localhost:8000` öffnen. Wer lieber Node.js nutzt, kann alternativ `npx serve` im selben Ordner ausführen.
+Danach im Browser `http://localhost:8000` öffnen. Wenn dein früherer Lernstand unter einem anderen Port liegt, setze hier vorübergehend den früheren Port ein und öffne exakt die frühere Adresse. Exportiere den Lernstand dort und importiere ihn anschließend unter `http://localhost:8000`.
 
 ### Systemvoraussetzungen
 
@@ -97,7 +97,7 @@ Für alle, die sich selbstständig auf die Foundations- oder Administrator-Prüf
 | Lernpfad | Für wen geeignet | Inhalt |
 |---|---|---|
 | **Foundations** | Einstieg ohne Vorkenntnisse | Nur Foundations-Stoff, 12-Wochen-Plan komplett darauf ausgerichtet |
-| **Administrator (Foundations vorausgesetzt)** | Foundations-Prüfung bereits bestanden bzw. Stoff sicher beherrscht | Nur Administrator-Stoff, keine Wiederholung der Foundations-Grundlagen |
+| **Administrator (mit Foundations-Grundwissen)** | Foundations-Stoff sicher beherrscht | Nur Administrator-Stoff, keine Wiederholung der Foundations-Grundlagen |
 | **Administrator (inkl. Foundations)** | Direktes Ziel Administrator, aber Foundations-Stoff noch nicht sicher | Woche 1–5 Foundations-Grundlagen, Woche 6–12 Administrator-Schwerpunkte, in einem gemeinsamen Plan |
 
 Der Lernpfad lässt sich jederzeit in den Einstellungen wechseln, ohne dass bereits erzielter Fortschritt verloren geht.
@@ -135,9 +135,9 @@ Eine Einheit läuft in Runden ab: Nach jeder Runde kann man freiwillig weiterler
 Zwei Modi für gezieltes Üben abseits der Tageseinheit:
 
 - **Freies Üben**: beliebig viele Fragen/Übungen nacheinander, mit umfangreichen Filtern (siehe unten) und der Option, einzelne Inhalte als "später wiederholen" zu markieren.
-- **Mini-Prüfung**: 10 zufällig ausgewählte Szenariofragen/Reading-Passagen mit 10 Minuten Zeitlimit, Navigation zwischen Fragen, Auswertung erst nach dem Abgeben, inklusive Erklärung zu jeder Antwortoption.
+- **Mini-Prüfung**: Bis zu zehn Szenariofragen oder Reading-Passagen, nach Exam-Gewichten aus dem Filterpool zusammengestellt. Die Prüfung läuft zehn Minuten. Die Auswertung zeigt richtige, falsche und offene Fragen. Beim Abbruch bleibt der Lernstand unverändert.
 
-Unterstützte Fragetypen: Single Choice und Multiple Select. Nach jeder Antwort (außer in der Mini-Prüfung, dort erst am Ende) folgt eine Sicherheitsabfrage (1 = geraten bis 5 = sehr sicher) sowie eine ausführliche Erklärung der richtigen und falschen Antwortoptionen inklusive Analyse relevanter englischer Signalwörter.
+Unterstützte Fragetypen: Single Choice und Multiple Select. Beim Lernen und freien Üben kannst du deine Antwortsicherheit von 1 bis 5 angeben. Die Übungen erklären die Lösungen und erläutern bei Szenarien relevante Signalwörter. In Mini-Prüfungen speichert der Trainer die Korrektheit tatsächlich beantworteter Fragen. Antwortsicherheit und Antwortzeit bleiben dort leer.
 
 **Filteroptionen** im Frage- und Prüfungsmodus sowie im Glossar:
 
@@ -190,7 +190,7 @@ Ein Hinweistext macht an mehreren Stellen deutlich: Die Fortschrittsanzeige ist 
 
 - Darstellung: Dark Mode / Light Mode.
 - Lernpfad wechseln (Foundations / Administrator / Administrator inkl. Foundations) — Fortschritt bleibt erhalten.
-- Tagesziel in Minuten und Startdatum der 12-Wochen-Planung anpassen.
+- Tagesziel und Startdatum anpassen. Die App schätzt die Dauer einer Lernrunde anhand der ausgewählten Aufgaben. Du kannst danach freiwillig weiterlernen.
 - Lernstand als JSON exportieren oder importieren (siehe Abschnitt 1, "Lernstand sichern").
 - Gefahrenzone: kompletten Lernfortschritt zurücksetzen (mit Sicherheitsabfrage) — Theme, Lernpfad und Tagesziel bleiben dabei erhalten.
 
@@ -210,7 +210,7 @@ Jede Szenariofrage ist eindeutig gekennzeichnet als: *"Synthetische, prüfungsä
 
 ## 6. Spaced Repetition (SM-2)
 
-Die App nutzt ein transparentes Wiederholungssystem nach dem SM-2-Prinzip, angepasst auf zwei CEFR-Level und den engen Themenrahmen Salesforce-Zertifizierung. Nach jeder Antwort werden Ease-Factor, Wiederholungsintervall und nächstes Fälligkeitsdatum aus Korrektheit und selbst eingeschätzter Antwortsicherheit (1–5) neu berechnet.
+Die App nutzt ein transparentes Wiederholungssystem nach dem SM-2-Prinzip, angepasst auf zwei CEFR-Level und den engen Themenrahmen Salesforce-Zertifizierung. Nach jeder gewerteten Antwort berechnet die App Wiederholungsintervall und Fälligkeit. Wenn du keine Sicherheit angibst, verwendet SM-2 intern den neutralen Wert für die Berechnung.
 
 Priorisierung der täglichen Einheit, in dieser Reihenfolge:
 
@@ -249,7 +249,7 @@ Wichtig für die richtige Einordnung:
 - **Keine Bestehensgarantie.** Fortschrittsanzeigen und die "Lernreife" sind Indikatoren, keine Vorhersage des Prüfungsergebnisses.
 - **Keine Originalprüfungsfragen.** Alle Fragen, Definitionen und Reading-Passagen sind eigenständig formuliert und prüfungsähnlich, aber synthetisch. Die App verwendet und speichert keine geleakten oder als "Dumps" kursierenden Inhalte.
 - **Kein Hör- oder Sprechtraining.** Der Fokus liegt ausschließlich auf Leseverständnis und Fachvokabular; Audio, Aussprache, Speech-to-Text/Text-to-Speech und freies Schreiben sind bewusst nicht enthalten.
-- **Begrenztes Sprachniveau.** Die App deckt bewusst nur CEFR B1 und B2 ab — das entspricht dem in den Prüfungen tatsächlich vorausgesetzten Leseverständnis, nicht allgemeinem Englischlernen.
+- **Begrenztes Sprachniveau.** Die App stuft ihre Leseübungen auf CEFR B1 und B2 ein.
 - **Rein lokal, kein Abgleich zwischen Geräten.** Es gibt kein Konto, kein Backend und keine Cloud-Synchronisation. Der Lernstand liegt ausschließlich im Browser des jeweiligen Geräts (IndexedDB) und muss über den JSON-Export manuell übertragen werden, wenn man Gerät oder Browser wechselt.
 - **Kein automatischer Content-Nachschub.** Neue Inhalte, aktualisierte Exam-Gewichtungen oder Korrekturen müssen manuell in die `data/*.json`-Dateien eingepflegt werden; die App lädt nichts automatisch aus dem Internet nach.
 - **Exam Outlines können sich ändern.** Salesforce passt Prüfungsformate und Themengewichtungen von Zeit zu Zeit an. Die in dieser App hinterlegten Gewichtungen entsprechen dem Stand der Recherche (siehe Quellenangaben in `01_Recherchebasis_und_Content-Grundlage.md`) und sollten bei Zweifeln gegen den aktuellen offiziellen Exam Guide geprüft werden.
@@ -334,4 +334,4 @@ Diese App ist ein privates Lernprojekt und steht in keiner Verbindung zu Salesfo
 
 ## Lernstand aus der früheren App
 
-Beim ersten Start über die bisherige Browseradresse und im selben Browserprofil übernimmt Salesforce seine Lernstände aus dem bisherigen Browserspeicher. Alternativ kannst du eine ältere JSON-Sicherung unter **Einstellungen → Sicherung** importieren. Der Import übernimmt die Salesforce-Einträge und ersetzt den Lernstand dieses Trainers.
+Beim ersten Start über die bisherige Browseradresse und im selben Browserprofil übernimmt Salesforce seine Lernstände aus dem bisherigen Browserspeicher. Alternativ kannst du eine ältere JSON-Sicherung unter **Einstellungen → Sicherung** importieren. Der Import prüft die Sicherung und zeigt eine Vorschau. Nach Bestätigung ersetzen die Salesforce-Einträge den bisherigen Lernstand.

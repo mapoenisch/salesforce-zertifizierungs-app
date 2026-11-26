@@ -1,13 +1,24 @@
 // weeklyPlan.js — Soll-Ist-Vergleich gegen den 12-Wochen-Lernplan.
 
+import { addCalendarDays, todayISO } from "./utils.js";
+
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-/** Ermittelt die aktuelle Wochennummer (1-12, danach bleibt sie bei 12) ab dem Startdatum. */
+export const GOAL_METRICS = [
+  ["Neue Vokabeln", "newVocab", "newVocabTarget"],
+  ["Wiederholungen", "reviews", "reviewsTarget"],
+  ["Reading-Übungen", "readingExercises", "readingExercisesTarget"]
+];
+
+function calendarDay(date) {
+  return Date.parse(todayISO(date) + "T00:00:00Z") / MS_PER_DAY;
+}
+
+/** Aktuelle Lernwoche, auch nach dem Ende des zwölfwöchigen Soll-Plans. */
 export function getCurrentWeekNumber(startDateISO, today = new Date()) {
   const start = new Date(startDateISO + "T00:00:00");
-  const diffDays = Math.floor((today - start) / MS_PER_DAY);
-  const week = Math.floor(diffDays / 7) + 1;
-  return Math.min(12, Math.max(1, week));
+  const diffDays = calendarDay(today) - calendarDay(start);
+  return Math.max(1, Math.floor(diffDays / 7) + 1);
 }
 
 /**
@@ -23,15 +34,15 @@ export function getWeekTarget(weeklyPlan, weekNumber, certification) {
 /** Exportiert, da auch der Wochenrückblick (getWeekWeakDomains) den Datumsbereich einer Woche braucht. */
 export function weekDateRange(startDateISO, weekNumber) {
   const start = new Date(startDateISO + "T00:00:00");
-  const weekStart = new Date(start.getTime() + (weekNumber - 1) * 7 * MS_PER_DAY);
-  const weekEnd = new Date(weekStart.getTime() + 7 * MS_PER_DAY);
+  const weekStart = addCalendarDays(start, (weekNumber - 1) * 7);
+  const weekEnd = addCalendarDays(weekStart, 7);
   return { weekStart, weekEnd };
 }
 
 /**
  * Berechnet die Wochen-Ist-Werte aus dem Aktivitätslog, gefiltert auf den aktiven Lernpfad
  * (Aktivität aus einem zuvor genutzten anderen Pfad zählt nicht auf das aktuelle Wochen-Soll).
- * @param {Array} activity Einträge aus db.getAllActivity()
+ * @param {Array} activity Einträge aus dem Aktivitätsprotokoll
  * @param {string} startDateISO
  * @param {number} weekNumber
  * @param {string[]} certifications Erlaubte binäre Content-Certifications, z. B. state.pathCertifications(path)
@@ -40,22 +51,38 @@ export function weekDateRange(startDateISO, weekNumber) {
  */
 export function computeWeekActual(activity, startDateISO, weekNumber, certifications) {
   const { weekStart, weekEnd } = weekDateRange(startDateISO, weekNumber);
+  return computeActual(activity, weekStart, weekEnd, certifications);
+}
+
+function computeActual(activity, start, end, certifications) {
   const inWeek = activity.filter((a) => {
     if (certifications && certifications.length && !certifications.includes(a.certification)) return false;
     const ts = new Date(a.ts);
-    return ts >= weekStart && ts < weekEnd;
+    return ts >= start && ts < end;
   });
 
   // "intro"-Einträge (Vokabel nur als Karteikarte kennengelernt, siehe learn.js persistIntro)
   // zählen auf newVocab, aber nicht auf Trefferquote/Antwortenzahl — sie wurden nicht aktiv beantwortet.
   const newVocab = inWeek.filter((a) => a.contentType === "vocabulary" && a.isNew).length;
-  const scored = inWeek.filter((a) => !a.isIntro);
+  const scored = inWeek.filter((a) => typeof a.correct === "boolean");
   const reviews = scored.filter((a) => !a.isNew).length;
-  const readingExercises = inWeek.filter((a) => a.contentType === "readingPassage").length;
+  const readingExercises = scored.filter((a) => a.contentType === "readingPassage").length;
   const correct = scored.filter((a) => a.correct).length;
   const accuracy = scored.length > 0 ? Math.round((correct / scored.length) * 100) : null;
 
   return { newVocab, reviews, readingExercises, totalAnswers: scored.length, accuracy };
+}
+
+/** Summiert bis zum Ende des gewählten Monats, einschließlich früherer Planwochen. */
+export function computeMilestoneProgress(weeklyPlan, activity, startDate, month, path, certifications) {
+  const endWeek = month * 4;
+  const targets = weeklyPlan.filter((entry) => entry.certification === path && entry.week <= endWeek);
+  const target = Object.fromEntries(GOAL_METRICS.map(([, , key]) =>
+    [key, targets.reduce((sum, entry) => sum + entry[key], 0)]
+  ));
+  const start = weekDateRange(startDate, 1).weekStart;
+  const end = weekDateRange(startDate, endWeek).weekEnd;
+  return { target, actual: computeActual(activity, start, end, certifications) };
 }
 
 /** Ordnet eine Wochennummer ihrem Monatsmeilenstein zu (Wochen 1-4 = Monat 1, usw.). */
@@ -78,7 +105,7 @@ export function getMonthMilestone(weeklyPlan, monthNumber, certification) {
  * Wochenrückblick auf der Fortschrittsseite. Braucht mind. 2 gewertete Antworten pro Domain in
  * dieser Woche, sonst ist die Aussage statistisch zu unsicher (bewusst niedrigere Schwelle als
  * die Lifetime-Schwachpunktanalyse mit >=3, da eine Woche naturgemäß weniger Datenpunkte liefert).
- * @param {Array} activity Einträge aus db.getAllActivity()
+ * @param {Array} activity Einträge aus dem Aktivitätsprotokoll
  * @param {string} startDateISO
  * @param {number} weekNumber
  * @param {string[]} certifications
@@ -88,7 +115,7 @@ export function getWeekWeakDomains(activity, startDateISO, weekNumber, certifica
   const { weekStart, weekEnd } = weekDateRange(startDateISO, weekNumber);
   const byDomain = new Map();
   for (const a of activity) {
-    if (!a.examDomainId || a.isIntro) continue; // reines Vokabel-Kennenlernen zählt nicht als Trefferquote
+    if (!a.examDomainId || typeof a.correct !== "boolean") continue; // reines Vokabel-Kennenlernen zählt nicht als Trefferquote
     if (certifications && certifications.length && !certifications.includes(a.certification)) continue;
     const ts = new Date(a.ts);
     if (ts < weekStart || ts >= weekEnd) continue;
@@ -121,9 +148,10 @@ export function buildWeeklyRecommendation({ weekActual, weekTarget, weakDomains 
   if (!weekActual || weekActual.totalAnswers === 0) {
     return "Diese Woche gab es noch keine gewertete Aktivität. Starte mit der \"Heutigen Einheit\" auf dem Dashboard, um dein Wochenziel nicht zu verpassen.";
   }
-  if (weekTarget && weekTarget.reviewsTarget > 0 && weekActual.reviews < weekTarget.reviewsTarget * 0.5) {
-    return `Du liegst bei den Wiederholungen unter der Hälfte des Wochenziels (${weekActual.reviews}/${weekTarget.reviewsTarget}). Plane in den nächsten Tagen gezielt zusätzliche Wiederholungssessions ein, damit sich der Rückstand nicht vergrößert.`;
-  }
+  const gaps = weekTarget ? GOAL_METRICS
+    .filter(([, actual, target]) => weekActual[actual] < weekTarget[target])
+    .map(([label, actual, target]) => `${label} (${weekActual[actual]}/${weekTarget[target]})`) : [];
+  if (gaps.length) return `Beim Wochenziel sind noch offen: ${gaps.join(", ")}.`;
   if (weakDomains.length > 0 && weakDomains[0].accuracy < 60) {
     const d = weakDomains[0];
     return `Größter Schwachpunkt diese Woche: "${d.name}" mit ${d.accuracy}% Trefferquote (${d.total} Antworten). Nutze den Prüfungsmodus mit Filter auf diese Domain für gezieltes Üben.`;
@@ -131,5 +159,7 @@ export function buildWeeklyRecommendation({ weekActual, weekTarget, weakDomains 
   if (weekActual.accuracy != null && weekActual.accuracy < 70) {
     return `Deine Trefferquote liegt diese Woche bei ${weekActual.accuracy}% — etwas unter dem Zielbereich. Wiederhole zuerst als falsch markierte Inhalte, bevor du viele neue Begriffe aufnimmst.`;
   }
-  return `Guter Stand${weekActual.accuracy != null ? ` bei ${weekActual.accuracy}% Trefferquote` : ""}: Wochenziel weitgehend erreicht. Bleib beim aktuellen Rhythmus.`;
+  return weekTarget
+    ? "Alle Wochenziele erreicht. Nutze weitere Einheiten zum Festigen."
+    : "Der zwölfwöchige Plan ist abgeschlossen. Übe gezielt anhand deiner aktuellen Trefferquote.";
 }

@@ -70,19 +70,19 @@ function renderCard(v) {
     : progress.flag === "relearn"
     ? "Muss erneut gelernt werden"
     : progress.flag === "later"
-    ? "Später wiederholen"
+    ? `Später wiederholen${progress.nextReviewDate ? ` ab ${progress.nextReviewDate}` : ""}`
     : `Wiederholungen: ${progress.repetitions}, nächste Wiederholung: ${progress.nextReviewDate}`;
 
   const exampleSentence = v.clozeSentence.replace("____", v.term);
 
   const card = el("div", { class: "card glossary-card" });
-  card.appendChild(el("h3", { text: v.term }));
+  card.appendChild(el("h3", { text: v.term, attrs: { lang: "en" } }));
   card.appendChild(el("p", { class: "item-hint", text: `${certLabel(v.certification)} · ${domain?.name || v.examDomainId} · CEFR ${v.cefr}` }));
   card.appendChild(el("p", {}, [el("strong", { text: "Deutsch: " }), document.createTextNode(v.germanExplanation)]));
   card.appendChild(el("p", {}, [el("strong", { text: "Kontext: " }), document.createTextNode(v.salesforceContext)]));
-  card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), document.createTextNode(exampleSentence)]));
+  card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), el("span", { text: exampleSentence, attrs: { lang: "en" } })]));
   if (v.confusableTerms?.length) {
-    card.appendChild(el("p", { class: "confusable" }, [el("strong", { text: "Verwechslungsgefahr: " }), document.createTextNode(v.confusableTerms.join(", "))]));
+    card.appendChild(el("p", { class: "confusable" }, [el("strong", { text: "Verwechslungsgefahr: " }), el("span", { text: v.confusableTerms.join(", "), attrs: { lang: "en" } })]));
   }
   card.appendChild(el("p", { class: "review-status" }, [el("strong", { text: "Status: " }), document.createTextNode(statusText)]));
   return card;

@@ -7,7 +7,10 @@
     "newVocabTarget": 21,
     "reviewsTarget": 0,
     "readingExercisesTarget": 9,
-    "milestone": "Setup abgeschlossen"
+    "milestone": "Setup abgeschlossen",
+    "focusDomains": [
+      "fnd-ecosystem"
+    ]
   },
   {
     "week": 2,
@@ -17,7 +20,10 @@
     "newVocabTarget": 21,
     "reviewsTarget": 19,
     "readingExercisesTarget": 9,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "fnd-navigation"
+    ]
   },
   {
     "week": 3,
@@ -27,7 +33,10 @@
     "newVocabTarget": 21,
     "reviewsTarget": 32,
     "readingExercisesTarget": 9,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "fnd-data-model"
+    ]
   },
   {
     "week": 4,
@@ -37,7 +46,10 @@
     "newVocabTarget": 21,
     "reviewsTarget": 45,
     "readingExercisesTarget": 8,
-    "milestone": "Monat 1: Alle Grundbegriffe eingeführt, >=70% Trefferquote in Übungsfragen"
+    "milestone": "Monat 1: Alle Grundbegriffe eingeführt, >=70% Trefferquote in Übungsfragen",
+    "focusDomains": [
+      "fnd-reports-dashboards"
+    ]
   },
   {
     "week": 5,
@@ -123,11 +135,14 @@
     "week": 1,
     "certification": "administrator",
     "phase": "administrator",
-    "focus": "Setup: Trailhead-Account, Playground, Exam Guide lesen (setzt bestandene Foundations-Prüfung voraus) + Configuration and Setup",
+    "focus": "Setup: Trailhead-Account, Playground, Exam Guide lesen + Configuration and Setup",
     "newVocabTarget": 20,
     "reviewsTarget": 0,
     "readingExercisesTarget": 8,
-    "milestone": "Setup abgeschlossen"
+    "milestone": "Setup abgeschlossen",
+    "focusDomains": [
+      "adm-config-setup"
+    ]
   },
   {
     "week": 2,
@@ -137,7 +152,10 @@
     "newVocabTarget": 20,
     "reviewsTarget": 19,
     "readingExercisesTarget": 8,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-object-manager"
+    ]
   },
   {
     "week": 3,
@@ -147,7 +165,10 @@
     "newVocabTarget": 20,
     "reviewsTarget": 32,
     "readingExercisesTarget": 8,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-data-analytics"
+    ]
   },
   {
     "week": 4,
@@ -157,7 +178,10 @@
     "newVocabTarget": 20,
     "reviewsTarget": 45,
     "readingExercisesTarget": 8,
-    "milestone": "Monat 1: Configuration, Object Manager und Data-Grundlagen eingeführt, >=65% Trefferquote in Übungsfragen"
+    "milestone": "Monat 1: Configuration, Object Manager und Data-Grundlagen eingeführt, >=65% Trefferquote in Übungsfragen",
+    "focusDomains": [
+      "adm-data-analytics"
+    ]
   },
   {
     "week": 5,
@@ -167,7 +191,10 @@
     "newVocabTarget": 19,
     "reviewsTarget": 58,
     "readingExercisesTarget": 7,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-automation"
+    ]
   },
   {
     "week": 6,
@@ -177,7 +204,10 @@
     "newVocabTarget": 19,
     "reviewsTarget": 64,
     "readingExercisesTarget": 7,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-sales-marketing"
+    ]
   },
   {
     "week": 7,
@@ -187,7 +217,10 @@
     "newVocabTarget": 19,
     "reviewsTarget": 70,
     "readingExercisesTarget": 7,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-service-support"
+    ]
   },
   {
     "week": 8,
@@ -197,7 +230,11 @@
     "newVocabTarget": 19,
     "reviewsTarget": 77,
     "readingExercisesTarget": 7,
-    "milestone": "Monat 2: Automation, Sales/Service/Productivity und Agentforce eingeführt, >=65% in Admin-Übungsprüfungen (Schwellenwert)"
+    "milestone": "Monat 2: Automation, Sales/Service/Productivity und Agentforce eingeführt, >=65% in Admin-Übungsprüfungen (Schwellenwert)",
+    "focusDomains": [
+      "adm-productivity-collab",
+      "adm-agentforce"
+    ]
   },
   {
     "week": 9,
@@ -207,7 +244,12 @@
     "newVocabTarget": 0,
     "reviewsTarget": 83,
     "readingExercisesTarget": 0,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-data-analytics",
+      "adm-automation",
+      "adm-config-setup"
+    ]
   },
   {
     "week": 10,
@@ -247,7 +289,10 @@
     "newVocabTarget": 21,
     "reviewsTarget": 0,
     "readingExercisesTarget": 9,
-    "milestone": "Setup abgeschlossen"
+    "milestone": "Setup abgeschlossen",
+    "focusDomains": [
+      "fnd-ecosystem"
+    ]
   },
   {
     "week": 2,
@@ -257,7 +302,10 @@
     "newVocabTarget": 21,
     "reviewsTarget": 19,
     "readingExercisesTarget": 9,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "fnd-navigation"
+    ]
   },
   {
     "week": 3,
@@ -267,7 +315,10 @@
     "newVocabTarget": 21,
     "reviewsTarget": 32,
     "readingExercisesTarget": 9,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "fnd-data-model"
+    ]
   },
   {
     "week": 4,
@@ -277,7 +328,10 @@
     "newVocabTarget": 21,
     "reviewsTarget": 45,
     "readingExercisesTarget": 8,
-    "milestone": "Monat 1: Foundations-Grundwissen vollständig eingeführt (Ecosystem, Navigation, Data Model, Reports & Dashboards) — Foundations-Mini-Prüfung mit >=65% bestehen"
+    "milestone": "Monat 1: Foundations-Grundwissen vollständig eingeführt (Ecosystem, Navigation, Data Model, Reports & Dashboards) — Foundations-Mini-Prüfung mit >=65% bestehen",
+    "focusDomains": [
+      "fnd-reports-dashboards"
+    ]
   },
   {
     "week": 5,
@@ -297,7 +351,11 @@
     "newVocabTarget": 32,
     "reviewsTarget": 32,
     "readingExercisesTarget": 12,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-config-setup",
+      "adm-object-manager"
+    ]
   },
   {
     "week": 7,
@@ -307,7 +365,10 @@
     "newVocabTarget": 31,
     "reviewsTarget": 45,
     "readingExercisesTarget": 12,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-data-analytics"
+    ]
   },
   {
     "week": 8,
@@ -317,7 +378,10 @@
     "newVocabTarget": 31,
     "reviewsTarget": 58,
     "readingExercisesTarget": 12,
-    "milestone": "Monat 2: Foundations abgeschlossen, Administrator-Kernthemen Configuration, Object Manager, Data & Analytics und Automation eingeführt — >=65% in Admin-Übungsfragen"
+    "milestone": "Monat 2: Foundations abgeschlossen, Administrator-Kernthemen Configuration, Object Manager, Data & Analytics und Automation eingeführt — >=65% in Admin-Übungsfragen",
+    "focusDomains": [
+      "adm-automation"
+    ]
   },
   {
     "week": 9,
@@ -327,7 +391,11 @@
     "newVocabTarget": 31,
     "reviewsTarget": 64,
     "readingExercisesTarget": 12,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-sales-marketing",
+      "adm-service-support"
+    ]
   },
   {
     "week": 10,
@@ -337,7 +405,11 @@
     "newVocabTarget": 31,
     "reviewsTarget": 70,
     "readingExercisesTarget": 12,
-    "milestone": null
+    "milestone": null,
+    "focusDomains": [
+      "adm-productivity-collab",
+      "adm-agentforce"
+    ]
   },
   {
     "week": 11,

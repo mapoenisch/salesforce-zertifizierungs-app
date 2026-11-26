@@ -18,8 +18,21 @@ export function clear(container) {
   while (container.firstChild) container.removeChild(container.firstChild);
 }
 
-export function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+export function todayISO(date = new Date()) {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${String(date.getFullYear()).padStart(4, "0")}-${month}-${day}`;
+}
+
+export function addCalendarDays(date, days) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+export function isCalendarDate(value) {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) &&
+    todayISO(new Date(value + "T00:00:00")) === value;
 }
 
 /** Einfache Fortschrittsbalken-Komponente (0-100). */
@@ -61,7 +74,7 @@ export function certLabel(cert) {
 
 /** Menschenlesbares Label für die drei Lernpfad-IDs (settings.certificationPath) — nicht zu verwechseln mit certLabel(), das die binäre Content-Certification einzelner Inhalte beschriftet. */
 export function pathLabel(path) {
-  if (path === "administrator") return "Administrator (Foundations vorausgesetzt)";
+  if (path === "administrator") return "Administrator (mit Foundations-Grundwissen)";
   if (path === "administrator-full") return "Administrator (inkl. Foundations)";
   return "Foundations";
 }
@@ -76,10 +89,11 @@ export function disclaimerNote() {
  * Promise<boolean> zurück (true = bestätigt). Tastaturbedienbar (Escape = Abbrechen,
  * Fokus startet auf "Nein" als sicherem Standard).
  * @param {string} message
- * @param {{confirmText?: string, cancelText?: string, danger?: boolean}} [opts]
+ * @param {{confirmText?: string, cancelText?: string, danger?: boolean, signal?: AbortSignal}} [opts]
  */
 export function confirmDialog(message, opts = {}) {
-  const { confirmText = "Ja", cancelText = "Nein", danger = false } = opts;
+  const { confirmText = "Ja", cancelText = "Nein", danger = false, signal } = opts;
+  if (signal?.aborted) return Promise.resolve(false);
   return new Promise((resolve) => {
     const previouslyFocused = document.activeElement;
 
@@ -98,15 +112,24 @@ export function confirmDialog(message, opts = {}) {
       attrs: { type: "button" }
     });
 
+    function abort() {
+      close(false);
+    }
+
     function close(result) {
       document.removeEventListener("keydown", onKeydown);
+      signal?.removeEventListener("abort", abort);
       overlay.remove();
-      if (previouslyFocused && previouslyFocused.focus) previouslyFocused.focus();
+      if (previouslyFocused?.isConnected) previouslyFocused.focus();
       resolve(result);
     }
 
     function onKeydown(ev) {
       if (ev.key === "Escape") close(false);
+      if (ev.key === "Tab") {
+        ev.preventDefault();
+        (document.activeElement === cancelBtn ? confirmBtn : cancelBtn).focus();
+      }
     }
 
     cancelBtn.addEventListener("click", () => close(false));
@@ -115,6 +138,7 @@ export function confirmDialog(message, opts = {}) {
       if (ev.target === overlay) close(false);
     });
     document.addEventListener("keydown", onKeydown);
+    signal?.addEventListener("abort", abort, { once: true });
 
     actions.appendChild(cancelBtn);
     actions.appendChild(confirmBtn);

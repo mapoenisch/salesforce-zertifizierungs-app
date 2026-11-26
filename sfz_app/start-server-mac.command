@@ -31,10 +31,13 @@ fi
 
 PORT=8000
 
-# Freien Port suchen, falls 8000 schon belegt ist.
-while lsof -i ":$PORT" >/dev/null 2>&1; do
-  PORT=$((PORT + 1))
-done
+# Ohne Portwechsel bleibt der Lernstand unter derselben Browseradresse erreichbar.
+if lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+  echo "Port $PORT ist bereits belegt. Wenn der Trainer schon läuft, öffne http://localhost:$PORT."
+  echo "Andernfalls beende den Dienst auf Port $PORT und starte dieses Skript erneut."
+  read -r -p "Zum Schließen Enter drücken..." _
+  exit 1
+fi
 
 echo "Starte lokalen Server für den Salesforce-Zertifizierungs-Trainer..."
 echo "Ordner: $(pwd)"
@@ -46,4 +49,4 @@ echo ""
 # Browser mit kurzer Verzögerung öffnen, damit der Server sicher schon läuft.
 ( sleep 1 && open "http://localhost:$PORT" ) &
 
-python3 -m http.server "$PORT"
+python3 -m http.server "$PORT" --bind 127.0.0.1

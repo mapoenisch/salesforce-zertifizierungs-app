@@ -3,13 +3,14 @@
 import * as contentLoader from "./contentLoader.js";
 import * as db from "./db.js";
 import { supportedPath } from "./learningScope.js";
+import { isCalendarDate, todayISO } from "./utils.js";
 
 const SETTINGS_KEY = "salesforce-trainer-settings";
 
 const defaultSettings = {
   theme: "dark",
   dailySessionMinutesTarget: 30,
-  startDate: new Date().toISOString().slice(0, 10),
+  startDate: todayISO(),
   // certificationPath: null bedeutet "noch nicht gewählt" -> erzwingt das Onboarding.
   // Drei mögliche Werte nach Onboarding: "foundations" | "administrator" | "administrator-full"
   // (siehe Produktkonzept, Kapitel 7 Nachtrag 2 — Salesforce verlangt keine formale Prüfungsvoraussetzung,
@@ -33,15 +34,23 @@ function loadSettings() {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY) ?? localStorage.getItem("sfz-app-settings");
     const settings = { ...defaultSettings, ...JSON.parse(raw) };
-    return { ...settings, certificationPath: supportedPath(settings.certificationPath) };
+    return {
+      theme: ["dark", "light"].includes(settings.theme) ? settings.theme : defaultSettings.theme,
+      dailySessionMinutesTarget: Number.isInteger(settings.dailySessionMinutesTarget)
+        && settings.dailySessionMinutesTarget >= 5 && settings.dailySessionMinutesTarget <= 120
+        ? settings.dailySessionMinutesTarget : defaultSettings.dailySessionMinutesTarget,
+      startDate: isCalendarDate(settings.startDate) ? settings.startDate : defaultSettings.startDate,
+      certificationPath: supportedPath(settings.certificationPath)
+    };
   } catch {
     return { ...defaultSettings };
   }
 }
 
 export function saveSettings(partial) {
-  state.settings = { ...state.settings, ...partial };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+  const settings = { ...state.settings, ...partial };
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  state.settings = settings;
   notify();
 }
 
@@ -56,10 +65,9 @@ function notify() {
 
 /** Initialisiert den App-State: lädt Content-JSONs und Fortschritt aus IndexedDB. */
 export async function init() {
-  const [content, progressList, activity] = await Promise.all([
+  const [content, [progressList, activity]] = await Promise.all([
     contentLoader.loadAll(),
-    db.getAllProgress(),
-    db.getAllActivity()
+    db.readLearningData()
   ]);
   state.content = content;
   state.progressByContentId = new Map(progressList.map((p) => [p.contentId, p]));
@@ -69,17 +77,12 @@ export async function init() {
   return state;
 }
 
-export async function refreshProgress() {
-  const progressList = await db.getAllProgress();
+export async function refreshLearningData() {
+  const [progressList, activity] = await db.readLearningData();
   state.progressByContentId = new Map(progressList.map((p) => [p.contentId, p]));
+  state.activity = activity;
   notify();
 }
-
-export async function refreshActivity() {
-  state.activity = await db.getAllActivity();
-  notify();
-}
-
 /** Liefert alle lernbaren Inhalte als flache Liste mit contentType-Tag. */
 export function allLearnableContent() {
   if (!state.content) return [];
@@ -114,7 +117,7 @@ export function filterByCertification(items, certification) {
  * Bildet einen der drei Lernpfade auf die binären Content-Certification-Tags ab,
  * mit denen Vokabeln/Fragen/Reading-Passagen/Definitionen in den Content-JSONs getaggt sind.
  * - "foundations": nur Foundations-Inhalte (keine Vorkenntnisse nötig)
- * - "administrator": nur Administrator-Inhalte (setzt bestandene Foundations-Prüfung voraus)
+ * - "administrator": nur Administrator-Inhalte (setzt Foundations-Grundwissen voraus)
  * - "administrator-full": Foundations- UND Administrator-Inhalte (keine Vorkenntnisse nötig,
  *   deckt beide Stoffgebiete im selben 12-Wochen-Plan ab)
  */
