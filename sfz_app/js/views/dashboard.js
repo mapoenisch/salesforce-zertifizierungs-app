@@ -1,9 +1,9 @@
 // views/dashboard.js — Startseite mit Tagesaktion, Wochen-Soll/Ist, Fortschritt und Schwachpunkten.
 
-import { state, allLearnableContent, domainMap, pathCertifications, activePlatform } from "../state.js";
+import { state, allLearnableContent, domainMap, pathCertifications } from "../state.js";
 import * as db from "../db.js";
 import * as weeklyPlan from "../weeklyPlan.js";
-import { el, clear, progressBar, todayISO, pathLabel, domainWeightLabel } from "../utils.js";
+import { el, clear, progressBar, todayISO, pathLabel } from "../utils.js";
 
 export async function render(container, ctx) {
   clear(container);
@@ -42,7 +42,7 @@ export async function render(container, ctx) {
     weekCard.appendChild(el("p", { class: "item-hint", text: weekTarget.focus }));
     weekCard.appendChild(soll_ist_row("Neue Vokabeln", weekActual.newVocab, weekTarget.newVocabTarget));
     weekCard.appendChild(soll_ist_row("Wiederholungen", weekActual.reviews, weekTarget.reviewsTarget));
-    weekCard.appendChild(soll_ist_row(activePlatform().hasEnglishTraining ? "Reading-Übungen" : "Szenario-Übungen", weekActual.readingExercises, weekTarget.readingExercisesTarget));
+    weekCard.appendChild(soll_ist_row("Reading-Übungen", weekActual.readingExercises, weekTarget.readingExercisesTarget));
   }
   if (milestone) {
     weekCard.appendChild(el("p", { class: "milestone" }, [el("strong", { text: `Monat ${monthNumber}-Meilenstein: ` }), document.createTextNode(milestone)]));
@@ -54,10 +54,9 @@ export async function render(container, ctx) {
   const pathActivity = state.activity.filter((a) => certifications.includes(a.certification));
 
   // Fortschritt je Domain (nur Domains des aktiven Lernpfads)
-  const platform = activePlatform();
   const domains = domainMap();
   const domainCard = el("div", { class: "card" });
-  domainCard.appendChild(el("h2", { text: platform.domainsHeading }));
+  domainCard.appendChild(el("h2", { text: "Fortschritt je Exam-Domain" }));
   [...domains.values()]
     .filter((d) => certifications.includes(d.certification))
     .sort((a, b) => b.weightPercent - a.weightPercent)
@@ -66,23 +65,20 @@ export async function render(container, ctx) {
       if (!items.length) return;
       const attempted = items.filter((i) => state.progressByContentId.get(i.content.id)?.repetitions > 0).length;
       const pct = (attempted / items.length) * 100;
-      domainCard.appendChild(progressBar(pct, `${domain.name} (${domainWeightLabel(domain)}) — ${attempted}/${items.length} bearbeitet`));
+      domainCard.appendChild(progressBar(pct, `${domain.name} (${domain.weightPercent}%) — ${attempted}/${items.length} bearbeitet`));
     });
-  domainCard.appendChild(el("p", { class: "item-hint", text: `Gewichtung: ${platform.weightingNote}.` }));
   container.appendChild(domainCard);
 
-  // Fortschritt B1 vs. B2 — nur bei englischsprachiger Prüfung (Salesforce).
-  if (platform.usesCefr) {
-    const cefrCard = el("div", { class: "card" });
-    cefrCard.appendChild(el("h2", { text: "Fortschritt B1 vs. B2" }));
-    ["B1", "B2"].forEach((cefr) => {
-      const items = all.filter((i) => i.content.cefr === cefr);
-      const attempted = items.filter((i) => state.progressByContentId.get(i.content.id)?.repetitions > 0).length;
-      const pct = items.length ? (attempted / items.length) * 100 : 0;
-      cefrCard.appendChild(progressBar(pct, `${cefr} — ${attempted}/${items.length} bearbeitet`));
-    });
-    container.appendChild(cefrCard);
-  }
+  // Fortschritt B1 vs B2
+  const cefrCard = el("div", { class: "card" });
+  cefrCard.appendChild(el("h2", { text: "Fortschritt B1 vs. B2" }));
+  ["B1", "B2"].forEach((cefr) => {
+    const items = all.filter((i) => i.content.cefr === cefr);
+    const attempted = items.filter((i) => state.progressByContentId.get(i.content.id)?.repetitions > 0).length;
+    const pct = items.length ? (attempted / items.length) * 100 : 0;
+    cefrCard.appendChild(progressBar(pct, `${cefr} — ${attempted}/${items.length} bearbeitet`));
+  });
+  container.appendChild(cefrCard);
 
   // Top-3 Schwachpunkte
   const weakCard = el("div", { class: "card" });
