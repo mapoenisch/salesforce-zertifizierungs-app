@@ -173,3 +173,36 @@ export function confirmDialog(message, opts = {}) {
     cancelBtn.focus();
   });
 }
+
+/**
+ * Gemeinsamer Sitzungskopf mit Fortschrittstext, Prüfungsenglisch-Button und Fortschrittsbalken
+ * für Lerneinheit (#/learn) und gezieltes Üben (#/quiz).
+ */
+export function createSessionChrome({ onOpenRef }) {
+  const progressLabel = el("p", { class: "session-progress session-meta-line" });
+  const refBtn = el("button", {
+    class: "secondary-btn session-ref-btn",
+    text: "Prüfungsenglisch",
+    attrs: { type: "button" },
+    on: { click: () => onOpenRef(refBtn) }
+  });
+  const statusBar = el("div", { class: "session-status-bar" }, [progressLabel, refBtn]);
+  const sessionFill = el("div", { class: "progress-bar-fill" });
+  const sessionTrack = el("div", {
+    class: "progress-bar-track session-progress-track",
+    attrs: { "aria-hidden": "true" }
+  }, [sessionFill]);
+
+  function update(text, percent) {
+    progressLabel.textContent = text;
+    const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+    sessionFill.style.width = `${clamped}%`;
+  }
+
+  function setHidden(hidden) {
+    statusBar.hidden = hidden;
+    sessionTrack.hidden = hidden;
+  }
+
+  return { statusBar, progressLabel, sessionTrack, sessionFill, update, setHidden };
+}

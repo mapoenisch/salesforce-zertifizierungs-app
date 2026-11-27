@@ -125,37 +125,41 @@ export async function render(container, ctx) {
     weekTarget && weekTarget.reviewsTarget > 0 ? Math.round((weekActual.reviews / weekTarget.reviewsTarget) * 100) : null;
   const recommendation = weeklyPlan.buildWeeklyRecommendation({ weekActual, weekTarget, weakDomains: weekWeakDomains });
 
-  const weekSummaryCard = el("div", { class: "card" });
-  weekSummaryCard.appendChild(el("h2", { text: `Woche ${weekNumber} — Ziel & Rückblick` }));
+  const weekGoalCard = el("div", { class: "card" });
+  weekGoalCard.appendChild(el("h2", { text: `Woche ${weekNumber} — Wochenziel (Soll vs. Ist)` }));
   for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
     if (weekTarget) {
       if (weekTarget[target] === 0 && weekActual[actual] === 0) {
-        weekSummaryCard.appendChild(el("p", { class: "item-hint soll-empty", text: `${label}: Kein Soll in dieser Woche` }));
+        weekGoalCard.appendChild(el("p", { class: "item-hint soll-empty", text: `${label}: Kein Soll in dieser Woche` }));
       } else {
-        weekSummaryCard.appendChild(progressBar(targetPercent(weekActual[actual], weekTarget[target]), `${label} · ${weekActual[actual]}/${weekTarget[target]}`));
+        weekGoalCard.appendChild(progressBar(targetPercent(weekActual[actual], weekTarget[target]), `${label} · ${weekActual[actual]}/${weekTarget[target]}`));
       }
     } else {
-      weekSummaryCard.appendChild(el("p", { text: `${label} · ${weekActual[actual]} diese Woche` }));
+      weekGoalCard.appendChild(el("p", { text: `${label} · ${weekActual[actual]} diese Woche` }));
     }
   }
-  weekSummaryCard.appendChild(el("p", {
+  overviewPanel.appendChild(weekGoalCard);
+
+  const weekReviewCard = el("div", { class: "card" });
+  weekReviewCard.appendChild(el("h2", { text: `Woche ${weekNumber} — Rückblick & Empfehlung` }));
+  weekReviewCard.appendChild(el("p", {
     text: `Trefferquote diese Woche: ${weekActual.accuracy != null ? weekActual.accuracy + "%" : "– (noch keine gewerteten Antworten)"} (${weekActual.totalAnswers} Antworten)`
   }));
-  weekSummaryCard.appendChild(el("p", {
+  weekReviewCard.appendChild(el("p", {
     text:
       reviewRatePercent != null
         ? `Wiederholungsquote: ${reviewRatePercent}% des Wochenziels erreicht (${weekActual.reviews}/${weekTarget.reviewsTarget} Wiederholungen)`
         : `Wiederholungen diese Woche · ${weekActual.reviews} (kein Soll)`
   }));
   if (weekWeakDomains.length > 0) {
-    weekSummaryCard.appendChild(el("p", { text: "Schwächste Themen diese Woche:" }));
+    weekReviewCard.appendChild(el("p", { text: "Schwächste Themen diese Woche:" }));
     const list = el("ul");
     weekWeakDomains.slice(0, 3).forEach((w) => list.appendChild(el("li", { text: `${w.name}: ${w.accuracy}% (${w.total} Antworten)` })));
-    weekSummaryCard.appendChild(list);
+    weekReviewCard.appendChild(list);
   }
-  weekSummaryCard.appendChild(el("p", { class: "milestone" }, [el("strong", { text: "Empfehlung: " }), document.createTextNode(recommendation)]));
-  weekSummaryCard.appendChild(el("p", { class: "item-hint", text: "Die Lernreifeanzeige ist ein Indikator für deinen Lernfortschritt, keine Garantie für das Bestehen der Prüfung." }));
-  overviewPanel.appendChild(weekSummaryCard);
+  weekReviewCard.appendChild(el("p", { class: "milestone" }, [el("strong", { text: "Empfehlung: " }), document.createTextNode(recommendation)]));
+  weekReviewCard.appendChild(el("p", { class: "item-hint", text: "Die Lernreifeanzeige ist ein Indikator für deinen Lernfortschritt, keine Garantie für das Bestehen der Prüfung." }));
+  overviewPanel.appendChild(weekReviewCard);
 
   // Tab 2: Domain-Abdeckung + Schwachpunktanalyse
   const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));

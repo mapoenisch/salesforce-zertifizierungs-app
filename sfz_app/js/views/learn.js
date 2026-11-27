@@ -5,7 +5,7 @@ import { dueForPath, markForReview, saveAnswers } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { renderItem } from "../itemRenderer.js";
 import { openExamEnglishModal } from "./examEnglish.js";
-import { el, clear, shuffle, focusContent } from "../utils.js";
+import { el, clear, shuffle, focusContent, createSessionChrome } from "../utils.js";
 
 const SESSION_LIMITS = { due: 10, vocabulary: 5, definition: 3, readingPassage: 2 };
 const ESTIMATED_MINUTES = { vocabulary: 1, definition: 2, readingPassage: 4, question: 3 };
@@ -21,21 +21,11 @@ export async function render(container, ctx) {
     return;
   }
 
-  const progressLabel = el("p", { class: "session-progress session-meta-line" });
-  const refBtn = el("button", {
-    class: "secondary-btn session-ref-btn",
-    text: "Prüfungsenglisch",
-    attrs: { type: "button" },
-    on: { click: () => openExamEnglishModal(refBtn, "Zurück zur Lerneinheit") }
+  const chrome = createSessionChrome({
+    onOpenRef: (btn) => openExamEnglishModal(btn, "Zurück zur Lerneinheit")
   });
-  const statusBar = el("div", { class: "session-status-bar" }, [progressLabel, refBtn]);
-  container.appendChild(statusBar);
-
-  const sessionTrack = el("div", { class: "progress-bar-track session-progress-track", attrs: { "aria-hidden": "true" } }, [
-    el("div", { class: "progress-bar-fill" })
-  ]);
-  const sessionFill = sessionTrack.firstElementChild;
-  container.appendChild(sessionTrack);
+  container.appendChild(chrome.statusBar);
+  container.appendChild(chrome.sessionTrack);
 
   const itemHost = el("div");
   container.appendChild(itemHost);
@@ -74,8 +64,7 @@ export async function render(container, ctx) {
   async function runRound(queue) {
     cumulative.rounds += 1;
     toolbar.hidden = false;
-    statusBar.hidden = false;
-    sessionTrack.hidden = false;
+    chrome.setHidden(false);
     let index = 0;
 
     async function step() {
@@ -84,8 +73,10 @@ export async function render(container, ctx) {
         return;
       }
       const elapsedMin = Math.floor((Date.now() - sessionStartedAt) / 60000);
-      progressLabel.textContent = `Runde ${cumulative.rounds} · ${index + 1} von ${queue.length} · ${elapsedMin}/${state.settings.dailySessionMinutesTarget} Min.`;
-      sessionFill.style.width = `${Math.round(((index + 1) / queue.length) * 100)}%`;
+      chrome.update(
+        `Runde ${cumulative.rounds} · ${index + 1} von ${queue.length} · ${elapsedMin}/${state.settings.dailySessionMinutesTarget} Min.`,
+        ((index + 1) / queue.length) * 100
+      );
       const current = queue[index];
       status.textContent = "";
       status.setAttribute("role", "status");
@@ -143,11 +134,10 @@ export async function render(container, ctx) {
   async function finishRound() {
     const nextQueue = buildQueue();
     clear(itemHost);
-    progressLabel.textContent = "";
+    chrome.update("", 0);
     status.textContent = "";
     toolbar.hidden = true;
-    statusBar.hidden = true;
-    sessionTrack.hidden = true;
+    chrome.setHidden(true);
     renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, () => runRound(nextQueue));
   }
 

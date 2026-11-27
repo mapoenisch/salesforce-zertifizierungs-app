@@ -167,10 +167,6 @@ h1[tabindex="-1"]:focus {
   text-decoration: underline;
 }
 
-.nav-link-mobile-settings {
-  display: none;
-}
-
 .nav-toggle {
   display: none;
 }
@@ -191,6 +187,10 @@ h1[tabindex="-1"]:focus {
   padding: 0.45rem 0.65rem;
   border-radius: 6px;
   white-space: nowrap;
+}
+
+.app-nav .nav-link-mobile-settings {
+  display: none;
 }
 .nav-link:hover,
 .header-utility-link:hover {
@@ -746,8 +746,9 @@ h1 {
 }
 
 .plan-status-behind {
-  border-color: var(--error);
-  color: var(--error);
+  border-color: var(--studio-gold);
+  background: var(--studio-gold-bg);
+  color: var(--studio-gold);
   font-weight: 600;
 }
 
@@ -938,6 +939,7 @@ h1 {
 .progress-bar-fill {
   background: var(--accent);
   height: 100%;
+  transition: width 220ms ease-out;
 }
 
 .progress-bar-b2 .progress-bar-fill {
@@ -1086,8 +1088,17 @@ h1 {
 }
 
 .session-toolbar-bottom {
-  margin-top: 0.85rem;
+  margin-top: 1rem;
   margin-bottom: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  opacity: 0.88;
+}
+
+.session-toolbar-bottom .secondary-btn {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  padding: 0.35rem 0.75rem;
 }
 
 .quiz-actions button,
@@ -1153,16 +1164,19 @@ h1 {
   margin-top: 1rem;
 }
 
-.exam-jump summary,
 .exam-review summary {
   border-bottom: 1px solid var(--border);
+}
+
+.exam-jump {
+  margin: 0.75rem 0 0.85rem;
 }
 
 .exam-jump-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-top: 0.6rem;
+  margin: 0;
 }
 
 .exam-jump-list button {
@@ -1396,8 +1410,14 @@ h1 {
     display: none;
   }
 
-  .nav-link-mobile-settings {
+  .app-nav .nav-link-mobile-settings {
     display: flex;
+  }
+
+  .active-path-banner,
+  .plan-status-pill {
+    border-radius: 10px;
+    line-height: 1.35;
   }
 
   .app-logo {

@@ -4,7 +4,7 @@ import { state, refreshLearningData, domainMap, pathCertifications } from "../st
 import { markForReview, saveAnswers } from "../learning.js";
 import { renderItem, addOptionKeycap } from "../itemRenderer.js";
 import { openExamEnglishModal } from "./examEnglish.js";
-import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDialog } from "../utils.js";
+import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDialog, createSessionChrome } from "../utils.js";
 
 const MINI_EXAM_COUNT = 10;
 const MINI_EXAM_SECONDS = 10 * 60;
@@ -290,7 +290,9 @@ function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
   const stats = { total: 0, correct: 0 };
   const status = el("p", { attrs: { role: "status" } });
 
-  const progressLabel = el("p", { class: "session-progress" });
+  const chrome = createSessionChrome({
+    onOpenRef: (btn) => openExamEnglishModal(btn, "Zurück zur Übung")
+  });
   const itemHost = el("div");
   const toolbar = el("div", { class: "quiz-toolbar session-toolbar-bottom" });
   const stopBtn = el("button", { class: "secondary-btn", text: "Beenden", attrs: { type: "button" } });
@@ -305,11 +307,7 @@ function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
   toolbar.appendChild(stopBtn);
 
   const heading = el("h1", { text: title });
-  host.appendChild(heading);
-  host.appendChild(progressLabel);
-  host.appendChild(itemHost);
-  host.appendChild(toolbar);
-  host.appendChild(status);
+  host.append(heading, chrome.statusBar, chrome.sessionTrack, itemHost, toolbar, status);
 
   function onFreeKeydown(ev) {
     if (!host.isConnected) {
@@ -354,7 +352,7 @@ function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
       showFreeResult();
       return;
     }
-    progressLabel.textContent = `Frage ${index + 1} von ${pool.length}`;
+    chrome.update(`Frage ${index + 1} von ${pool.length}`, ((index + 1) / pool.length) * 100);
     const current = pool[index];
     status.textContent = "";
     status.setAttribute("role", "status");
@@ -479,7 +477,7 @@ function startMiniExam(runHost, pool, showSetup) {
   const cancelBtn = el("button", { class: "secondary-btn", text: "Prüfung abbrechen", attrs: { type: "button" } });
   actions.append(submitBtn, cancelBtn);
 
-  const jump = el("details", { class: "exam-jump" }, [el("summary", { text: "Fragenübersicht" })]);
+  const jump = el("nav", { class: "exam-jump", attrs: { "aria-label": "Fragenübersicht" } });
   const jumpList = el("div", { class: "exam-jump-list" });
   jump.appendChild(jumpList);
   const questionButtons = examQuestions.map((_, index) => {
@@ -489,7 +487,7 @@ function startMiniExam(runHost, pool, showSetup) {
     return button;
   });
   const navigation = el("div", { class: "quiz-nav" }, [prev, next]);
-  host.append(title, stats, qHost, navigation, jump, actions);
+  host.append(title, stats, jump, qHost, navigation, actions);
 
   function onExamKeydown(ev) {
     if (activeExam !== attempt || !host.isConnected || pendingConfirmation) return;

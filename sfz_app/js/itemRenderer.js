@@ -116,10 +116,11 @@ function bindItemShortcuts(root, getHandlers) {
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
 
     const handlers = getHandlers();
+    const isSelectionBtn = document.activeElement?.matches?.(".option-btn, .confidence-btn, .language-slip-btn");
     if (/^[1-9]$/.test(ev.key)) {
       const n = Number(ev.key);
       if (handlers.onNumber?.(n)) ev.preventDefault();
-    } else if (ev.key === "Enter" && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
+    } else if (ev.key === "Enter" && ((tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") || isSelectionBtn)) {
       if (handlers.onEnter?.()) ev.preventDefault();
     } else if (ev.key === " " && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
       if (handlers.onSpace?.()) ev.preventDefault();
@@ -224,7 +225,9 @@ function showVocabExplanation(card, content, correct, startTime, onAnswered) {
     ]));
   }
   card.appendChild(panel);
-  appendConfidenceAndContinue(card, content, correct, startTime, onAnswered);
+  appendConfidenceAndContinue(card, content, correct, startTime, onAnswered, {
+    showConfidence: state.progressByContentId.has(content.id)
+  });
 }
 
 // ---------- Definitions-Matching ----------
@@ -309,7 +312,9 @@ function renderDefinition(container, content, startTime, onAnswered) {
     }
     panel.appendChild(el("p", {}, [el("strong", { text: "Erklärung: " }), document.createTextNode(content.germanExplanation)]));
     card.appendChild(panel);
-    appendConfidenceAndContinue(card, content, correct, startTime, onAnswered);
+    appendConfidenceAndContinue(card, content, correct, startTime, onAnswered, {
+      showConfidence: state.progressByContentId.has(content.id)
+    });
   });
 
   bindItemShortcuts(card, () => ({
@@ -572,7 +577,7 @@ function formatSm2Preview(existingProgress, correct, confidence, languageSlip = 
   return `Nächste Wiederholung: in ${next.intervalDays} Tagen`;
 }
 
-function appendConfidenceAndContinue(host, content, correct, startTime, onAnswered) {
+function appendConfidenceAndContinue(host, content, correct, startTime, onAnswered, { showConfidence = true } = {}) {
   const responseTimeMs = performance.now() - startTime;
   const existingProgress = content?.id ? state.progressByContentId.get(content.id) || emptyProgress(content, "") : {};
   const wrap = el("div", { class: "confidence-wrap session-action-bar" });
@@ -582,7 +587,9 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
 
   const headerRow = el("div", { class: "confidence-header" });
   const label = "Wie sicher warst du dir? (optional)";
-  headerRow.appendChild(el("span", { class: "confidence-label", text: label }));
+  if (showConfidence) {
+    headerRow.appendChild(el("span", { class: "confidence-label", text: label }));
+  }
   const sm2Preview = el("span", {
     class: "sm2-preview",
     text: formatSm2Preview(existingProgress, correct, null, false),
@@ -607,28 +614,30 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
   }
 
   const controlsRow = el("div", { class: "confidence-controls-row" });
-  const scale = el("div", { class: "confidence-scale", attrs: { role: "group", "aria-label": label } });
+  if (showConfidence) {
+    const scale = el("div", { class: "confidence-scale", attrs: { role: "group", "aria-label": label } });
 
-  CONFIDENCE_LEVELS.forEach(({ key, label: text, value }) => {
-    const b = el("button", {
-      class: "confidence-btn",
-      attrs: { type: "button", "aria-pressed": "false", "data-confidence": String(value) }
-    }, [
-      el("kbd", { class: "keycap", text: key, attrs: { "aria-hidden": "true" } }),
-      el("span", { text })
-    ]);
-    b.addEventListener("click", () => {
-      chosen = chosen === value ? null : value;
-      for (const button of scale.children) {
-        const pressed = Number(button.dataset.confidence) === chosen;
-        button.classList.toggle("confidence-selected", pressed);
-        button.setAttribute("aria-pressed", String(pressed));
-      }
-      sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen, languageSlip);
+    CONFIDENCE_LEVELS.forEach(({ key, label: text, value }) => {
+      const b = el("button", {
+        class: "confidence-btn",
+        attrs: { type: "button", "aria-pressed": "false", "data-confidence": String(value) }
+      }, [
+        el("kbd", { class: "keycap", text: key, attrs: { "aria-hidden": "true" } }),
+        el("span", { text })
+      ]);
+      b.addEventListener("click", () => {
+        chosen = chosen === value ? null : value;
+        for (const button of scale.children) {
+          const pressed = Number(button.dataset.confidence) === chosen;
+          button.classList.toggle("confidence-selected", pressed);
+          button.setAttribute("aria-pressed", String(pressed));
+        }
+        sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen, languageSlip);
+      });
+      scale.appendChild(b);
     });
-    scale.appendChild(b);
-  });
-  controlsRow.appendChild(scale);
+    controlsRow.appendChild(scale);
+  }
 
   const continueBtn = el("button", {
     class: "primary-btn confidence-continue-btn",

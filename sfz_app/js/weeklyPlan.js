@@ -165,7 +165,7 @@ export function buildWeeklyRecommendation({ weekActual, weekTarget, weakDomains 
 }
 
 /**
- * Berechnet einen kompakten Plan-Status ("Im Plan" vs. "X Tage Rückstand") gegen das 12-Wochen-Ziel.
+ * Berechnet einen kompakten Plan-Status ("Im Plan" vs. "X Tage Aufholbedarf") gegen das 12-Wochen-Ziel.
  * @returns {{status: "on-track"|"behind"|"completed", label: string, daysBehind: number}}
  */
 export function computePlanStatus(weeklyPlan, activity, startDateISO, path, certifications, today = new Date()) {
@@ -209,7 +209,7 @@ export function computePlanStatus(weeklyPlan, activity, startDateISO, path, cert
   const daysBehind = Math.max(1, Math.round((expectedTotal - actualTotal) / dailyPace));
   return {
     status: "behind",
-    label: `Plan-Status: ${daysBehind} ${daysBehind === 1 ? "Tag" : "Tage"} Rückstand`,
+    label: `Plan-Status: ${daysBehind} ${daysBehind === 1 ? "Tag" : "Tage"} Aufholbedarf`,
     daysBehind
   };
 }

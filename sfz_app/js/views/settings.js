@@ -76,13 +76,13 @@ export async function render(container, ctx) {
       saveSettings({ dailySessionMinutesTarget: minutes });
       goalStatus.classList.remove("status-error");
       minutesInput.removeAttribute("aria-invalid");
+      minutesInput.value = String(minutes);
       goalStatus.textContent = `Tagesziel auf ${minutes} Min. gespeichert.`;
     } else {
       goalStatus.classList.add("status-error");
       minutesInput.setAttribute("aria-invalid", "true");
-      goalStatus.textContent = "Ungültiges Tagesziel (erlaubt: 5 bis 120 Minuten) — vorheriger Wert wiederhergestellt.";
+      goalStatus.textContent = "Ungültiges Tagesziel (erlaubt: 5 bis 120 Minuten).";
     }
-    minutesInput.value = state.settings.dailySessionMinutesTarget;
   });
   minutesLabel.appendChild(minutesInput);
   goalCard.appendChild(minutesLabel);
@@ -95,13 +95,13 @@ export async function render(container, ctx) {
       saveSettings({ startDate: startInput.value });
       goalStatus.classList.remove("status-error");
       startInput.removeAttribute("aria-invalid");
+      startInput.value = state.settings.startDate;
       goalStatus.textContent = `Startdatum auf ${startInput.value} gespeichert.`;
     } else {
       goalStatus.classList.add("status-error");
       startInput.setAttribute("aria-invalid", "true");
-      goalStatus.textContent = "Ungültiges Datum (erwartet JJJJ-MM-TT) — vorheriger Wert wiederhergestellt.";
+      goalStatus.textContent = "Ungültiges Datum (erwartet JJJJ-MM-TT).";
     }
-    startInput.value = state.settings.startDate;
   });
   startLabel.appendChild(startInput);
   goalCard.appendChild(startLabel);
