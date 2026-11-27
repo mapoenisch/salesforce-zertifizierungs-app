@@ -5,18 +5,65 @@ import { dueForPath, markForReview, saveAnswers } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { renderItem } from "../itemRenderer.js";
 import { openExamEnglishModal } from "./examEnglish.js";
-import { el, clear, shuffle, focusContent, createSessionChrome } from "../utils.js";
+import { el, clear, shuffle, focusContent, createSessionChrome, todayISO } from "../utils.js";
 
 const SESSION_LIMITS = { due: 10, vocabulary: 5, definition: 3, readingPassage: 2 };
 const ESTIMATED_MINUTES = { vocabulary: 1, definition: 2, readingPassage: 4, question: 3 };
+const DAILY_SESSION_KEY = "sfz_daily_session_v1";
+
+function saveDailySession(payload) {
+  try {
+    localStorage.setItem(DAILY_SESSION_KEY, JSON.stringify(payload));
+  } catch {
+    // Speicherlimit ignorieren; Sitzung läuft regulär im Arbeitsspeicher weiter.
+  }
+}
+
+function clearDailySession() {
+  try {
+    localStorage.removeItem(DAILY_SESSION_KEY);
+  } catch {
+    // ignorieren
+  }
+}
+
+function loadDailySession(date, path) {
+  try {
+    const raw = localStorage.getItem(DAILY_SESSION_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (!saved || saved.date !== date || saved.path !== path || !Array.isArray(saved.queueIds)) return null;
+    const byId = new Map(allLearnableContent().map((item) => [item.content.id, item]));
+    const queue = saved.queueIds
+      .map(({ id, introMode }) => {
+        const found = byId.get(id);
+        return found ? { ...found, introMode: Boolean(introMode) } : null;
+      })
+      .filter(Boolean);
+    const index = Number.isInteger(saved.index) ? saved.index : 0;
+    if (!queue.length || index >= queue.length) return null;
+    return {
+      queue,
+      index,
+      cumulative: saved.cumulative || { total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: 1 },
+      sessionStartedAt: Number.isFinite(saved.sessionStartedAt) ? saved.sessionStartedAt : Date.now()
+    };
+  } catch {
+    return null;
+  }
+}
 
 export async function render(container, ctx) {
   clear(container);
   container.appendChild(el("h1", { text: "Heutige Einheit" }));
 
   await refreshLearningData();
-  const firstQueue = buildQueue();
+  const today = todayISO();
+  const activePath = state.settings.certificationPath;
+  const resumed = loadDailySession(today, activePath);
+  const firstQueue = resumed ? resumed.queue : buildQueue();
   if (firstQueue.length === 0) {
+    clearDailySession();
     container.appendChild(el("p", { text: "Für heute gibt es nichts Neues oder Fälliges. Schau später wieder vorbei, oder übe frei im Prüfungsmodus." }));
     return;
   }
@@ -38,16 +85,21 @@ export async function render(container, ctx) {
     el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
     document.createTextNode(" Später wiederholen markieren")
   ]);
+  const pauseBtn = el("button", { class: "secondary-btn", text: "Pausieren", attrs: { type: "button" } });
   const stopBtn = el("button", { class: "secondary-btn", text: "Einheit beenden", attrs: { type: "button" } });
-  toolbar.append(laterBtn, stopBtn);
+  toolbar.append(laterBtn, pauseBtn, stopBtn);
   container.appendChild(toolbar);
 
   const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
   container.appendChild(status);
 
-  const sessionStartedAt = Date.now();
-  const cumulative = { total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: 0 };
-  stopBtn.addEventListener("click", () => renderSummary(container, cumulative, ctx));
+  const sessionStartedAt = resumed ? resumed.sessionStartedAt : Date.now();
+  const cumulative = resumed ? resumed.cumulative : { total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: 0 };
+  pauseBtn.addEventListener("click", () => ctx.navigate("#/dashboard"));
+  stopBtn.addEventListener("click", () => {
+    clearDailySession();
+    renderSummary(container, cumulative, ctx);
+  });
 
   function onSessionKeydown(ev) {
     if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
@@ -61,17 +113,29 @@ export async function render(container, ctx) {
   }
   document.addEventListener("keydown", onSessionKeydown, { signal: ctx.signal });
 
-  async function runRound(queue) {
-    cumulative.rounds += 1;
+  async function runRound(queue, startIndex = 0, isResume = false) {
+    if (!isResume) cumulative.rounds += 1;
     toolbar.hidden = false;
     chrome.setHidden(false);
-    let index = 0;
+    let index = startIndex;
+
+    function persistProgress() {
+      saveDailySession({
+        date: today,
+        path: activePath,
+        queueIds: queue.map((item) => ({ id: item.content.id, introMode: Boolean(item.introMode) })),
+        index,
+        cumulative,
+        sessionStartedAt
+      });
+    }
 
     async function step() {
       if (index >= queue.length) {
         await finishRound();
         return;
       }
+      persistProgress();
       const elapsedMin = Math.floor((Date.now() - sessionStartedAt) / 60000);
       chrome.update(
         `Runde ${cumulative.rounds} · ${index + 1} von ${queue.length} · ${elapsedMin}/${state.settings.dailySessionMinutesTarget} Min.`,
@@ -132,6 +196,7 @@ export async function render(container, ctx) {
   }
 
   async function finishRound() {
+    clearDailySession();
     const nextQueue = buildQueue();
     clear(itemHost);
     chrome.update("", 0);
@@ -141,7 +206,7 @@ export async function render(container, ctx) {
     renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, () => runRound(nextQueue));
   }
 
-  await runRound(firstQueue);
+  await runRound(firstQueue, resumed ? resumed.index : 0, Boolean(resumed));
 }
 
 function buildQueue() {

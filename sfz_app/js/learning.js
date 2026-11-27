@@ -70,6 +70,17 @@ export async function markForReview(item, now = new Date()) {
   await refreshLearningData();
 }
 
+export async function unmarkForReview(item) {
+  await updateLearningData([{
+    contentId: item.content.id,
+    apply(existing) {
+      if (!existing || existing.flag !== "later") return null;
+      return { progress: { ...existing, flag: null } };
+    }
+  }]);
+  await refreshLearningData();
+}
+
 export function summarizeActivity(activity, progressById) {
   const answered = new Set();
   const correctDays = new Map();

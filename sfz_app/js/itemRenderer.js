@@ -592,8 +592,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
   }
   const sm2Preview = el("span", {
     class: "sm2-preview",
-    text: formatSm2Preview(existingProgress, correct, null, false),
-    attrs: { role: "status" }
+    text: formatSm2Preview(existingProgress, correct, null, false)
   });
   headerRow.appendChild(sm2Preview);
   wrap.appendChild(headerRow);
@@ -608,6 +607,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
       languageSlip = !languageSlip;
       slipBtn.classList.toggle("confidence-selected", languageSlip);
       slipBtn.setAttribute("aria-pressed", String(languageSlip));
+      sm2Preview.setAttribute("aria-live", "polite");
       sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen, languageSlip);
     });
     wrap.appendChild(slipBtn);
@@ -632,6 +632,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
           button.classList.toggle("confidence-selected", pressed);
           button.setAttribute("aria-pressed", String(pressed));
         }
+        sm2Preview.setAttribute("aria-live", "polite");
         sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen, languageSlip);
       });
       scale.appendChild(b);

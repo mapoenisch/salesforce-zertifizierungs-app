@@ -8,7 +8,40 @@ import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDia
 
 const MINI_EXAM_COUNT = 10;
 const MINI_EXAM_SECONDS = 10 * 60;
+const MINI_EXAM_KEY = "sfz_mini_exam_v1";
 let activeExam;
+
+function saveMiniExam(payload) {
+  try {
+    localStorage.setItem(MINI_EXAM_KEY, JSON.stringify(payload));
+  } catch {
+    // Speicherlimit ignorieren
+  }
+}
+
+function clearMiniExam() {
+  try {
+    localStorage.removeItem(MINI_EXAM_KEY);
+  } catch {
+    // ignorieren
+  }
+}
+
+function loadMiniExam(path) {
+  try {
+    const raw = localStorage.getItem(MINI_EXAM_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (!saved || saved.path !== path || !Number.isFinite(saved.deadline) || saved.deadline <= Date.now()) {
+      clearMiniExam();
+      return null;
+    }
+    if (!Array.isArray(saved.examKeys) || !saved.examKeys.length) return null;
+    return saved;
+  } catch {
+    return null;
+  }
+}
 
 export function hasActiveExam() {
   return Boolean(activeExam);
@@ -117,6 +150,43 @@ export async function render(container, ctx) {
 
   const runHost = el("div");
   container.appendChild(runHost);
+
+  const savedExam = loadMiniExam(state.settings.certificationPath);
+  if (savedExam) {
+    const remainingSec = Math.max(1, Math.ceil((savedExam.deadline - Date.now()) / 1000));
+    const resumeBanner = el("div", { class: "card studio-celebration-card" }, [
+      el("h2", { text: "Laufende Mini-Prüfung gefunden" }),
+      el("p", {
+        text: `Du hast noch ${Math.floor(remainingSec / 60)}:${String(remainingSec % 60).padStart(2, "0")} Min. Restzeit und ${savedExam.answers?.length || 0} von ${savedExam.examKeys.length} beantwortete Fragen.`
+      }),
+      el("div", { class: "quiz-actions" }, [
+        el("button", {
+          class: "primary-btn",
+          text: "Prüfung fortsetzen",
+          attrs: { type: "button" },
+          on: {
+            click: () => {
+              resumeBanner.remove();
+              setup.hidden = true;
+              startMiniExam(runHost, [], showSetup, savedExam);
+            }
+          }
+        }),
+        el("button", {
+          class: "secondary-btn",
+          text: "Verwerfen",
+          attrs: { type: "button" },
+          on: {
+            click: () => {
+              clearMiniExam();
+              resumeBanner.remove();
+            }
+          }
+        })
+      ])
+    ]);
+    setup.insertBefore(resumeBanner, setup.children[1] || null);
+  }
 
   function showSetup(message = "") {
     runHost.replaceChildren();
@@ -445,19 +515,48 @@ export function expandExamItems(pool) {
   return expanded;
 }
 
-function startMiniExam(runHost, pool, showSetup) {
+function startMiniExam(runHost, pool, showSetup, savedExam = null) {
   const host = el("section", { class: "exam-run" });
   runHost.replaceChildren(host);
-  const examQuestions = expandExamItems(pool);
-  const answers = new Map();
-  const timeByKey = new Map();
-  const deadline = Date.now() + MINI_EXAM_SECONDS * 1000;
-  let current = 0;
+  let examQuestions;
+  if (savedExam) {
+    const allExpanded = expandExamItems(
+      allQuizItems().filter((item) => item.contentType === "question" || item.contentType === "readingPassage")
+    );
+    const byKey = new Map(allExpanded.map((entry) => [entry.key, entry]));
+    examQuestions = savedExam.examKeys.map((k) => byKey.get(k)).filter(Boolean);
+  } else {
+    examQuestions = expandExamItems(pool);
+  }
+  if (!examQuestions.length) {
+    clearMiniExam();
+    showSetup("Die gespeicherte Mini-Prüfung konnte nicht wiederhergestellt werden.");
+    return;
+  }
+  const answers = new Map(
+    (savedExam?.answers || []).map(([k, ids]) => [k, new Set(ids)])
+  );
+  const timeByKey = new Map(savedExam?.timeByKey || []);
+  const deadline = savedExam ? savedExam.deadline : Date.now() + MINI_EXAM_SECONDS * 1000;
+  let current = savedExam && Number.isInteger(savedExam.current)
+    ? Math.max(0, Math.min(examQuestions.length - 1, savedExam.current))
+    : 0;
   let questionShownAt = performance.now();
-  let currentKey = examQuestions[0]?.key ?? null;
+  let currentKey = examQuestions[current]?.key ?? null;
   let timerHandle;
   let pendingConfirmation;
   let lastTimerText = "";
+
+  function persistExamState() {
+    saveMiniExam({
+      path: state.settings.certificationPath,
+      deadline,
+      current,
+      examKeys: examQuestions.map((entry) => entry.key),
+      answers: [...answers.entries()].map(([k, set]) => [k, [...set]]),
+      timeByKey: [...timeByKey.entries()]
+    });
+  }
 
   const title = el("h1", { text: "Mini-Prüfung" });
   const timer = el("p", { class: "quiz-timer", attrs: { role: "timer" } });
@@ -541,10 +640,12 @@ function startMiniExam(runHost, pool, showSetup) {
     return confirmed;
   }
 
-  function confirmAbandon() {
-    return ask("Die Prüfung läuft noch. Wenn du sie verlässt, wird dieser Versuch verworfen.", {
+  async function confirmAbandon() {
+    const confirmed = await ask("Die Prüfung läuft noch. Wenn du sie verlässt, wird dieser Versuch verworfen.", {
       cancelText: "Weiterprüfen", confirmText: "Versuch verwerfen", danger: true
     });
+    if (confirmed) clearMiniExam();
+    return confirmed;
   }
 
   function updateTimer() {
@@ -627,6 +728,7 @@ function startMiniExam(runHost, pool, showSetup) {
         else answers.delete(key);
         markSelection();
         refreshStatus();
+        persistExamState();
       });
       options.appendChild(button);
     });
@@ -643,12 +745,14 @@ function startMiniExam(runHost, pool, showSetup) {
     prev.disabled = current === 0;
     next.disabled = current === examQuestions.length - 1;
     refreshStatus();
+    persistExamState();
     if (moveFocus) focusContent(heading);
   }
 
   async function submit(expired = false) {
     if (activeExam !== attempt || !host.isConnected) return;
     recordElapsed();
+    clearMiniExam();
     stop();
     const calculating = el("p", { attrs: { role: "status" }, text: "Mini-Prüfung wird ausgewertet…" });
     host.replaceChildren(calculating);
@@ -741,7 +845,7 @@ function startMiniExam(runHost, pool, showSetup) {
     showSetup("Mini-Prüfung abgebrochen.");
   });
 
-  goTo(0, false);
+  goTo(current, false);
   host.insertBefore(disclaimerNote(), qHost);
   timerHandle = setInterval(updateTimer, 250);
   updateTimer();

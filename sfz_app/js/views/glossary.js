@@ -1,6 +1,7 @@
 // views/glossary.js — Durchsuchbares Glossar aller Vokabeln mit Filtern und persönlichem Wiederholungsstatus.
 
 import { state, domainMap, pathCertifications } from "../state.js";
+import { markForReview, unmarkForReview } from "../learning.js";
 import { openExamEnglishModal } from "./examEnglish.js";
 import { el, clear, certLabel } from "../utils.js";
 
@@ -182,8 +183,7 @@ export async function render(container) {
   renderList();
 }
 
-function renderCard(v, domain) {
-  const progress = state.progressByContentId.get(v.id);
+function formatStatusInfo(progress) {
   const statusText = !progress
     ? "Noch nicht gelernt"
     : progress.flag === "intro"
@@ -193,6 +193,17 @@ function renderCard(v, domain) {
     : progress.flag === "later"
     ? `Später wiederholen${progress.nextReviewDate ? ` ab ${progress.nextReviewDate}` : ""}`
     : `Wiederholungen: ${progress.repetitions}, nächste Wiederholung: ${progress.nextReviewDate}`;
+  const statusPillClass = !progress
+    ? "meta-pill"
+    : progress.flag === "relearn"
+    ? "meta-pill meta-pill-warn"
+    : "meta-pill meta-pill-status";
+  return { statusText, statusPillClass };
+}
+
+function renderCard(v, domain) {
+  const progress = state.progressByContentId.get(v.id);
+  const { statusText, statusPillClass } = formatStatusInfo(progress);
 
   const exampleSentence = v.clozeSentence.replace("____", v.term);
 
@@ -215,14 +226,36 @@ function renderCard(v, domain) {
       : null
   ]);
   card.appendChild(details);
-  const statusPillClass = !progress
-    ? "meta-pill"
-    : progress.flag === "relearn"
-    ? "meta-pill meta-pill-warn"
-    : "meta-pill meta-pill-status";
-  card.appendChild(el("p", { class: "review-status" }, [
-    el("strong", { text: "Status: " }),
-    el("span", { class: statusPillClass, text: statusText })
+
+  const statusPill = el("span", { class: statusPillClass, text: statusText });
+  const isMarked = progress?.flag === "later";
+  const reviewBtn = el("button", {
+    class: "secondary-btn glossary-review-btn",
+    text: isMarked ? "✓ Vorgemerkt" : "Später wiederholen",
+    attrs: { type: "button", "aria-pressed": String(isMarked) }
+  });
+  reviewBtn.addEventListener("click", async () => {
+    reviewBtn.disabled = true;
+    const item = { content: v, contentType: "vocabulary" };
+    try {
+      const currentlyMarked = reviewBtn.getAttribute("aria-pressed") === "true";
+      if (currentlyMarked) await unmarkForReview(item);
+      else await markForReview(item);
+      const nextProgress = state.progressByContentId.get(v.id);
+      const nextInfo = formatStatusInfo(nextProgress);
+      statusPill.className = nextInfo.statusPillClass;
+      statusPill.textContent = nextInfo.statusText;
+      const markedNow = nextProgress?.flag === "later";
+      reviewBtn.setAttribute("aria-pressed", String(markedNow));
+      reviewBtn.textContent = markedNow ? "✓ Vorgemerkt" : "Später wiederholen";
+    } finally {
+      reviewBtn.disabled = false;
+    }
+  });
+
+  card.appendChild(el("div", { class: "glossary-status-row" }, [
+    el("p", { class: "review-status" }, [el("strong", { text: "Status: " }), statusPill]),
+    reviewBtn
   ]));
   return card;
 }

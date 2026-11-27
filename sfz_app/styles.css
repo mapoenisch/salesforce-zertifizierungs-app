@@ -1321,6 +1321,23 @@ h1 {
 .review-status {
   color: var(--text-muted);
   font-size: 0.9rem;
+  margin: 0;
+}
+
+.glossary-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.glossary-review-btn {
+  margin: 0;
+  min-height: 38px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
 }
 
 /* Gefahrenzone */
@@ -1484,6 +1501,16 @@ h1 {
 
   .exam-stats {
     font-size: 0.9rem;
+  }
+
+  .item-card > .primary-btn:not(:disabled),
+  .confidence-continue-btn:not(:disabled),
+  .session-action-bar .primary-btn:not(:disabled) {
+    position: sticky;
+    bottom: calc(0.5rem + env(safe-area-inset-bottom));
+    z-index: 15;
+    width: 100%;
+    box-shadow: var(--modal-shadow);
   }
 }
 
