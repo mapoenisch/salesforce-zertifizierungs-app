@@ -121,6 +121,18 @@ function bindItemShortcuts(root, getHandlers) {
     if (/^[1-9]$/.test(ev.key)) {
       const n = Number(ev.key);
       if (handlers.onNumber?.(n)) ev.preventDefault();
+    } else if ((ev.key === "d" || ev.key === "D") && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
+      const toggle = root.querySelector(".translation-toggle");
+      if (toggle && !toggle.disabled) {
+        ev.preventDefault();
+        toggle.click();
+      }
+    } else if ((ev.key === "s" || ev.key === "S") && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
+      const slip = root.querySelector(".language-slip-btn");
+      if (slip && !slip.disabled) {
+        ev.preventDefault();
+        slip.click();
+      }
     } else if (ev.key === "Enter" && ((tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") || isSelectionBtn)) {
       if (handlers.onEnter?.()) ev.preventDefault();
     } else if (ev.key === " " && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY" && !onOptionInput) {
@@ -182,6 +194,7 @@ function renderVocabulary(container, content, startTime, onAnswered) {
     if (answered || chosenOption == null) return;
     answered = true;
     submitBtn.disabled = true;
+    submitBtn.hidden = true;
     const correct = chosenOption === content.correctOption;
     [...optionsWrap.children].forEach((b) => {
       b.disabled = true;
@@ -297,6 +310,7 @@ function renderDefinition(container, content, startTime, onAnswered) {
     if (answered || chosenDef == null) return;
     answered = true;
     submitBtn.disabled = true;
+    submitBtn.hidden = true;
     const correct = chosenDef === content.definition;
     [...optionsWrap.children].forEach((b) => {
       b.disabled = true;
@@ -351,6 +365,65 @@ function optionLetter(idx) {
   return String.fromCharCode(65 + idx);
 }
 
+function renderInteractiveScenario(parent, text) {
+  const scenarioEl = el("p", { class: "item-scenario", text, attrs: { lang: "en" } });
+  const bar = el("div", { class: "scenario-highlight-bar" });
+  const toggleBtn = el("button", {
+    class: "secondary-btn scenario-highlight-toggle",
+    text: "Signalwörter markieren",
+    attrs: { type: "button", "aria-pressed": "false" }
+  });
+  const hint = el("span", {
+    class: "scenario-highlight-hint",
+    text: "Klicke auf Begriffe im Text, um Bedingungen hervorzuheben.",
+    attrs: { hidden: "" }
+  });
+
+  let active = false;
+  const markedIndices = new Set();
+
+  function renderTokens() {
+    clear(scenarioEl);
+    if (!active) {
+      scenarioEl.textContent = text;
+      return;
+    }
+    const parts = text.split(/(\s+)/);
+    parts.forEach((part, idx) => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) {
+        scenarioEl.appendChild(document.createTextNode(part));
+        return;
+      }
+      const isMarked = markedIndices.has(idx);
+      const tokenBtn = el("button", {
+        class: isMarked ? "scenario-token scenario-token-marked" : "scenario-token",
+        text: part,
+        attrs: { type: "button", "aria-pressed": String(isMarked), lang: "en" }
+      });
+      tokenBtn.addEventListener("click", () => {
+        if (markedIndices.has(idx)) markedIndices.delete(idx);
+        else markedIndices.add(idx);
+        const nowMarked = markedIndices.has(idx);
+        tokenBtn.classList.toggle("scenario-token-marked", nowMarked);
+        tokenBtn.setAttribute("aria-pressed", String(nowMarked));
+      });
+      scenarioEl.appendChild(tokenBtn);
+    });
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    active = !active;
+    toggleBtn.setAttribute("aria-pressed", String(active));
+    toggleBtn.textContent = active ? "Markiermodus beenden" : "Signalwörter markieren";
+    hint.hidden = !active;
+    renderTokens();
+  });
+
+  bar.append(toggleBtn, hint);
+  parent.append(scenarioEl, bar);
+}
+
 function renderQuestion(container, questionContent, opts, startTime, onAnswered) {
   fallakteCounter += 1;
   const instanceName = `fall-q-${fallakteCounter}`;
@@ -372,7 +445,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
   if (!opts.disclaimerAlreadyShown) {
     card.appendChild(disclaimerNote());
     if (questionContent.scenario) {
-      card.appendChild(el("p", { class: "item-scenario", text: questionContent.scenario, attrs: { lang: "en" } }));
+      renderInteractiveScenario(card, questionContent.scenario);
     }
   }
   card.appendChild(el("p", {
@@ -389,13 +462,18 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
     });
     const deToggle = el("button", {
       class: "secondary-btn translation-toggle",
-      text: "Deutsch anzeigen",
       attrs: { type: "button", "aria-expanded": "false" }
-    });
+    }, [
+      el("kbd", { class: "keycap", text: "D", attrs: { "aria-hidden": "true" } }),
+      document.createTextNode(" Deutsch anzeigen")
+    ]);
     deToggle.addEventListener("click", () => {
       const show = deText.hidden;
       deText.hidden = !show;
-      deToggle.textContent = show ? "Deutsch ausblenden" : "Deutsch anzeigen";
+      deToggle.replaceChildren(
+        el("kbd", { class: "keycap", text: "D", attrs: { "aria-hidden": "true" } }),
+        document.createTextNode(show ? " Deutsch ausblenden" : " Deutsch anzeigen")
+      );
       deToggle.setAttribute("aria-expanded", String(show));
     });
     card.append(deToggle, deText);
@@ -441,6 +519,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
         selected.clear();
         if (input.checked) selected.add(opt.id);
       }
+      submitBtn.disabled = selected.size === 0;
       error.hidden = true;
     });
     fieldset.appendChild(row);
@@ -452,7 +531,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
   const submitBtn = el("button", {
     class: "primary-btn fall-check-btn",
     text: isMulti ? "Antwort abgeben" : "Antwort prüfen",
-    attrs: { type: "button" }
+    attrs: { type: "button", disabled: "" }
   });
   const actionsWrap = el("div", { class: "fall-actions" }, [submitBtn]);
   submitBtn.addEventListener("click", () => submit());
@@ -579,7 +658,7 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
   const meta = renderItemMetaPills(content);
   if (meta) wrap.appendChild(meta);
   wrap.appendChild(disclaimerNote());
-  wrap.appendChild(el("p", { class: "item-scenario", text: content.scenario, attrs: { lang: "en" } }));
+  renderInteractiveScenario(wrap, content.scenario);
 
   const recapList = el("ul", { class: "passage-recap", attrs: { hidden: "", "aria-live": "polite" } });
   wrap.appendChild(recapList);
@@ -692,10 +771,18 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
   wrap.appendChild(headerRow);
 
   if (!correct) {
+    const slipWrap = el("div", { class: "language-slip-wrap" });
     const slipBtn = el("button", {
       class: "secondary-btn language-slip-btn",
-      text: "Sprachfehler, nicht Fachfehler",
-      attrs: { type: "button", "aria-pressed": "false" }
+      attrs: { type: "button", "aria-pressed": "false", "aria-describedby": "language-slip-hint" }
+    }, [
+      el("kbd", { class: "keycap", text: "S", attrs: { "aria-hidden": "true" } }),
+      document.createTextNode(" Sprachfehler, nicht Fachfehler")
+    ]);
+    const slipHint = el("span", {
+      class: "language-slip-hint",
+      text: "Schützt dein SM-2-Intervall, wenn nur ein englisches Signalwort überlesen wurde.",
+      attrs: { id: "language-slip-hint" }
     });
     slipBtn.addEventListener("click", () => {
       languageSlip = !languageSlip;
@@ -704,7 +791,8 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
       sm2Preview.setAttribute("aria-live", "polite");
       sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen, languageSlip);
     });
-    wrap.appendChild(slipBtn);
+    slipWrap.append(slipBtn, slipHint);
+    wrap.appendChild(slipWrap);
   }
 
   const controlsRow = el("div", { class: "confidence-controls-row" });
@@ -718,7 +806,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
           type: "button",
           "aria-pressed": "false",
           "data-confidence": String(value),
-          "aria-label": `${text} – Sicherheit ${value} von 5`
+          "aria-label": `${text} – Sicherheit ${key} von 3`
         }
       }, [
         el("kbd", { class: "keycap", text: key, attrs: { "aria-hidden": "true" } }),

@@ -111,10 +111,34 @@ export async function render(container) {
   container.appendChild(formCard);
 
   const countStatus = el("p", { class: "glossary-count", attrs: { role: "status" } });
-  container.appendChild(countStatus);
+  const bulkMarkBtn = el("button", {
+    class: "secondary-btn compact-link-btn",
+    text: "Angezeigte vormerken",
+    attrs: { type: "button", hidden: "" }
+  });
+  const countRow = el("div", { class: "glossary-count-row" }, [countStatus, bulkMarkBtn]);
+  container.appendChild(countRow);
 
   const listHost = el("div", { class: "glossary-list" });
   container.appendChild(listHost);
+
+  let currentMatches = [];
+  bulkMarkBtn.addEventListener("click", async () => {
+    const toMark = currentMatches.slice(0, PAGE_SIZE).filter((v) => state.progressByContentId.get(v.id)?.flag !== "later");
+    if (toMark.length === 0) return;
+    bulkMarkBtn.disabled = true;
+    try {
+      for (const v of toMark) {
+        await markForReview({ content: v, contentType: "vocabulary" });
+      }
+      renderList();
+      countStatus.textContent = `${toMark.length} Begriffe zum Wiederholen vorgemerkt.`;
+    } catch {
+      countStatus.textContent = "Die Auswahl konnte nicht gespeichert werden.";
+    } finally {
+      bulkMarkBtn.disabled = false;
+    }
+  });
 
   function renderList() {
     clear(listHost);
@@ -134,6 +158,10 @@ export async function render(container) {
         return true;
       })
       .map(({ v }) => v);
+
+    currentMatches = matches;
+    const unmarkedVisible = matches.slice(0, PAGE_SIZE).some((v) => state.progressByContentId.get(v.id)?.flag !== "later");
+    bulkMarkBtn.hidden = matches.length === 0 || !unmarkedVisible;
 
     if (matches.length === 0) {
       countStatus.textContent = "0 Treffer";
@@ -238,8 +266,11 @@ function renderCard(v, domain) {
     text: isMarked ? "✓ Vorgemerkt" : "Später wiederholen",
     attrs: { type: "button", "aria-pressed": String(isMarked) }
   });
+  const errorMsg = el("p", { class: "glossary-error", attrs: { role: "alert", hidden: "" } });
   reviewBtn.addEventListener("click", async () => {
     reviewBtn.disabled = true;
+    errorMsg.hidden = true;
+    errorMsg.textContent = "";
     const item = { content: v, contentType: "vocabulary" };
     try {
       const currentlyMarked = reviewBtn.getAttribute("aria-pressed") === "true";
@@ -252,6 +283,9 @@ function renderCard(v, domain) {
       const markedNow = nextProgress?.flag === "later";
       reviewBtn.setAttribute("aria-pressed", String(markedNow));
       reviewBtn.textContent = markedNow ? "✓ Vorgemerkt" : "Später wiederholen";
+    } catch {
+      errorMsg.textContent = "Status konnte nicht gespeichert werden.";
+      errorMsg.hidden = false;
     } finally {
       reviewBtn.disabled = false;
     }
@@ -261,6 +295,7 @@ function renderCard(v, domain) {
     el("p", { class: "review-status" }, [el("strong", { text: "Status: " }), statusPill]),
     reviewBtn
   ]));
+  card.appendChild(errorMsg);
   return card;
 }
 

@@ -188,6 +188,7 @@ export async function render(container, ctx) {
           cumulative.byType[current.contentType] = (cumulative.byType[current.contentType] || 0) + 1;
           index += 1;
           await step();
+          window.scrollTo(0, 0);
         }
       });
     }

@@ -207,13 +207,20 @@ export async function render(container, ctx) {
     e.total += 1;
     if (a.correct) e.correct += 1;
   }
-  const weak = [...byDomain.entries()]
+  const practiced = [...byDomain.entries()]
     .filter(([, v]) => v.total >= 3)
-    .map(([id, v]) => ({ id, name: domains.get(id)?.name || id, accuracy: Math.round((v.correct / v.total) * 100), total: v.total }))
+    .map(([id, v]) => ({ id, name: domains.get(id)?.name || id, accuracy: Math.round((v.correct / v.total) * 100), total: v.total }));
+  const weak = practiced
+    .filter((d) => d.accuracy < 80)
     .sort((a, b) => a.accuracy - b.accuracy);
 
   if (weak.length === 0) {
-    weakCard.appendChild(el("p", { class: "item-hint", text: "Noch nicht genug Daten für eine Schwachpunktanalyse (mindestens 3 Antworten pro Domain nötig)." }));
+    weakCard.appendChild(el("p", {
+      class: "item-hint",
+      text: practiced.length > 0
+        ? "Alle bisher geübten Domains liegen bei mindestens 80% Trefferquote — aktuell kein Schwachpunkt erkannt."
+        : "Noch nicht genug Daten für eine Schwachpunktanalyse (mindestens 3 Antworten pro Domain nötig)."
+    }));
   } else {
     const list = el("ul", { class: "weak-links-list" });
     weak.forEach((w) => {

@@ -82,9 +82,9 @@ function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, score
   heroBtn.addEventListener("click", () => ctx.navigate("#/learn"));
   heroCard.appendChild(heroBtn);
 
-  const weakDomains = computeWeakDomains(pathActivity, domainMap());
-  if (weakDomains.length > 0) {
-    const topWeak = weakDomains[0];
+  const { weak, hasPracticedDomains } = computeWeakDomains(pathActivity, domainMap());
+  if (weak.length > 0) {
+    const topWeak = weak[0];
     const focusBtn = el("button", {
       class: "weak-link-btn dashboard-focus-chip",
       text: `Schwachpunkt-Fokus: ${topWeak.name} (${topWeak.accuracy}% aus ${topWeak.total} Antworten) → Gezielt üben`,
@@ -92,6 +92,11 @@ function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, score
     });
     focusBtn.addEventListener("click", () => ctx.navigate(`#/quiz?domain=${encodeURIComponent(topWeak.id)}`));
     heroCard.appendChild(focusBtn);
+  } else if (hasPracticedDomains) {
+    heroCard.appendChild(el("p", {
+      class: "item-hint dashboard-unlock-hint",
+      text: "Alle bisher geübten Domains liegen bei mindestens 80% Trefferquote."
+    }));
   } else {
     const remaining = Math.max(0, 3 - scoredCount);
     heroCard.appendChild(el("p", {
@@ -233,13 +238,16 @@ function computeWeakDomains(activity, domains) {
     entry.total += 1;
     if (a.correct) entry.correct += 1;
   }
-  return [...byDomain.entries()]
+  const practiced = [...byDomain.entries()]
     .filter(([, v]) => v.total >= 3)
     .map(([domainId, v]) => ({
       id: domainId,
       name: domains.get(domainId)?.name || domainId,
       accuracy: Math.round((v.correct / v.total) * 100),
       total: v.total
-    }))
+    }));
+  const weak = practiced
+    .filter((d) => d.accuracy < 80)
     .sort((a, b) => a.accuracy - b.accuracy);
+  return { weak, hasPracticedDomains: practiced.length > 0 };
 }

@@ -514,6 +514,7 @@ function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
         stats.correct += result.correct ? 1 : 0;
         index += 1;
         await step();
+        window.scrollTo(0, 0);
       }
     });
   }
