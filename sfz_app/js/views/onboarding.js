@@ -28,6 +28,8 @@ const PATHS = [
     id: "foundations",
     title: "Foundations",
     subtitle: "Einstieg ohne Salesforce-Vorkenntnisse",
+    badge: "Empfohlen für Einsteiger",
+    recommended: true,
     exam: FOUNDATIONS,
     buttonLabel: "Foundations wählen",
     focus: "12 Wochen Foundations · Leseübungen überwiegend B1."
@@ -54,7 +56,8 @@ export async function render(container, ctx) {
   clear(container);
   container.appendChild(el("h1", { text: "Wähle deinen Lernpfad" }));
   container.appendChild(el("p", {
-    text: "Du kannst den Pfad später in den Einstellungen wechseln. Dein Lernfortschritt bleibt erhalten."
+    class: "onboarding-lead",
+    text: "12 Wochen, etwa 20 bis 40 Minuten pro Tag. Du kannst den Pfad später wechseln; dein Lernfortschritt bleibt erhalten."
   }));
 
   const cards = el("div", { class: "onboarding-cards" });
@@ -64,13 +67,18 @@ export async function render(container, ctx) {
       saveSettings({ certificationPath: path.id });
       ctx.navigate("#/dashboard");
     });
-    cards.appendChild(el("section", { class: "onboarding-card" }, [
-      el("h2", { text: path.title }),
-      el("p", { class: "onboarding-fit", text: path.subtitle }),
-      el("p", { class: "item-hint", text: path.focus }),
-      choose,
-      examDetails(path.exam)
-    ]));
+    const card = el("section", {
+      class: `onboarding-card${path.recommended ? " onboarding-card-recommended" : ""}`,
+      attrs: { "aria-labelledby": `onboarding-${path.id}` }
+    });
+    if (path.badge) card.appendChild(el("p", { class: "onboarding-badge", text: path.badge }));
+    else card.appendChild(el("p", { class: "onboarding-badge onboarding-badge-empty", text: "Empfohlen", attrs: { "aria-hidden": "true" } }));
+    card.appendChild(el("h2", { text: path.title, attrs: { id: `onboarding-${path.id}` } }));
+    card.appendChild(el("p", { class: "onboarding-fit", text: path.subtitle }));
+    card.appendChild(el("p", { class: "onboarding-focus", text: path.focus }));
+    card.appendChild(choose);
+    card.appendChild(examDetails(path.exam));
+    cards.appendChild(card);
   }
   container.appendChild(cards);
 }

@@ -1,7 +1,7 @@
 // app.js — Einstiegspunkt: initialisiert State, Theme und den Hash-Router.
 
 import { state, init, preload } from "./js/state.js";
-import { focusContent } from "./js/utils.js";
+import { focusContent, icon } from "./js/utils.js";
 import * as onboarding from "./js/views/onboarding.js";
 import * as dashboard from "./js/views/dashboard.js";
 import * as learn from "./js/views/learn.js";
@@ -28,6 +28,14 @@ const navLabels = {
   "#/quiz": "Prüfung",
   "#/glossary": "Glossar",
   "#/progress": "Fortschritt"
+};
+
+const navIcons = {
+  "#/dashboard": "dashboard",
+  "#/learn": "learn",
+  "#/quiz": "quiz",
+  "#/glossary": "glossary",
+  "#/progress": "progress"
 };
 
 const appRoot = document.getElementById("app");
@@ -141,8 +149,8 @@ function buildNav() {
   for (const [hash, label] of Object.entries(navLabels)) {
     const link = document.createElement("a");
     link.href = hash;
-    link.textContent = label;
     link.className = "nav-link";
+    link.append(icon(navIcons[hash]), document.createTextNode(label));
     if (activeRoute === hash || (!location.hash && hash === "#/dashboard")) {
       link.classList.add("nav-link-active");
       link.setAttribute("aria-current", "page");
@@ -161,8 +169,8 @@ function buildNav() {
 
   const mobileSettings = document.createElement("a");
   mobileSettings.href = "#/settings";
-  mobileSettings.textContent = "Einstellungen";
   mobileSettings.className = "nav-link nav-link-mobile-settings";
+  mobileSettings.append(icon("settings"), document.createTextNode("Einstellungen"));
   if (activeRoute === "#/settings") {
     mobileSettings.classList.add("nav-link-active");
     mobileSettings.setAttribute("aria-current", "page");
@@ -213,7 +221,17 @@ async function renderRoute() {
   const hash = location.hash || "#/dashboard";
   const routeKey = hash.split("?")[0];
   if (!state.ready && !CONTENT_FREE_ROUTES.has(routeKey)) {
-    appRoot.textContent = "Lade Lerninhalte…";
+    const loading = document.createElement("div");
+    loading.className = "loading-state";
+    loading.setAttribute("role", "status");
+    loading.setAttribute("aria-live", "polite");
+    const spinner = document.createElement("span");
+    spinner.className = "loading-spinner";
+    spinner.setAttribute("aria-hidden", "true");
+    const label = document.createElement("p");
+    label.textContent = "Lade Lerninhalte…";
+    loading.append(spinner, label);
+    appRoot.replaceChildren(loading);
     try {
       await init();
     } catch (error) {

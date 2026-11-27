@@ -3,7 +3,7 @@
 import { state, allLearnableContent, domainMap, pathCertifications, refreshLearningData } from "../state.js";
 import { dueForPath, summarizeActivity } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
-import { el, clear, progressBar, formatDuration, todayISO, pathLabel } from "../utils.js";
+import { el, clear, progressBar, formatDuration, todayISO, pathLabel, termHelp } from "../utils.js";
 
 export async function render(container, ctx) {
   clear(container);
@@ -165,7 +165,10 @@ export async function render(container, ctx) {
   const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));
   const { answered, consolidated } = summarizeActivity(activity, state.progressByContentId);
   const domainCard = el("div", { class: "card" });
-  domainCard.appendChild(el("h2", { text: "Domain-Abdeckung (nach offizieller Gewichtung)" }));
+  domainCard.appendChild(el("div", { class: "card-head-row" }, [
+    el("h2", { text: "Domain-Abdeckung (nach offizieller Gewichtung)" }),
+    termHelp("Exam-Domain", "Exam-Domains sind die offiziellen Themenbereiche der Prüfung. Die Prozentzahl zeigt, wie stark der Bereich im Exam Guide gewichtet ist.")
+  ]));
   const sortedDomains = [...domains.values()]
     .filter((d) => certifications.includes(d.certification))
     .sort((a, b) => b.weightPercent - a.weightPercent)

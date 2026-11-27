@@ -58,15 +58,19 @@ export function leave() {
 export async function render(container, ctx) {
   clear(container);
   const setup = el("section");
-  const setupTitle = el("h1", { text: "Frage- und Prüfungsmodus" });
+  const setupTitle = el("h1", { text: "Üben & Mini-Prüfung" });
   const refBtn = el("button", {
     class: "secondary-btn compact-link-btn",
     text: "Leitfaden: Prüfungsenglisch",
     attrs: { type: "button" },
-    on: { click: () => openExamEnglishModal(refBtn, "Zurück zum Prüfungsmodus") }
+    on: { click: () => openExamEnglishModal(refBtn, "Zurück zu Üben & Mini-Prüfung") }
   });
   const headRow = el("div", { class: "view-header-row" }, [setupTitle, refBtn]);
   setup.appendChild(headRow);
+  setup.appendChild(el("p", {
+    class: "view-lead",
+    text: "Beide Modi nutzen dieselben Filter. Gezielt üben erklärt jede Antwort sofort, die Mini-Prüfung bewertet erst am Ende."
+  }));
   container.appendChild(setup);
 
   await refreshLearningData();
@@ -81,20 +85,57 @@ export async function render(container, ctx) {
   };
   const filters = { ...defaultFilters, examDomainId: validDomain };
 
-  const actions = el("div", { class: "quiz-actions" });
   const freeBtn = el("button", { class: "primary-btn", text: "Gezielt üben starten", attrs: { type: "button" } });
   const examBtn = el("button", {
     class: "secondary-btn",
     text: `Mini-Prüfung starten (${MINI_EXAM_COUNT} Fragen, ${MINI_EXAM_SECONDS / 60} Min.)`,
     attrs: { type: "button" }
   });
-  actions.append(freeBtn, examBtn);
-  setup.appendChild(actions);
+
+  const modeGrid = el("div", { class: "mode-grid" }, [
+    el("section", { class: "card mode-card", attrs: { "aria-labelledby": "mode-practice-title" } }, [
+      el("h2", { text: "Gezielt üben", attrs: { id: "mode-practice-title" } }),
+      el("p", {
+        class: "mode-card-text",
+        text: "Einzelne Aufgaben mit Erklärung direkt nach der Antwort. Gedacht für neue Inhalte, Fehler und unsichere Begriffe."
+      }),
+      freeBtn
+    ]),
+    el("section", { class: "card mode-card", attrs: { "aria-labelledby": "mode-exam-title" } }, [
+      el("h2", { text: "Mini-Prüfung", attrs: { id: "mode-exam-title" } }),
+      el("p", {
+        class: "mode-card-text",
+        text: `${MINI_EXAM_COUNT} gemischte Szenariofragen in ${MINI_EXAM_SECONDS / 60} Minuten. Auswertung und Erklärungen kommen erst nach dem Absenden.`
+      }),
+      examBtn
+    ])
+  ]);
+  setup.appendChild(modeGrid);
+
+  const filterCard = el("section", { class: "card quiz-filter-card", attrs: { "aria-labelledby": "quiz-filter-title" } });
+  const filterCount = el("p", { class: "active-filter-count" });
+  filterCard.appendChild(el("div", { class: "card-head-row" }, [
+    el("h2", { text: "Filter", attrs: { id: "quiz-filter-title" } }),
+    filterCount
+  ]));
+  filterCard.appendChild(el("p", {
+    class: "filter-hint",
+    text: "Exam-Domain = offizieller Themenbereich der Prüfung · CEFR = Englisch-Niveau (B1 Grundlagen, B2 komplexer)."
+  }));
+  setup.appendChild(filterCard);
+
+  function refreshFilterCount() {
+    const active = Object.keys(defaultFilters).filter((key) => filters[key] !== defaultFilters[key]).length;
+    filterCount.textContent = active === 0
+      ? "Keine Filter aktiv"
+      : `${active} Filter aktiv`;
+    filterCount.classList.toggle("active-filter-count-on", active > 0);
+  }
 
   const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
-  setup.appendChild(status);
+  filterCard.appendChild(status);
 
-  const presetRow = el("div", { class: "quiz-preset-row", attrs: { role: "group", "aria-label": "Fokus" } });
+  const presetRow = el("div", { class: "quiz-preset-row", attrs: { role: "group", "aria-label": "Schnellfilter" } });
   const formHost = el("details", { class: "quiz-filters" });
   const initialCount = filterPool(allQuizItems(), filters).length;
   if (validDomain !== "all") {
@@ -103,13 +144,15 @@ export async function render(container, ctx) {
   } else {
     status.textContent = `${initialCount} passende Übungen verfügbar`;
   }
-  formHost.appendChild(el("summary", { text: "Erweiterte Filter (Domain, Format, CEFR)" }));
+  formHost.appendChild(el("summary", { text: "Filter anpassen (Domain, Format, CEFR)" }));
   const fields = el("div");
   formHost.appendChild(fields);
   function updateCountStatus() {
     const count = filterPool(allQuizItems(), filters).length;
     status.textContent = `${count} passende Übungen`;
+    refreshFilterCount();
   }
+  refreshFilterCount();
   const syncFiltersUI = renderFilterForm(fields, filters, defaultFilters, activePath, certifications, updateCountStatus);
   const presets = [
     { label: "Alle Übungen", patch: { ...defaultFilters } },
@@ -137,8 +180,8 @@ export async function render(container, ctx) {
     presetRow.appendChild(chip);
     return chip;
   });
-  setup.appendChild(presetRow);
-  setup.appendChild(formHost);
+  filterCard.appendChild(presetRow);
+  filterCard.appendChild(formHost);
   fields.addEventListener("change", () => {
     activePresetIdx = -1;
     presetChips.forEach((c) => {
@@ -185,7 +228,7 @@ export async function render(container, ctx) {
         })
       ])
     ]);
-    setup.insertBefore(resumeBanner, setup.children[1] || null);
+    setup.insertBefore(resumeBanner, modeGrid);
   }
 
   function showSetup(message = "") {
@@ -406,7 +449,11 @@ function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
     const resultHeading = el("h1", { text: "Übung beendet" });
     const pct = stats.total ? Math.round((stats.correct / stats.total) * 100) : 0;
     const summaryCard = el("div", { class: "card studio-celebration-card" }, [
-      el("p", { class: "big-number", text: `${stats.correct} / ${stats.total}` }),
+      el("p", {
+        class: "big-number",
+        text: `${stats.correct} / ${stats.total}`,
+        attrs: { "aria-label": `${stats.correct} von ${stats.total} richtig` }
+      }),
       el("p", { text: `Trefferquote: ${pct}%` })
     ]);
     const back = el("button", {

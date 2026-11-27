@@ -308,7 +308,11 @@ function renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, onConti
   const pct = cumulative.scored ? Math.round((cumulative.correct / cumulative.scored) * 100) : 0;
   const card = el("div", { class: "card studio-celebration-card" }, [
     el("h2", { text: `Runde ${cumulative.rounds} geschafft` }),
-    el("p", { class: "big-number", text: `${cumulative.correct} / ${cumulative.scored}` }),
+    el("p", {
+      class: "big-number",
+      text: `${cumulative.correct} / ${cumulative.scored}`,
+      attrs: { "aria-label": `${cumulative.correct} von ${cumulative.scored} richtig` }
+    }),
     el("p", { text: `Trefferquote bisher heute: ${pct}%` }),
     el("p", { class: "item-hint", text: `Noch ${nextQueue.length} weitere fällige oder neue Inhalte verfügbar, falls du heute noch Zeit hast.` })
   ]);
@@ -330,7 +334,11 @@ function renderSummary(container, summary, ctx) {
   container.appendChild(el("h1", { text: "Einheit abgeschlossen" }));
   const pct = summary.scored ? Math.round((summary.correct / summary.scored) * 100) : 0;
   const summaryCard = el("div", { class: "card studio-celebration-card" }, [
-    el("p", { class: "big-number", text: `${summary.correct} / ${summary.scored}` }),
+    el("p", {
+      class: "big-number",
+      text: `${summary.correct} / ${summary.scored}`,
+      attrs: { "aria-label": `${summary.correct} von ${summary.scored} richtig` }
+    }),
     el("p", { text: `Trefferquote: ${pct}%` })
   ]);
   if (summary.introduced > 0) {

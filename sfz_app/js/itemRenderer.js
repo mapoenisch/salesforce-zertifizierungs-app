@@ -620,7 +620,12 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
     CONFIDENCE_LEVELS.forEach(({ key, label: text, value }) => {
       const b = el("button", {
         class: "confidence-btn",
-        attrs: { type: "button", "aria-pressed": "false", "data-confidence": String(value) }
+        attrs: {
+          type: "button",
+          "aria-pressed": "false",
+          "data-confidence": String(value),
+          "aria-label": `${text} – Sicherheit ${value} von 5`
+        }
       }, [
         el("kbd", { class: "keycap", text: key, attrs: { "aria-hidden": "true" } }),
         el("span", { text })

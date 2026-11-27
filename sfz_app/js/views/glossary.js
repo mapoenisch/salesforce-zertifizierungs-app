@@ -3,7 +3,7 @@
 import { state, domainMap, pathCertifications } from "../state.js";
 import { markForReview, unmarkForReview } from "../learning.js";
 import { openExamEnglishModal } from "./examEnglish.js";
-import { el, clear, certLabel } from "../utils.js";
+import { el, clear, certLabel, termHelp } from "../utils.js";
 
 const PAGE_SIZE = 40;
 
@@ -48,6 +48,10 @@ export async function render(container) {
   const filterSummary = el("summary", { text: "Weitere Filter (Domain, CEFR, Lernstatus)" });
   filterDetails.appendChild(filterSummary);
 
+  filterDetails.appendChild(el("p", {
+    class: "filter-hint",
+    text: "Exam-Domain = offizieller Themenbereich der Prüfung · CEFR = Englisch-Niveau (B1 Grundlagen, B2 komplexer)."
+  }));
   const row = el("div", { class: "filter-row" });
   const selectControls = [];
   if (activePath === "administrator-full") {
