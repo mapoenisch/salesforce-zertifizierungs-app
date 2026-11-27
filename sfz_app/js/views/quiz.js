@@ -651,10 +651,10 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
         ev.preventDefault();
         input.click();
       }
-    } else if (ev.key === "ArrowLeft" && !prev.disabled) {
+    } else if (ev.key === "ArrowLeft" && !onOptionInput && !prev.disabled) {
       ev.preventDefault();
       prev.click();
-    } else if (ev.key === "ArrowRight" && !next.disabled) {
+    } else if (ev.key === "ArrowRight" && !onOptionInput && !next.disabled) {
       ev.preventDefault();
       next.click();
     }

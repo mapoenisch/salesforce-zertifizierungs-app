@@ -8,7 +8,9 @@ damit aktualisierte App-Dateien und Lerninhalte sofort sichtbar sind
 Nutzung: python3 serve.py [PORT]   (Standard: 8000)
 """
 
+import functools
 import http.server
+import pathlib
 import sys
 
 
@@ -20,5 +22,7 @@ class NoStoreHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
-    print(f"Lokaler Server: http://127.0.0.1:{port}")
-    http.server.ThreadingHTTPServer(("127.0.0.1", port), NoStoreHandler).serve_forever()
+    root = str(pathlib.Path(__file__).resolve().parent)
+    handler = functools.partial(NoStoreHandler, directory=root)
+    print(f"Lokaler Server: http://127.0.0.1:{port} ({root})")
+    http.server.ThreadingHTTPServer(("127.0.0.1", port), handler).serve_forever()

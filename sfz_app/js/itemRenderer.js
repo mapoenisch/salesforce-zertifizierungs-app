@@ -113,7 +113,8 @@ function bindItemShortcuts(root, getHandlers) {
     }
     if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
     const tag = document.activeElement?.tagName;
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    const onOptionInput = document.activeElement?.matches?.(".fall-option-input");
+    if ((tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") && !onOptionInput) return;
 
     const handlers = getHandlers();
     const isSelectionBtn = document.activeElement?.matches?.(".option-btn, .confidence-btn, .language-slip-btn");
@@ -122,7 +123,7 @@ function bindItemShortcuts(root, getHandlers) {
       if (handlers.onNumber?.(n)) ev.preventDefault();
     } else if (ev.key === "Enter" && ((tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") || isSelectionBtn)) {
       if (handlers.onEnter?.()) ev.preventDefault();
-    } else if (ev.key === " " && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
+    } else if (ev.key === " " && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY" && !onOptionInput) {
       if (handlers.onSpace?.()) ev.preventDefault();
     }
   }
