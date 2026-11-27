@@ -4,6 +4,7 @@ import { state, allLearnableContent, domainWeightMap, pathCertifications, refres
 import { dueForPath, markForReview, saveAnswers } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { renderItem } from "../itemRenderer.js";
+import { render as renderExamEnglish } from "./examEnglish.js";
 import { el, clear, shuffle, focusContent } from "../utils.js";
 
 const SESSION_LIMITS = { due: 10, vocabulary: 5, definition: 3, readingPassage: 2 };
@@ -21,26 +22,30 @@ export async function render(container, ctx) {
   }
 
   const progressLabel = el("p", { class: "session-progress session-meta-line" });
-  const refLink = el("a", {
-    class: "session-ref-link",
+  const refBtn = el("button", {
+    class: "secondary-btn session-ref-btn",
     text: "Prüfungsenglisch",
-    attrs: { href: "#/exam-english" },
-    on: {
-      click: (ev) => {
-        if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
-        ev.preventDefault();
-        ctx.navigate("#/exam-english");
-      }
-    }
+    attrs: { type: "button" },
+    on: { click: () => openExamEnglishModal(refBtn) }
   });
-  const statusBar = el("div", { class: "session-status-bar" }, [progressLabel, refLink]);
+  const statusBar = el("div", { class: "session-status-bar" }, [progressLabel, refBtn]);
   container.appendChild(statusBar);
+
+  const sessionTrack = el("div", { class: "progress-bar-track session-progress-track", attrs: { "aria-hidden": "true" } }, [
+    el("div", { class: "progress-bar-fill" })
+  ]);
+  const sessionFill = sessionTrack.firstElementChild;
+  container.appendChild(sessionTrack);
 
   const itemHost = el("div");
   container.appendChild(itemHost);
 
   const toolbar = el("div", { class: "quiz-toolbar session-toolbar-bottom" });
-  const laterBtn = el("button", { class: "secondary-btn", text: "Später wiederholen markieren", attrs: { type: "button" } });
+  const laterBtn = el("button", {
+    class: "secondary-btn",
+    text: "Später wiederholen markieren",
+    attrs: { type: "button", "aria-pressed": "false" }
+  });
   const stopBtn = el("button", { class: "secondary-btn", text: "Einheit beenden", attrs: { type: "button" } });
   toolbar.append(laterBtn, stopBtn);
   container.appendChild(toolbar);
@@ -55,6 +60,7 @@ export async function render(container, ctx) {
     cumulative.rounds += 1;
     toolbar.hidden = false;
     statusBar.hidden = false;
+    sessionTrack.hidden = false;
     let index = 0;
 
     async function step() {
@@ -63,14 +69,19 @@ export async function render(container, ctx) {
         return;
       }
       progressLabel.textContent = `Tagesziel: ${state.settings.dailySessionMinutesTarget} Min. · Runde ${cumulative.rounds} · ${index + 1} von ${queue.length}`;
+      sessionFill.style.width = `${Math.round(((index + 1) / queue.length) * 100)}%`;
       const current = queue[index];
       status.textContent = "";
       status.setAttribute("role", "status");
+      laterBtn.textContent = "Später wiederholen markieren";
+      laterBtn.setAttribute("aria-pressed", "false");
       laterBtn.onclick = async () => {
         laterBtn.disabled = true;
         try {
           await markForReview(current);
           if (queue[index] === current) {
+            laterBtn.textContent = "✓ Vorgemerkt";
+            laterBtn.setAttribute("aria-pressed", "true");
             status.setAttribute("role", "status");
             status.textContent = "Für die Lerneinheit vorgemerkt.";
           }
@@ -85,13 +96,15 @@ export async function render(container, ctx) {
       };
       renderItem(itemHost, current, {
         onAnswered: async (result) => {
+          const isIntroOnly = Boolean(current.introMode && !result.fastTracked);
+          const effectiveItem = isIntroOnly ? current : { ...current, introMode: false };
           try {
-            await saveAnswers([{ item: current, result, mode: "daily" }]);
+            await saveAnswers([{ item: effectiveItem, result, mode: "daily" }]);
           } catch {
             showSaveError(itemHost, () => ctx.navigate("#/learn"));
             return;
           }
-          if (current.introMode) {
+          if (isIntroOnly) {
             cumulative.introduced += 1;
           } else {
             cumulative.scored += 1;
@@ -115,6 +128,7 @@ export async function render(container, ctx) {
     status.textContent = "";
     toolbar.hidden = true;
     statusBar.hidden = true;
+    sessionTrack.hidden = true;
     renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, () => runRound(nextQueue));
   }
 
@@ -265,4 +279,38 @@ function renderSummary(container, summary, ctx) {
   backBtn.addEventListener("click", () => ctx.navigate("#/dashboard"));
   container.appendChild(backBtn);
   focusContent(container.querySelector("h1"), { page: true });
+}
+
+function openExamEnglishModal(returnFocusEl) {
+  const overlay = el("div", { class: "modal-overlay", attrs: { role: "presentation" } });
+  const box = el("div", {
+    class: "modal-box modal-box-wide",
+    attrs: { role: "dialog", "aria-modal": "true", "aria-label": "Leitfaden: Prüfungsenglisch" }
+  });
+  const topBar = el("div", { class: "modal-ref-header" });
+  const closeBtn = el("button", { class: "primary-btn", text: "Zurück zur Lerneinheit", attrs: { type: "button" } });
+  topBar.appendChild(closeBtn);
+  const contentHost = el("div", { class: "modal-ref-body" });
+  renderExamEnglish(contentHost);
+  box.append(topBar, contentHost);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  function close() {
+    document.removeEventListener("keydown", onKeydown);
+    overlay.remove();
+    if (returnFocusEl?.isConnected) returnFocusEl.focus();
+  }
+  function onKeydown(ev) {
+    if (ev.key === "Escape") {
+      ev.preventDefault();
+      close();
+    }
+  }
+  closeBtn.addEventListener("click", close);
+  overlay.addEventListener("click", (ev) => {
+    if (ev.target === overlay) close();
+  });
+  document.addEventListener("keydown", onKeydown);
+  closeBtn.focus();
 }

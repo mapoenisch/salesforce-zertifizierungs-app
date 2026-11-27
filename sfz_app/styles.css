@@ -318,11 +318,30 @@ h1 {
 }
 
 .hero-btn {
-  display: block;
+  display: inline-flex;
+  justify-content: center;
   width: 100%;
-  padding: 1rem;
-  font-size: 1.1rem;
-  margin-bottom: 1.25rem;
+  max-width: 340px;
+  padding: 0.9rem 1.25rem;
+  font-size: 1.05rem;
+  margin: 0.5rem 0 0;
+}
+
+.dashboard-hero-card {
+  margin-bottom: 1rem;
+}
+
+.dashboard-hero-card h2 {
+  margin-top: 0;
+}
+
+.dashboard-focus-chip {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.dashboard-unlock-hint {
+  margin: 0.65rem 0 0;
 }
 
 /* Lern-/Übungselemente */
@@ -554,14 +573,63 @@ h1 {
 }
 
 .session-action-bar {
-  position: sticky;
-  bottom: 0.5rem;
-  z-index: 5;
   background: var(--bg-elevated);
-  border: 1px solid var(--border-control);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 0.9rem;
-  box-shadow: var(--modal-shadow);
+}
+
+.session-progress-track {
+  margin: 0 0 0.85rem;
+  height: 6px;
+}
+
+.session-ref-btn {
+  margin: 0;
+  min-height: 36px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.quiz-preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.quiz-preset-chip {
+  margin: 0;
+  min-height: 38px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.88rem;
+}
+
+.quiz-filters-secondary {
+  margin-top: 0.65rem;
+}
+
+.quiz-filters-secondary > summary {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal-box-wide {
+  max-width: 780px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-ref-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.modal-ref-body > .exam-english-view > h1 {
+  margin-top: 0;
 }
 
 .confidence-header {
@@ -822,7 +890,7 @@ h1 {
 }
 
 .progress-bar-track {
-  background: var(--bg-elevated);
+  background: var(--bg-card);
   border: 1px solid var(--border-control);
   border-radius: 6px;
   height: 10px;
@@ -1326,7 +1394,17 @@ h1 {
   }
 
   .app-main {
-    padding: clamp(10px, 3vw, 16px);
+    padding: 1rem;
+  }
+
+  .confidence-scale {
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+  }
+
+  .confidence-btn {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.85rem;
   }
 
   .exam-run .disclaimer {

@@ -100,8 +100,6 @@ export async function render(container, ctx) {
   const listHost = el("div", { class: "glossary-list" });
   container.appendChild(listHost);
 
-  function renderListRef() { renderList(); }
-
   function renderList() {
     clear(listHost);
     const matches = indexedVocab

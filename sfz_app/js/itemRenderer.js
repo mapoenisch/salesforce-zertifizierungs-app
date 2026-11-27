@@ -70,7 +70,22 @@ function renderVocabularyIntro(container, content, startTime, onAnswered) {
     },
     { once: true }
   );
-  card.appendChild(continueBtn);
+  const fastTrackBtn = el("button", {
+    class: "secondary-btn",
+    text: "Ich kenne das — direkt abfragen",
+    attrs: { type: "button" }
+  });
+  fastTrackBtn.addEventListener(
+    "click",
+    () => {
+      clear(container);
+      renderVocabulary(container, content, performance.now(), (result) =>
+        onAnswered({ ...result, fastTracked: true }));
+      focusContent(container.querySelector("h2"));
+    },
+    { once: true }
+  );
+  card.appendChild(el("div", { class: "quiz-actions" }, [continueBtn, fastTrackBtn]));
   bindItemShortcuts(card, () => ({ onEnter: () => triggerContinueShortcut(card), onSpace: () => triggerContinueShortcut(card) }));
   container.appendChild(card);
 }
@@ -537,7 +552,13 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
   });
   controlsRow.appendChild(scale);
 
-  const continueBtn = el("button", { class: "primary-btn confidence-continue-btn", text: "Weiter", attrs: { type: "button" } });
+  const continueBtn = el("button", {
+    class: "primary-btn confidence-continue-btn",
+    attrs: { type: "button" }
+  }, [
+    document.createTextNode("Weiter "),
+    el("kbd", { class: "keycap", text: "↵", attrs: { "aria-hidden": "true" } })
+  ]);
   continueBtn.addEventListener(
     "click",
     () => {
@@ -548,6 +569,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
   );
   controlsRow.appendChild(continueBtn);
   wrap.appendChild(controlsRow);
-  host.appendChild(wrap);
+  const directPanel = [...host.children].find((child) => child.classList?.contains("explanation-panel"));
+  (directPanel || host).appendChild(wrap);
   focusContent(host.querySelector(".result-correct, .result-incorrect") || wrap.querySelector("span"));
 }

@@ -86,11 +86,18 @@ export async function render(container, ctx) {
   const formatsPanel = panels.get("formats");
   container.append(overviewPanel, domainsPanel, formatsPanel);
 
+  const confidenceText = (() => {
+    if (avgConfidence == null) return "–";
+    const threeStep = (avgConfidence + 1) / 2;
+    const label = threeStep >= 2.5 ? "Sicher" : threeStep >= 1.6 ? "Mittel" : "Unsicher";
+    return `${threeStep.toFixed(1)} / 3 (${label})`;
+  })();
+
   const statsGrid = el("div", { class: "cockpit-grid" });
   statsGrid.appendChild(el("div", { class: "card" }, [
     el("h2", { text: "Gesamtstatistik" }),
     el("p", { text: `Trefferquote: ${accuracy != null ? accuracy + "%" : "–"} (${correct}/${total} Antworten)` }),
-    el("p", { text: `Durchschnittliche Sicherheit: ${avgConfidence == null ? "–" : avgConfidence.toFixed(1) + " / 5"}` }),
+    el("p", { text: `Durchschnittliche Sicherheit: ${confidenceText}` }),
     el("p", { text: `Durchschnittliche Bearbeitungszeit: ${formatDuration(avgTime)}` }),
     el("p", { class: "item-hint", text: `Vokabeln als Karteikarte kennengelernt: ${introducedCount}` })
   ]));

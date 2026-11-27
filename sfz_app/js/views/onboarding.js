@@ -38,7 +38,7 @@ const PATHS = [
     subtitle: "Für Lernende mit Foundations-Grundwissen",
     exam: ADMINISTRATOR,
     buttonLabel: "Administrator wählen",
-    focus: "12 Wochen Administrator · Leseübungen auf B1 und B2."
+    focus: "12 Wochen Administrator · B1- & B2-Leseübungen."
   },
   {
     id: "administrator-full",

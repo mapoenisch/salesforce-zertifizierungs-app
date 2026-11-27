@@ -20,42 +20,57 @@ export async function render(container, ctx) {
   container.appendChild(el("h1", { text: "Dashboard" }));
   container.appendChild(el("p", { class: "active-path-banner", text: `Aktiver Lernpfad: ${pathLabel(certification)}` }));
 
-  // Primäraktion
-  const heroBtn = el("button", { class: "primary-btn hero-btn", text: `Heutige Einheit starten${dueCount > 0 ? ` (${dueCount} fällig)` : ""}`, attrs: { type: "button" } });
+  // Tagesfokus-Hero-Karte (kompakt, über dem Fold)
+  const heroCard = el("section", { class: "card dashboard-hero-card", attrs: { "aria-label": "Tagesfokus" } });
+  const weekSummary = weekTarget
+    ? `Woche ${weekNumber} von 12 · ${weekTarget.focus}`
+    : `Woche ${weekNumber} · Nach dem Lernplan`;
+  heroCard.appendChild(el("h2", { text: "Tagesfokus" }));
+  heroCard.appendChild(el("p", { class: "item-hint", text: weekSummary }));
+
+  const heroBtn = el("button", {
+    class: "primary-btn hero-btn",
+    text: `Heutige Einheit starten${dueCount > 0 ? ` (${dueCount} fällig)` : ""}`,
+    attrs: { type: "button" }
+  });
   heroBtn.addEventListener("click", () => ctx.navigate("#/learn"));
-  container.appendChild(heroBtn);
+  heroCard.appendChild(heroBtn);
 
-  // Cockpit-KPI-Grid: Fällige Wiederholungen + Aktuelle Woche
-  const topGrid = el("div", { class: "cockpit-grid" });
+  const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));
+  const pathActivity = state.activity.filter((a) => certifications.includes(a.certification));
+  const { answered } = summarizeActivity(pathActivity, state.progressByContentId);
+  const scoredCount = pathActivity.filter((a) => typeof a.correct === "boolean").length;
+  const domains = domainMap();
+  const weakDomains = computeWeakDomains(pathActivity, domains);
 
-  // Fällige Wiederholungen
-  topGrid.appendChild(el("div", { class: "card" }, [
+  if (weakDomains.length > 0) {
+    const topWeak = weakDomains[0];
+    const focusBtn = el("button", {
+      class: "weak-link-btn dashboard-focus-chip",
+      text: `Schwachpunkt-Fokus: ${topWeak.name} (${topWeak.accuracy}% aus ${topWeak.total} Antworten) → Gezielt üben`,
+      attrs: { type: "button" }
+    });
+    focusBtn.addEventListener("click", () => ctx.navigate(`#/quiz?domain=${encodeURIComponent(topWeak.id)}`));
+    heroCard.appendChild(focusBtn);
+  } else {
+    const remaining = Math.max(0, 3 - scoredCount);
+    heroCard.appendChild(el("p", {
+      class: "item-hint dashboard-unlock-hint",
+      text: remaining > 0
+        ? `Noch ${remaining} beantwortete Frage${remaining === 1 ? "" : "n"} bis zur Schwachpunktanalyse.`
+        : "Beantworte mindestens 3 Fragen in einer Domain für die Schwachpunktanalyse."
+    }));
+  }
+  container.appendChild(heroCard);
+
+  // Kompakte Status-Reihe: Fällige Wiederholungen + Abdeckung nach Pfad & CEFR
+  const statusGrid = el("div", { class: "cockpit-grid" });
+
+  statusGrid.appendChild(el("div", { class: "card" }, [
     el("h2", { text: "Fällige Wiederholungen" }),
     el("p", { class: "big-number", text: String(dueCount) }),
     el("p", { class: "item-hint", text: dueCount > 0 ? "Diese Inhalte warten auf Wiederholung." : "Aktuell nichts fällig — gute Gelegenheit für neue Inhalte." })
   ]));
-
-  // Wochen-Soll vs Ist
-  const weekCard = el("div", { class: "card" });
-  weekCard.appendChild(el("h2", { text: weekTarget ? `Woche ${weekNumber} von 12` : `Woche ${weekNumber} · Nach dem Lernplan` }));
-  if (weekTarget) {
-    weekCard.appendChild(el("p", { class: "item-hint", text: weekTarget.focus }));
-    for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
-      weekCard.appendChild(soll_ist_row(label, weekActual[actual], weekTarget[target]));
-    }
-  } else {
-    for (const [label, actual] of weeklyPlan.GOAL_METRICS) {
-      weekCard.appendChild(el("p", { text: `${label} · ${weekActual[actual]} diese Woche` }));
-    }
-  }
-  topGrid.appendChild(weekCard);
-  container.appendChild(topGrid);
-
-  // Zweite Cockpit-Reihe: Abdeckung nach Pfad & CEFR + Top-3 Schwachpunkte
-  const midGrid = el("div", { class: "cockpit-grid" });
-  const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));
-  const pathActivity = state.activity.filter((a) => certifications.includes(a.certification));
-  const { answered } = summarizeActivity(pathActivity, state.progressByContentId);
 
   const overviewCard = el("div", { class: "card" }, [
     el("h2", { text: "Abdeckung nach Pfad & CEFR" })
@@ -73,35 +88,13 @@ export async function render(container, ctx) {
     if (cefr === "B2") bar.classList.add("progress-bar-b2");
     overviewCard.appendChild(bar);
   });
-  midGrid.appendChild(overviewCard);
-
-  // Top-3 Schwachpunkte (als direkte Übungslinks)
-  const domains = domainMap();
-  const weakCard = el("div", { class: "card" });
-  weakCard.appendChild(el("h2", { text: "Top-3 Schwachpunkte" }));
-  const weakDomains = computeWeakDomains(pathActivity, domains);
-  if (weakDomains.length === 0) {
-    weakCard.appendChild(el("p", { class: "item-hint", text: "Noch nicht genug Daten — starte deine erste Einheit." }));
-  } else {
-    const list = el("ul", { class: "weak-links-list" });
-    weakDomains.slice(0, 3).forEach((w) => {
-      const btn = el("button", {
-        class: "weak-link-btn",
-        text: `${w.name}: ${w.accuracy}% Trefferquote (${w.total} Antworten) → Gezielt üben`,
-        attrs: { type: "button" }
-      });
-      btn.addEventListener("click", () => ctx.navigate(`#/quiz?domain=${encodeURIComponent(w.id)}`));
-      list.appendChild(el("li", {}, [btn]));
-    });
-    weakCard.appendChild(list);
-  }
-  midGrid.appendChild(weakCard);
-  container.appendChild(midGrid);
+  statusGrid.appendChild(overviewCard);
+  container.appendChild(statusGrid);
 
   const footerLinks = el("div", { class: "dashboard-footer-links" }, [
     el("a", {
       class: "secondary-btn compact-link-btn",
-      text: "Alle Exam-Domains & Monatsmeilenstein ansehen",
+      text: "Wochenplan, Schwachpunkte & Exam-Domains ansehen",
       attrs: { href: "#/progress" },
       on: {
         click: (ev) => {
