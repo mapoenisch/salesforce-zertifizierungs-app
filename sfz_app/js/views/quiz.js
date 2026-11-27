@@ -2,13 +2,17 @@
 
 import { state, refreshLearningData, domainMap, pathCertifications } from "../state.js";
 import { markForReview, saveAnswers } from "../learning.js";
-import { renderItem, addOptionKeycap } from "../itemRenderer.js";
+import { renderItem } from "../itemRenderer.js";
 import { openExamEnglishModal } from "./examEnglish.js";
 import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDialog, createSessionChrome } from "../utils.js";
 
 const MINI_EXAM_COUNT = 10;
 const MINI_EXAM_SECONDS = 10 * 60;
 const MINI_EXAM_KEY = "sfz_mini_exam_v1";
+
+function optionLetter(idx) {
+  return String.fromCharCode(65 + idx);
+}
 let activeExam;
 
 function saveMiniExam(payload) {
@@ -639,12 +643,13 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
     if (activeExam !== attempt || !host.isConnected || pendingConfirmation) return;
     if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
     const tag = document.activeElement?.tagName;
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    const onOptionInput = document.activeElement?.matches?.(".fall-option-input");
+    if ((tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") && !onOptionInput) return;
     if (/^[1-9]$/.test(ev.key)) {
-      const btn = qHost.querySelectorAll(".option-btn")[Number(ev.key) - 1];
-      if (btn && !btn.disabled) {
+      const input = qHost.querySelectorAll(".fall-option-input")[Number(ev.key) - 1];
+      if (input && !input.disabled) {
         ev.preventDefault();
-        btn.click();
+        input.click();
       }
     } else if (ev.key === "ArrowLeft" && !prev.disabled) {
       ev.preventDefault();
@@ -735,34 +740,28 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
     currentKey = key;
     questionShownAt = performance.now();
     const selected = answers.get(key) || new Set();
-    const card = el("div", { class: "item-card exam-question" });
-    const heading = el("h2", { class: "exam-question-heading", text: `Frage ${current + 1} von ${examQuestions.length}` });
-    card.append(heading);
-    const source = q.source;
-    if (source) {
-      const domain = domainMap().get(source.examDomainId);
-      const cefrClass = source.cefr === "B2" ? "meta-pill meta-pill-b2" : "meta-pill meta-pill-b1";
-      card.append(el("div", { class: "meta-pills item-meta-pills" }, [
-        domain && el("span", { class: "meta-pill", text: domain.name }),
-        source.cefr && el("span", { class: cefrClass, text: `CEFR ${source.cefr}` })
-      ]));
-    }
+    const card = el("div", { class: "item-card fallakte exam-question" });
+    const heading = el("h2", { class: "fallakte-step exam-question-heading", text: `Frage ${current + 1} von ${examQuestions.length}` });
+    card.appendChild(el("header", { class: "fallakte-head" }, [
+      heading,
+      el("p", { class: "fallakte-source", text: "Mini-Prüfung" })
+    ]));
     if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
-    card.appendChild(el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
+    card.appendChild(el("p", { class: "fallakte-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
     const multi = q.type === "multiple-select";
     if (multi) card.appendChild(el("p", { class: "item-hint", text: "Wähle alle zutreffenden Antworten." }));
 
-    const options = el("div", {
-      class: "item-options item-options-list", attrs: { role: "group", "aria-label": "Antwortoptionen" }
-    });
+    const instanceName = `exam-q-${current}`;
+    const fieldset = el("fieldset", { class: "fall-options" }, [
+      el("legend", { class: "visually-hidden", text: "Antwort auswählen" })
+    ]);
     q.options.forEach((option, idx) => {
-      const button = el("button", {
-        class: "option-btn option-btn-wide",
-        attrs: { type: "button", lang: "en" }
-      }, [el("span", { class: "option-text", text: option.text })]);
-      addOptionKeycap(button, idx);
-      button.dataset.optionId = option.id;
-      button.addEventListener("click", () => {
+      const input = el("input", {
+        class: multi ? "fall-option-input fall-option-checkbox" : "fall-option-input",
+        attrs: { type: multi ? "checkbox" : "radio", name: instanceName, value: option.id }
+      });
+      input.checked = selected.has(option.id);
+      input.addEventListener("change", () => {
         if (activeExam !== attempt || Date.now() >= deadline) {
           updateTimer();
           return;
@@ -773,21 +772,19 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
         else selected.add(option.id);
         if (selected.size) answers.set(key, selected);
         else answers.delete(key);
-        markSelection();
         refreshStatus();
         persistExamState();
       });
-      options.appendChild(button);
+      fieldset.appendChild(el("label", {
+        class: "fall-option",
+        attrs: { "data-opt-id": option.id }
+      }, [
+        input,
+        el("span", { class: "fall-option-letter", text: optionLetter(idx), attrs: { "aria-hidden": "true" } }),
+        el("span", { class: "fall-option-text", text: option.text, attrs: { lang: "en" } })
+      ]));
     });
-    function markSelection() {
-      for (const button of options.children) {
-        const pressed = selected.has(button.dataset.optionId);
-        button.classList.toggle("option-selected", pressed);
-        button.setAttribute("aria-pressed", String(pressed));
-      }
-    }
-    markSelection();
-    card.append(options);
+    card.appendChild(fieldset);
     qHost.replaceChildren(card);
     prev.disabled = current === 0;
     next.disabled = current === examQuestions.length - 1;
@@ -840,37 +837,84 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
     }
     if (!host.isConnected) return;
 
-    const resultTitle = el("h1", { text: "Mini-Prüfung ausgewertet" });
-    const score = el("p", { class: "exam-score", text: `${correctCount} von ${graded.length} richtig` });
-    const pct = Math.round((correctCount / graded.length) * 100);
-    const breakdown = el("p", {
-      class: "item-hint",
-      text: `${pct} % · ${wrong.length} falsch · ${open.length} unbeantwortet`
-    });
-    const benchmark = el("p", {
-      class: "item-hint",
-      text: "Orientierungswert: Offizielle Bestehensgrenze liegt bei 62 % (Foundations) bzw. 68 % (Administrator)."
-    });
-    const resultActions = el("div", { class: "exam-actions" });
+    const pct = graded.length ? Math.round((correctCount / graded.length) * 100) : 0;
+    const resultTitle = el("h1", { text: expired ? "Zeit abgelaufen — Ergebnisse" : "Mini-Prüfung ausgewertet" });
+
+    // 1) Ergebnis
+    const scoreCard = el("section", { class: "card studio-celebration-card exam-result-section" }, [
+      el("p", {
+        class: "big-number",
+        text: `${correctCount} von ${graded.length}`,
+        attrs: { "aria-label": `${correctCount} von ${graded.length} richtig` }
+      }),
+      el("p", { text: `Trefferquote: ${pct} %` }),
+      el("p", {
+        class: "item-hint",
+        text: "Orientierungswert: Offizielle Bestehensgrenze liegt bei 62 % (Foundations) bzw. 68 % (Administrator)."
+      })
+    ]);
+
+    // 2) Beobachtung — nur belegbare Fakten, keine Ursachen-Vermutungen
+    const observationItems = [
+      `${answered.length} von ${graded.length} Fragen beantwortet`,
+      `${wrong.length} falsche Antwort${wrong.length === 1 ? "" : "en"}`
+    ];
+    if (open.length) {
+      observationItems.push(`${open.length} unbeantwortet — sie zählen im Ergebnis als nicht richtig`);
+    }
+    const wrongByDomain = new Map();
+    for (const entry of wrong) {
+      const id = entry.item.content.examDomainId;
+      wrongByDomain.set(id, (wrongByDomain.get(id) || 0) + 1);
+    }
+    const domains = domainMap();
+    const topDomain = [...wrongByDomain.entries()].sort((a, b) => b[1] - a[1])[0];
+    if (topDomain && topDomain[1] >= 2) {
+      observationItems.push(`In diesem Versuch lagen ${topDomain[1]} Fehler im Bereich „${domains.get(topDomain[0])?.name || topDomain[0]}“`);
+    }
+    const observationCard = el("section", { class: "card exam-result-section" }, [
+      el("h2", { text: "Beobachtung" }),
+      el("ul", { class: "exam-observation-list" }, observationItems.map((text) => el("li", { text })))
+    ]);
+
+    // 3) Nächste Aktion
+    const resultActions = el("div", { class: "exam-actions exam-result-actions" });
     const back = el("button", {
       class: "secondary-btn", text: "Zur Übungsauswahl",
       attrs: { type: "button" }, on: { click: () => showSetup() }
     });
-    const review = [...wrong, ...open];
-    if (review.length) resultActions.appendChild(el("button", {
-      class: "primary-btn",
-      text: wrong.length ? "Fehler gezielt üben" : "Offene Fragen üben",
-      attrs: { type: "button" },
-      on: { click: () => startFreePractice(runHost, review.map(({ item }) => item), showSetup, "Gezielte Wiederholung") }
-    }));
+    if (!wrong.length && !open.length) {
+      resultActions.appendChild(el("button", {
+        class: "primary-btn",
+        text: "Weiterlernen",
+        attrs: { type: "button" },
+        on: { click: () => { location.hash = "#/learn"; } }
+      }));
+    } else {
+      resultActions.appendChild(el("button", {
+        class: "primary-btn",
+        text: wrong.length ? "Fehler gezielt üben" : "Offene Fragen üben",
+        attrs: { type: "button" },
+        on: { click: () => startFreePractice(runHost, [...wrong, ...open].map(({ item }) => item), showSetup, "Gezielte Wiederholung") }
+      }));
+      if (wrong.length && open.length) {
+        resultActions.appendChild(el("button", {
+          class: "secondary-btn",
+          text: "Offene Fragen üben",
+          attrs: { type: "button" },
+          on: { click: () => startFreePractice(runHost, open.map(({ item }) => item), showSetup, "Offene Fragen") }
+        }));
+      }
+    }
     resultActions.appendChild(back);
 
-    host.replaceChildren(resultTitle, score, breakdown, benchmark);
-    if (expired) host.appendChild(el("p", { text: "Die Zeit ist abgelaufen. Deine bisherigen Antworten wurden ausgewertet." }));
+    host.replaceChildren(resultTitle, scoreCard, observationCard);
+    if (expired) host.appendChild(el("p", { class: "item-hint", text: "Die Zeit ist abgelaufen. Deine bisherigen Antworten wurden ausgewertet." }));
     if (saveError) host.appendChild(el("p", { attrs: { role: "alert" }, text: "Dein Ergebnis ist sichtbar. Der Lernstand konnte nicht gespeichert werden." }));
     host.appendChild(resultActions);
-    const reviewHeading = el("h2", { text: "Antworten ansehen" });
-    host.appendChild(reviewHeading);
+
+    // 4) Detailübersicht
+    host.appendChild(el("h2", { text: "Antworten ansehen" }));
     for (const result of [...wrong, ...open, ...graded.filter(({ correct }) => correct)]) {
       host.appendChild(renderExamReview(result));
     }
@@ -905,6 +949,8 @@ function renderExamReview({ q, index, selected, correct }) {
   detail.appendChild(el("summary", { text: `Frage ${index + 1} · ${label}` }));
   if (q.scenario) detail.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
   detail.appendChild(el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
+  const deText = q.questionTextDe || q.textDe;
+  if (deText) detail.appendChild(el("p", { class: "item-question-de", text: deText, attrs: { lang: "de" } }));
   for (const option of q.options) {
     const verdict = option.correct ? "Richtige Option" : "Falsche Option";
     detail.appendChild(el("p", { class: "option-explanation" }, [

@@ -14,7 +14,7 @@ const cache = {};
 
 async function loadFile(key) {
   if (cache[key]) return cache[key];
-  const res = await fetch(files[key]);
+  const res = await fetch(files[key], { cache: "no-store" });
   if (!res.ok) throw new Error(`Konnte ${files[key]} nicht laden (Status ${res.status})`);
   const data = await res.json();
   cache[key] = data;

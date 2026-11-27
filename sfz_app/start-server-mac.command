@@ -49,4 +49,4 @@ echo ""
 # Browser mit kurzer Verzögerung öffnen, damit der Server sicher schon läuft.
 ( sleep 1 && open "http://localhost:$PORT" ) &
 
-python3 -m http.server "$PORT" --bind 127.0.0.1
+python3 serve.py "$PORT"

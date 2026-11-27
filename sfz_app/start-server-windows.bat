@@ -39,13 +39,13 @@ start "" cmd /c "timeout /t 1 >nul & start http://localhost:%PORT%"
 REM Python-Befehl ermitteln (python oder py-Launcher) und Server starten.
 where python >nul 2>nul
 if %errorlevel%==0 (
-    python -m http.server %PORT% --bind 127.0.0.1
+    python serve.py %PORT%
     goto :eof
 )
 
 where py >nul 2>nul
 if %errorlevel%==0 (
-    py -3 -m http.server %PORT% --bind 127.0.0.1
+    py -3 serve.py %PORT%
     goto :eof
 )
 

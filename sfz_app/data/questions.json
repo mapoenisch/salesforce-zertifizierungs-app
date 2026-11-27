@@ -8,6 +8,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants to warn users when they try to save a contact that closely matches an existing one, but it should not be blocked automatically since some near-matches are legitimate separate people. What should the administrator configure?",
+    "questionTextDe": "Universal Containers möchte Nutzer warnen, wenn sie einen Kontakt speichern, der einem bestehenden sehr ähnlich ist – das Speichern soll aber nicht automatisch blockiert werden, da manche nahezu identischen Datensätze berechtigte, unterschiedliche Personen sind. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -51,6 +52,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales rep reports that a report on opportunities shows fewer records than they expect, even though the report criteria look correct. What is the most likely explanation?",
+    "questionTextDe": "Ein Vertriebsmitarbeiter meldet, dass ein Bericht über Opportunities weniger Datensätze zeigt als erwartet, obwohl die Berichtskriterien korrekt aussehen. Was ist die wahrscheinlichste Erklärung?",
     "type": "single-choice",
     "options": [
       {
@@ -93,6 +95,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants to share one dashboard with all sales reps, but each rep should only see their own opportunities, not everyone else's. What should the administrator use?",
+    "questionTextDe": "Universal Containers möchte ein Dashboard mit allen Vertriebsmitarbeitern teilen, aber jeder Mitarbeiter soll nur die eigenen Opportunities sehen, nicht die aller anderen. Was sollte der Administrator verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -135,6 +138,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A small group of users needs temporary access to a custom object for a three-month project. Most of these users have different profiles across different departments. What is the most appropriate solution?",
+    "questionTextDe": "Eine kleine Gruppe von Nutzern benötigt für ein dreimonatiges Projekt temporären Zugriff auf ein benutzerdefiniertes Objekt. Die meisten dieser Nutzer haben unterschiedliche Profile in verschiedenen Abteilungen. Was ist die passendste Lösung?",
     "type": "single-choice",
     "options": [
       {
@@ -178,6 +182,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "The organization-wide default for Opportunity is set to Private. Which two mechanisms can extend visibility beyond this baseline without changing the OWD itself?",
+    "questionTextDe": "Der organizationsweite Standard (OWD) für Opportunity ist auf Privat gesetzt. Welche zwei Mechanismen können die Sichtbarkeit über diese Basis hinaus erweitern, ohne den OWD selbst zu ändern?",
     "type": "multiple-select",
     "options": [
       {
@@ -221,6 +226,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A regional sales manager should automatically see the opportunities owned by every sales rep who reports to them, without any manual sharing setup. What should be in place?",
+    "questionTextDe": "Ein regionaler Vertriebsleiter soll automatisch die Opportunities aller Vertriebsmitarbeiter sehen, die ihm unterstellt sind – ganz ohne manuelle Freigabe-Konfiguration. Was muss vorhanden sein?",
     "type": "single-choice",
     "options": [
       {
@@ -263,6 +269,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants a custom object 'Invoice Line' that automatically rolls up its total amount to a summary field on the parent 'Invoice' record, and the line item should never exist without its invoice. Which relationship type should be used?",
+    "questionTextDe": "Universal Containers möchte ein benutzerdefiniertes Objekt ‚Invoice Line', das seinen Gesamtbetrag automatisch auf ein Summenfeld des übergeordneten ‚Invoice'-Datensatzes überträgt, und die Position darf nie ohne ihre Rechnung existieren. Welcher Beziehungstyp sollte verwendet werden?",
     "type": "single-choice",
     "options": [
       {
@@ -305,6 +312,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers runs two very different sales processes: a fast-track process for small deals and a multi-stage process for enterprise deals, each with different picklist values and page layouts on the Opportunity object. What should the administrator configure?",
+    "questionTextDe": "Universal Containers betreibt zwei sehr unterschiedliche Vertriebsprozesse: einen Schnellprozess für kleine Deals und einen mehrstufigen Prozess für Großaufträge, jeweils mit anderen Auswahllisten-Werten und Seitenlayouts auf dem Opportunity-Objekt. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -347,6 +355,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers needs to track that many students can attend many courses, and each student-course combination has its own enrollment date and grade. What is the most appropriate data model solution?",
+    "questionTextDe": "Universal Containers muss erfassen, dass viele Studierende viele Kurse besuchen können und jede Student-Kurs-Kombination ein eigenes Einschreibedatum und eine eigene Note hat. Was ist die passendste Datenmodell-Lösung?",
     "type": "single-choice",
     "options": [
       {
@@ -389,6 +398,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Any discount over 20% on an opportunity must be reviewed and explicitly accepted or rejected by a sales director before the opportunity can move forward. Which declarative tool should the administrator use?",
+    "questionTextDe": "Jeder Rabatt über 20 % auf einer Opportunity muss von einem Vertriebsleiter geprüft und ausdrücklich angenommen oder abgelehnt werden, bevor die Opportunity weiterlaufen kann. Welches deklarative Werkzeug sollte der Administrator verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -431,6 +441,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants field reps to fill out a short guided form on their phone that creates a new lead, without writing any code. What should the administrator build?",
+    "questionTextDe": "Universal Containers möchte, dass Außendienstmitarbeiter auf ihrem Handy ein kurzes geführtes Formular ausfüllen, das einen neuen Lead anlegt – ganz ohne Code. Was sollte der Administrator bauen?",
     "type": "single-choice",
     "options": [
       {
@@ -473,6 +484,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator wants to understand why a record-triggered flow ran only after a validation rule had already blocked an invalid save attempt. Which concept explains this behavior?",
+    "questionTextDe": "Ein Administrator möchte verstehen, warum ein datensatzgesteuerter Flow erst lief, nachdem eine Validierungsregel einen ungültigen Speicherversuch bereits blockiert hatte. Welches Konzept erklärt dieses Verhalten?",
     "type": "single-choice",
     "options": [
       {
@@ -515,6 +527,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A lead has been qualified and is ready to become a real customer relationship, including an account, a contact, and a tracked deal. What should the sales rep do?",
+    "questionTextDe": "Ein Lead wurde qualifiziert und ist bereit, eine echte Kundenbeziehung zu werden – mit Account, Kontakt und einer verfolgten Opportunity. Was sollte der Vertriebsmitarbeiter tun?",
     "type": "single-choice",
     "options": [
       {
@@ -557,6 +570,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "The VP of Sales wants a rolled-up projection of expected revenue for the quarter, based on the stages and amounts of all open opportunities across teams. What feature should the administrator enable?",
+    "questionTextDe": "Der Vertriebsleiter möchte eine aggregierte Prognose des erwarteten Quartalsumsatzes, basierend auf den Phasen und Beträgen aller offenen Opportunities über alle Teams hinweg. Welche Funktion sollte der Administrator aktivieren?",
     "type": "single-choice",
     "options": [
       {
@@ -599,6 +613,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants every new case with priority 'High' to automatically land with the Tier 2 support team instead of a single individual. What should the administrator configure?",
+    "questionTextDe": "Universal Containers möchte, dass jeder neue Case mit Priorität ‚High' automatisch beim Tier-2-Supportteam landet statt bei einer einzelnen Person. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -641,6 +656,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Every time a customer submits a new case through the web-to-case form, they should immediately receive an automated confirmation email, without an agent having to do anything. What should the administrator set up?",
+    "questionTextDe": "Immer wenn ein Kunde über das Web-to-Case-Formular einen neuen Case einreicht, soll er sofort eine automatische Bestätigungs-E-Mail erhalten – ohne dass ein Mitarbeiter etwas tun muss. Was sollte der Administrator einrichten?",
     "type": "single-choice",
     "options": [
       {
@@ -683,6 +699,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants to install a third-party e-signature app into their org, and expects it to receive automatic updates from the vendor over time. Where should the administrator look, and what kind of package should they expect?",
+    "questionTextDe": "Universal Containers möchte eine App von einem Drittanbieter für E-Signaturen in die Organisation installieren und erwartet, dass sie im Laufe der Zeit automatisch Updates vom Anbieter erhält. Wo sollte der Administrator suchen und welche Art von Paket ist zu erwarten?",
     "type": "single-choice",
     "options": [
       {
@@ -725,6 +742,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A project team wants an internal space to discuss updates and share files about a specific initiative, without it being visible to the entire company. What should the administrator recommend?",
+    "questionTextDe": "Ein Projektteam möchte einen internen Raum, um Updates zu diskutieren und Dateien zu einer bestimmten Initiative zu teilen – ohne für die gesamte Firma sichtbar zu sein. Was sollte der Administrator empfehlen?",
     "type": "single-choice",
     "options": [
       {
@@ -767,6 +785,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Before deploying an Agentforce agent that can access case data, an administrator wants to ensure the agent cannot see or act on records the underlying user should not have access to. What should the administrator review first?",
+    "questionTextDe": "Bevor ein Agentforce-Agent bereitgestellt wird, der auf Case-Daten zugreifen kann, möchte ein Administrator sicherstellen, dass der Agent keine Datensätze sehen oder verändern kann, auf die der zugrunde liegende Nutzer keinen Zugriff haben sollte. Was sollte der Administrator zuerst prüfen?",
     "type": "single-choice",
     "options": [
       {
@@ -809,6 +828,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator needs to update the wording of an Agentforce agent's instructions and quickly check how it responds to a sample customer question before publishing the change. Which tool should they use?",
+    "questionTextDe": "Ein Administrator muss die Formulierung der Anweisungen eines Agentforce-Agenten aktualisieren und schnell testen, wie er auf eine Beispiel-Kundenfrage reagiert, bevor die Änderung veröffentlicht wird. Welches Werkzeug sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -851,6 +871,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A new employee wants to learn Salesforce basics for free, at their own pace, with hands-on practice challenges. What should they be pointed to?",
+    "questionTextDe": "Ein neuer Mitarbeiter möchte Salesforce-Grundlagen kostenlos und in eigenem Tempo mit praktischen Übungsaufgaben lernen. Worauf sollte man ihn verweisen?",
     "type": "single-choice",
     "options": [
       {
@@ -893,6 +914,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company wants one unified view of every customer across its sales, service, and marketing teams. Which Salesforce concept describes this vision?",
+    "questionTextDe": "Ein Unternehmen möchte eine einheitliche Sicht auf jeden Kunden über Vertriebs-, Service- und Marketingteams hinweg. Welches Salesforce-Konzept beschreibt diese Vision?",
     "type": "single-choice",
     "options": [
       {
@@ -935,6 +957,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Someone who mainly configures Salesforce declaratively — setting up flows, security, and reports without writing code — is usually working in which role?",
+    "questionTextDe": "Jemand, der Salesforce hauptsächlich deklarativ konfiguriert – also Flows, Sicherheit und Berichte einrichtet, ohne Code zu schreiben – arbeitet üblicherweise in welcher Rolle?",
     "type": "single-choice",
     "options": [
       {
@@ -977,6 +1000,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user needs to switch from the Sales app to the Service app within the same Salesforce org. What should they use?",
+    "questionTextDe": "Ein Nutzer möchte innerhalb derselben Salesforce-Organisation von der Sales-App zur Service-App wechseln. Was sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -1019,6 +1043,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Where does Salesforce customization, such as creating fields or changing page layouts, take place?",
+    "questionTextDe": "Wo finden Salesforce-Anpassungen statt, etwa das Anlegen von Feldern oder das Ändern von Seitenlayouts?",
     "type": "single-choice",
     "options": [
       {
@@ -1061,6 +1086,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user remembers a customer's name but not which object the record belongs to. What is the fastest way to find it?",
+    "questionTextDe": "Ein Nutzer erinnert sich an den Namen eines Kunden, aber nicht daran, zu welchem Objekt der Datensatz gehört. Was ist der schnellste Weg, ihn zu finden?",
     "type": "single-choice",
     "options": [
       {
@@ -1103,6 +1129,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company record and the individual people who work there are stored as which two related standard objects?",
+    "questionTextDe": "Ein Firmen-Datensatz und die einzelnen Menschen, die dort arbeiten, werden als welche zwei verwandten Standardobjekte gespeichert?",
     "type": "single-choice",
     "options": [
       {
@@ -1145,6 +1172,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A manager should see records owned by their team, but not records owned by other teams. Which concept determines this outcome?",
+    "questionTextDe": "Ein Manager soll Datensätze sehen, die seinem Team gehören, aber nicht die Datensätze anderer Teams. Welches Konzept bestimmt dieses Ergebnis?",
     "type": "single-choice",
     "options": [
       {
@@ -1187,6 +1215,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company keeps entering the same customer twice under slightly different spellings. Which tool helps ensure the data stays clean and consistent?",
+    "questionTextDe": "Ein Unternehmen gibt denselben Kunden immer wieder unter leicht abweichenden Schreibweisen ein. Welches Werkzeug hilft, die Daten sauber und konsistent zu halten?",
     "type": "single-choice",
     "options": [
       {
@@ -1229,6 +1258,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A manager wants a quick visual overview with charts summarizing sales performance, based on underlying data tables that list individual records. What are these two things called?",
+    "questionTextDe": "Ein Manager möchte eine schnelle visuelle Übersicht mit Diagrammen zur Vertriebsleistung, basierend auf zugrunde liegenden Datentabellen mit einzelnen Datensätzen. Wie heißen diese beiden Dinge?",
     "type": "single-choice",
     "options": [
       {
@@ -1271,6 +1301,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company is evaluating Salesforce and wants to know where they can find independent, third-party apps that extend Salesforce's standard functionality. Which resource should they check?",
+    "questionTextDe": "Ein Unternehmen evaluiert Salesforce und möchte wissen, wo es unabhängige Apps von Drittanbietern findet, die die Standardfunktionalität von Salesforce erweitern. Welche Ressource sollte es prüfen?",
     "type": "single-choice",
     "options": [
       {
@@ -1313,6 +1344,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A small business wants software they can access from any browser without installing anything locally, and where Salesforce handles all server maintenance and upgrades. Which concept best describes this delivery model?",
+    "questionTextDe": "Ein kleines Unternehmen möchte Software, die es über jeden Browser nutzen kann, ohne etwas lokal zu installieren, und bei der Salesforce sich um die gesamte Serverwartung und Updates kümmert. Welches Konzept beschreibt dieses Bereitstellungsmodell am besten?",
     "type": "single-choice",
     "options": [
       {
@@ -1355,6 +1387,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user wants to save a filtered set of 'my open Opportunities closing this month' so they can quickly return to it every day without rebuilding the filter each time. What should they use?",
+    "questionTextDe": "Ein Nutzer möchte eine gefilterte Auswahl ‚meiner offenen Opportunities, die diesen Monat abschließen' speichern, um schnell jeden Tag darauf zurückzugreifen, ohne den Filter jedes Mal neu aufzubauen. Was sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -1397,6 +1430,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "While working on an Opportunity, a user wants quick access to a phone dialer and their recent records without navigating away from the current page. Where should they look?",
+    "questionTextDe": "Beim Arbeiten an einer Opportunity möchte ein Nutzer schnellen Zugriff auf eine Telefonwahl und seine zuletzt bearbeiteten Datensätze, ohne die aktuelle Seite zu verlassen. Wo sollte er suchen?",
     "type": "single-choice",
     "options": [
       {
@@ -1439,6 +1473,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company tracks companies it sells to as one object, and the individual people working at those companies as a separate, but related, object. Which pair of standard objects does this describe?",
+    "questionTextDe": "Ein Unternehmen erfasst die Firmen, an die es verkauft, als ein Objekt und die einzelnen Menschen in diesen Firmen als ein separates, aber verwandtes Objekt. Welches Paar von Standardobjekten beschreibt dies?",
     "type": "single-choice",
     "options": [
       {
@@ -1481,6 +1516,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A manager opens a dashboard and wants to see the exact records behind one specific chart. What should they do?",
+    "questionTextDe": "Ein Manager öffnet ein Dashboard und möchte die exakten Datensätze hinter einem bestimmten Diagramm sehen. Was sollte er tun?",
     "type": "single-choice",
     "options": [
       {
@@ -1523,6 +1559,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales director wants to receive an emailed copy of the 'Weekly Pipeline' report automatically every Monday at 7 AM, without manually running it each time. What should the administrator configure?",
+    "questionTextDe": "Ein Vertriebsleiter möchte automatisch jeden Montag um 7 Uhr eine E-Mail-Kopie des Berichts ‚Weekly Pipeline' erhalten, ohne ihn jedes Mal manuell auszuführen. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -1565,6 +1602,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers still uses several old Workflow Rules to update fields on Opportunities. The administrator wants to modernize this automation using the platform's current recommended tool, without losing any existing functionality. What is the best approach?",
+    "questionTextDe": "Universal Containers nutzt noch mehrere alte Workflow Rules, um Felder auf Opportunities zu aktualisieren. Der Administrator möchte diese Automation mit dem aktuell empfohlenen Werkzeug modernisieren, ohne Funktionalität zu verlieren. Was ist der beste Ansatz?",
     "type": "single-choice",
     "options": [
       {
@@ -1607,6 +1645,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Field service technicians need to view and update Case records while working at customer sites with unreliable internet access. Which tool best supports this?",
+    "questionTextDe": "Außendiensttechniker müssen Case-Datensätze bei Kunden vor Ort einsehen und aktualisieren – mit unzuverlässigem Internetzugang. Welches Werkzeug unterstützt dies am besten?",
     "type": "single-choice",
     "options": [
       {
@@ -1649,6 +1688,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator wants to define which topics and actions an Agentforce agent is allowed to handle, before fine-tuning how the agent phrases its responses. Which tool should be used first?",
+    "questionTextDe": "Ein Administrator möchte definieren, welche Themen und Aktionen ein Agentforce-Agent übernehmen darf, bevor er festlegt, wie der Agent seine Antworten formuliert. Welches Werkzeug sollte zuerst verwendet werden?",
     "type": "single-choice",
     "options": [
       {
@@ -1691,6 +1731,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants new employees to automatically get baseline object and field access on day one, based on their department, while still being able to grant a handful of individual users extra access to a specific custom object without changing anyone's baseline setup. What combination should the administrator use?",
+    "questionTextDe": "Universal Containers möchte, dass neue Mitarbeiter ab Tag eins Basis-Zugriffe auf Objekte und Felder erhalten – je nach Abteilung –, während einzelne Nutzer zusätzlich Zugriff auf ein bestimmtes benutzerdefiniertes Objekt bekommen sollen, ohne die Basiseinrichtung anderer zu ändern. Welche Kombination sollte der Administrator verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -1734,6 +1775,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator wants to test a major change to page layouts and automation before applying it to the live company data. What should they use?",
+    "questionTextDe": "Ein Administrator möchte eine größere Änderung an Seitenlayouts und Automation testen, bevor sie auf die Live-Daten des Unternehmens angewendet wird. Was sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -1776,6 +1818,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants Sales users to see a condensed set of the five most important Opportunity fields at the top of the mobile record card, separate from the full desktop page layout. What should the administrator configure?",
+    "questionTextDe": "Universal Containers möchte, dass Sales-Nutzer auf der mobilen Datensatzkarte oben eine reduzierte Auswahl der fünf wichtigsten Opportunity-Felder sehen – getrennt vom vollständigen Desktop-Seitenlayout. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -1818,6 +1861,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator needs a value on the Opportunity object that always shows today's date plus 30 days, recalculated automatically without ever being manually edited. What field type fits best?",
+    "questionTextDe": "Ein Administrator benötigt auf dem Opportunity-Objekt einen Wert, der immer das heutige Datum plus 30 Tage anzeigt, automatisch neu berechnet wird und nie manuell bearbeitet werden kann. Welcher Feldtyp passt am besten?",
     "type": "single-choice",
     "options": [
       {
@@ -1860,6 +1904,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator wants a report to show only Opportunities that are either in the 'Negotiation' stage OR have an Amount over $100,000, but not simply all Opportunities matching both conditions at once. Which two things does the administrator need to combine?",
+    "questionTextDe": "Ein Administrator möchte, dass ein Bericht nur Opportunities zeigt, die entweder in der Phase ‚Negotiation' sind ODER einen Betrag über 100.000 $ haben – nicht einfach alle Opportunities, die beide Bedingungen gleichzeitig erfüllen. Welche zwei Dinge muss der Administrator kombinieren?",
     "type": "multiple-select",
     "options": [
       {
@@ -1903,6 +1948,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A dashboard needs to be organized separately from other dashboards, with sharing settings that let only the finance team view it. What should the administrator create first?",
+    "questionTextDe": "Ein Dashboard soll getrennt von anderen Dashboards organisiert werden, mit Freigabeeinstellungen, die nur das Finansteam einsehen lässt. Was sollte der Administrator zuerst erstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -1945,6 +1991,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales manager wants a report that lists open Opportunities grouped by Stage, with subtotals for each stage, but not grouped by any second dimension. Which report format fits best?",
+    "questionTextDe": "Ein Vertriebsleiter möchte einen Bericht, der offene Opportunities nach Phase gruppiert und für jede Phase Zwischensummen zeigt, aber nicht nach einer zweiten Dimension gruppiert. Welches Berichtsformat passt am besten?",
     "type": "single-choice",
     "options": [
       {
@@ -1987,6 +2034,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A flow must branch into three different paths depending on an Opportunity's Amount value (under $10,000, between $10,000 and $100,000, or over $100,000). Which Flow Builder element should the administrator use?",
+    "questionTextDe": "Ein Flow muss je nach Betragswert einer Opportunity (unter 10.000 $, zwischen 10.000 und 100.000 $ oder über 100.000 $) in drei verschiedene Pfade verzweigen. Welches Flow-Builder-Element sollte der Administrator verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -2029,6 +2077,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers still relies on an old Process Builder process that updates a field on Case when it's closed. The administrator wants to modernize it using the current best-practice tool. What should they build it in?",
+    "questionTextDe": "Universal Containers verlässt sich noch auf einen alten Process-Builder-Prozess, der beim Schließen eines Case ein Feld aktualisiert. Der Administrator möchte ihn mit dem aktuellen Best-Practice-Werkzeug modernisieren. Was sollte er dafür bauen?",
     "type": "single-choice",
     "options": [
       {
@@ -2071,6 +2120,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Marketing wants to prove which of two overlapping campaigns (a webinar and a follow-up email series) most influenced a $75,000 won Opportunity that had contacts from both campaigns. What should be enabled?",
+    "questionTextDe": "Das Marketing möchte belegen, welche von zwei sich überschneidenden Kampagnen (ein Webinar und eine nachfolgende E-Mail-Serie) eine gewonnene Opportunity über 75.000 $ am stärksten beeinflusst hat, bei der Kontakte aus beiden Kampagnen beteiligt waren. Was sollte aktiviert werden?",
     "type": "single-choice",
     "options": [
       {
@@ -2113,6 +2163,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A new sales rep is unsure which fields to fill in next while working an Opportunity through its stages. What should the administrator make sure is enabled on the Opportunity page?",
+    "questionTextDe": "Ein neuer Vertriebsmitarbeiter ist unsicher, welche Felder er in den verschiedenen Opportunity-Phasen ausfüllen soll. Was sollte der Administrator auf der Opportunity-Seite aktiviert haben?",
     "type": "single-choice",
     "options": [
       {
@@ -2155,6 +2206,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A premium support contract guarantees a first response within 2 hours and full resolution within 24 hours. Universal Containers wants Salesforce to track whether each case meets these specific, contractually promised deadlines. What should the administrator set up?",
+    "questionTextDe": "Ein Premium-Supportvertrag garantiert eine erste Antwort innerhalb von 2 Stunden und vollständige Lösung innerhalb von 24 Stunden. Universal Containers möchte, dass Salesforce verfolgt, ob jeder Case diese vertraglich zugesicherten Fristen einhält. Was sollte der Administrator einrichten?",
     "type": "single-choice",
     "options": [
       {
@@ -2197,6 +2249,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants a Marketing team to have their own set of tabs (Campaigns, Leads, Reports) grouped together and easy to find via the App Launcher, separate from the Sales team's tabs. What should the administrator build?",
+    "questionTextDe": "Universal Containers möchte, dass das Marketing-Team seine eigenen Registerkarten (Campaigns, Leads, Berichte) zusammengefasst und über den App Launcher leicht auffindbar hat – getrennt von den Registerkarten des Vertriebsteams. Was sollte der Administrator bauen?",
     "type": "single-choice",
     "options": [
       {
@@ -2239,6 +2292,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator is setting up an Agentforce agent that should be able to look up a customer's order status by calling an existing Flow. Which Agentforce concept represents this specific capability?",
+    "questionTextDe": "Ein Administrator richtet einen Agentforce-Agenten ein, der den Bestellstatus eines Kunden abrufen können soll, indem er einen bestehenden Flow aufruft. Welches Agentforce-Konzept repräsentiert diese spezifische Fähigkeit?",
     "type": "single-choice",
     "options": [
       {
@@ -2281,6 +2335,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company delivers its software entirely over the internet, handles all upgrades and server maintenance itself, and customers simply log in through a browser. What delivery model does this describe?",
+    "questionTextDe": "Ein Unternehmen stellt seine Software vollständig über das Internet bereit, kümmert sich selbst um alle Updates und die Serverwartung, und Kunden melden sich einfach über einen Browser an. Welches Bereitstellungsmodell beschreibt dies?",
     "type": "single-choice",
     "options": [
       {
@@ -2323,6 +2378,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An employee wants to post a quick update about a project and have coworkers comment and follow along, directly inside Salesforce rather than using a separate messaging app. What should they use?",
+    "questionTextDe": "Ein Mitarbeiter möchte kurz ein Update zu einem Projekt posten und dass Kollegen kommentieren und mitlesen können – direkt in Salesforce statt in einer separaten Messaging-App. Was sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -2365,6 +2421,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A support manager wants to see open Cases as cards grouped by status (New, In Progress, Closed) and drag a case from one column to the next as work progresses. What view should they use?",
+    "questionTextDe": "Ein Supportmanager möchte offene Cases als Karten nach Status gruppiert sehen (Neu, In Bearbeitung, Geschlossen) und einen Case per Drag-and-Drop von einer Spalte in die nächste ziehen, während die Arbeit fortschreitet. Welche Ansicht sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -2407,6 +2464,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user wants to jump back to a record they were working on ten minutes ago, without searching for it by name again. What is the fastest option?",
+    "questionTextDe": "Ein Nutzer möchte zu einem Datensatz zurückkehren, an dem er vor zehn Minuten gearbeitet hat, ohne ihn erneut nach Namen zu suchen. Was ist die schnellste Option?",
     "type": "single-choice",
     "options": [
       {
@@ -2449,6 +2507,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A trade show visitor gives their business card to a Universal Containers rep. They have shown interest but have not been qualified as a real sales opportunity yet, and no company or person record exists for them in Salesforce. What should the rep create?",
+    "questionTextDe": "Ein Besucher auf einer Fachmesse gibt einem Mitarbeiter von Universal Containers seine Visitenkarte. Er hat Interesse gezeigt, wurde aber noch nicht als echtes Verkaufsargument qualifiziert, und es existieren weder Firmen- noch Personen-Datensätze für ihn in Salesforce. Was sollte der Mitarbeiter anlegen?",
     "type": "single-choice",
     "options": [
       {
@@ -2491,6 +2550,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A regional manager wants a single report showing total sales amount broken down by both Sales Rep (rows) and Month (columns), to compare performance across two dimensions in one view. Which report format fits this need?",
+    "questionTextDe": "Ein Regionalmanager möchte einen einzelnen Bericht, der den Gesamtumsatz sowohl nach Vertriebsmitarbeiter (Zeilen) als auch nach Monat (Spalten) aufschlüsselt, um die Leistung in zwei Dimensionen in einer Ansicht zu vergleichen. Welches Berichtsformat passt zu diesem Bedarf?",
     "type": "single-choice",
     "options": [
       {
@@ -2533,6 +2593,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers operates on a financial year that starts on April 1 instead of January 1, and all revenue reports must align with this period. What should the administrator configure in Company Settings?",
+    "questionTextDe": "Universal Containers rechnet mit einem Geschäftsjahr, das am 1. April statt am 1. Januar beginnt, und alle Umsatzberichte müssen auf diesen Zeitraum ausgerichtet sein. Was sollte der Administrator in den Company Settings konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -2576,6 +2637,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants the escalation timer on open cases to stop counting overnight and on weekends, so a case submitted Friday evening is not incorrectly flagged as overdue by Monday morning. Which setting must be linked to the escalation and entitlement logic to ensure this?",
+    "questionTextDe": "Universal Containers möchte, dass der Eskalations-Timer auf offenen Cases über Nacht und am Wochenende nicht weiterläuft, damit ein Case, der am Freitagabend eingereicht wurde, nicht fälschlicherweise montagmorgens als überfällig markiert wird. Welche Einstellung muss mit der Eskalations- und Entitlement-Logik verknüpft werden, damit dies sichergestellt ist?",
     "type": "single-choice",
     "options": [
       {
@@ -2619,6 +2681,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers now sells to customers in both the US and the eurozone and needs Opportunity amounts to be entered in either USD or EUR while still being able to roll up total pipeline value into a single corporate currency for executive reporting. What must the administrator enable first?",
+    "questionTextDe": "Universal Containers verkauft jetzt an Kunden in den USA und im Euroraum und benötigt Opportunity-Beträge, die in USD oder EUR erfasst werden können, während der gesamte Pipeline-Wert für das Management-Reporting trotzdem in einer einzigen Konzernwährung zusammengefasst werden muss. Was muss der Administrator zuerst aktivieren?",
     "type": "single-choice",
     "options": [
       {
@@ -2662,6 +2725,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Most users at Universal Containers never use the Marketing app and find it clutters their App Launcher. The administrator wants to hide it from their view without affecting users who do need it. What should be adjusted?",
+    "questionTextDe": "Die meisten Nutzer bei Universal Containers verwenden die Marketing-App nie und finden sie in ihrem App Launcher störend. Der Administrator möchte sie vor deren Blicken ausblenden, ohne Nutzer zu beeinträchtigen, die sie brauchen. Was sollte angepasst werden?",
     "type": "single-choice",
     "options": [
       {
@@ -2704,6 +2768,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A support manager wants a list view of open cases assigned to their team, visible only to members of the support department and not to the rest of the company. What must the administrator set when creating the list view?",
+    "questionTextDe": "Ein Supportmanager möchte eine Listenansicht offener Cases, die seinem Team zugewiesen sind, sichtbar nur für Mitglieder der Supportabteilung und nicht für den Rest der Firma. Was muss der Administrator beim Erstellen der Listenansicht einstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -2746,6 +2811,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Sales reps want to log a quick call and create a follow-up task from any record or from the Home page, without navigating to a specific object tab first. What should the administrator add?",
+    "questionTextDe": "Vertriebsmitarbeiter möchten von jedem Datensatz oder der Startseite aus schnell einen Anruf protokollieren und eine Folgeaufgabe erstellen, ohne vorher zu einem bestimmten Objekt-Tab zu navigieren. Was sollte der Administrator hinzufügen?",
     "type": "single-choice",
     "options": [
       {
@@ -2788,6 +2854,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator is creating a new user for a sales rep. Which requirement must be met for the username field?",
+    "questionTextDe": "Ein Administrator legt einen neuen Nutzer für einen Vertriebsmitarbeiter an. Welche Anforderung muss beim Benutzernamen-Feld erfüllt sein?",
     "type": "single-choice",
     "options": [
       {
@@ -2830,6 +2897,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user at Universal Containers has been assigned a Salesforce Platform license instead of a full Salesforce license. What is the most likely implication for this user?",
+    "questionTextDe": "Ein Nutzer bei Universal Containers wurde statt einer vollen Salesforce-Lizenz eine Salesforce-Platform-Lizenz zugewiesen. Was ist die wahrscheinlichste Auswirkung für diesen Nutzer?",
     "type": "single-choice",
     "options": [
       {
@@ -2872,6 +2940,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers requires every user to confirm their identity with a second factor whenever they log in from a new device, in line with company security policy. Which security control should the administrator enforce?",
+    "questionTextDe": "Universal Containers verlangt, dass sich jeder Nutzer bei der Anmeldung von einem neuen Gerät mit einem zweiten Faktor verifiziert – gemäß der Sicherheitsrichtlinie des Unternehmens. Welche Sicherheitskontrolle sollte der Administrator durchsetzen?",
     "type": "single-choice",
     "options": [
       {
@@ -2914,6 +2983,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A compliance officer at Universal Containers wants to find out exactly who changed a validation rule on the Opportunity object last week and when. Where should the administrator look?",
+    "questionTextDe": "Ein Compliance-Beauftragter bei Universal Containers möchte genau wissen, wer letzte Woche eine Validierungsregel auf dem Opportunity-Objekt geändert hat und wann. Wo sollte der Administrator suchen?",
     "type": "single-choice",
     "options": [
       {
@@ -2956,6 +3026,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "For compliance reasons, call center agents at Universal Containers should only be able to log into Salesforce between 7 AM and 7 PM on weekdays. What should the administrator configure?",
+    "questionTextDe": "Aus Compliance-Gründen sollen Callcenter-Mitarbeiter bei Universal Containers sich nur zwischen 7 und 19 Uhr an Wochentagen bei Salesforce anmelden dürfen. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -2998,6 +3069,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers is deactivating a user who is leaving the company. Which two things does the administrator need to be aware of regarding this process?",
+    "questionTextDe": "Universal Containers deaktiviert einen Nutzer, der das Unternehmen verlässt. Worüber muss sich der Administrator bei diesem Vorgang über zwei Dinge im Klaren sein?",
     "type": "multiple-select",
     "options": [
       {
@@ -3041,6 +3113,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers assigns several permission sets to its finance team through one permission set group, but one specific user in that group must not retain the 'Delete' permission on Invoices that the group would otherwise grant. Which two components should the administrator use together?",
+    "questionTextDe": "Universal Containers weist seinem Finansteam mehrere Permission Sets über eine Permission-Set-Gruppe zu, aber ein bestimmter Nutzer in dieser Gruppe darf die ‚Löschen'-Berechtigung auf Invoices nicht behalten, die die Gruppe sonst gewähren würde. Welche zwei Komponenten sollte der Administrator zusammen verwenden?",
     "type": "multiple-select",
     "options": [
       {
@@ -3084,6 +3157,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Before creating three new custom objects, an administrator wants to visually map out how they will relate to existing standard and custom objects, dragging relationships directly onto a canvas. Which tool should be used?",
+    "questionTextDe": "Bevor ein Administrator drei neue benutzerdefinierte Objekte erstellt, möchte er visuell abbilden, wie sie mit bestehenden Standard- und Custom Objects zusammenhängen – indem er Beziehungen direkt auf eine Fläche zieht. Welches Werkzeug sollte verwendet werden?",
     "type": "single-choice",
     "options": [
       {
@@ -3126,6 +3200,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator is about to delete a custom lookup field on the Contact object. Several reports use a cross-object formula that references this field, and a roll-up summary field on another object depends on it. What is the most important consideration before deleting the field?",
+    "questionTextDe": "Ein Administrator steht kurz davor, ein benutzerdefiniertes Lookup-Feld auf dem Contact-Objekt zu löschen. Mehrere Berichte verwenden eine bereichsübergreifende Formel, die auf dieses Feld verweist, und ein Roll-up-Summary-Feld auf einem anderen Objekt hängt davon ab. Was ist die wichtigste Überlegung vor dem Löschen des Felds?",
     "type": "single-choice",
     "options": [
       {
@@ -3168,6 +3243,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "On the Contact object, the 'State' picklist should only show values relevant to the value already selected in the 'Country' picklist, so a user cannot accidentally select a state that does not belong to the chosen country. What should the administrator configure?",
+    "questionTextDe": "Auf dem Contact-Objekt soll die ‚State'-Auswahlliste nur Werte zeigen, die zum bereits in ‚Country' gewählten Wert passen, damit ein Nutzer nicht versehentlich einen Staat auswählt, der nicht zum gewählten Land gehört. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -3210,6 +3286,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Service agents working on Contact records want to see the related Account's 'Support Tier' field directly on the Contact, without navigating to the Account record and without duplicating the data through manual entry. What should the administrator create?",
+    "questionTextDe": "Service-Mitarbeiter, die an Contact-Datensätzen arbeiten, möchten das ‚Support Tier'-Feld des zugehörigen Accounts direkt am Contact sehen – ohne zum Account-Datensatz zu navigieren und ohne die Daten manuell zu duplizieren. Was sollte der Administrator erstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -3252,6 +3329,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants field technicians using the Salesforce mobile app to see a simplified Work Order record page with fewer components, while office staff continue to see the full desktop version with all components. What should the administrator do in Lightning App Builder?",
+    "questionTextDe": "Universal Containers möchte, dass Außendiensttechniker in der Salesforce-Mobile-App eine vereinfachte Work-Order-Datensatzseite mit weniger Komponenten sehen, während Büroangestellte weiterhin die vollständige Desktop-Version mit allen Komponenten sehen. Was sollte der Administrator im Lightning App Builder tun?",
     "type": "single-choice",
     "options": [
       {
@@ -3294,6 +3372,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants Leads coming from event sign-ups to follow a different qualification path, with different required fields and picklist stage values, than Leads coming from inbound website inquiries — all on the standard Lead object. What is the most appropriate configuration?",
+    "questionTextDe": "Universal Containers möchte, dass Leads aus Event-Anmeldungen einem anderen Qualifizierungsweg folgen – mit anderen Pflichtfeldern und Auswahllisten-Phasenwerten – als Leads aus Website-Anfragen, alles auf dem Standard-Lead-Objekt. Was ist die passendste Konfiguration?",
     "type": "single-choice",
     "options": [
       {
@@ -3336,6 +3415,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Support agents frequently need to create a follow-up Task directly from an open Case record with a single click, pre-populated with the Case reference, instead of navigating to the Task tab and filling everything in manually. What should the administrator add to the Case page layout?",
+    "questionTextDe": "Support-Mitarbeiter müssen häufig direkt aus einem offenen Case-Datensatz mit einem Klick eine Folge-Task erstellen – vorbefüllt mit der Case-Referenz –, statt zum Task-Tab zu navigieren und alles manuell auszufüllen. Was sollte der Administrator zum Case-Seitenlayout hinzufügen?",
     "type": "single-choice",
     "options": [
       {
@@ -3378,6 +3458,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "On the Opportunity page layout, the 'Primary Contact' lookup field should only let users select Contacts that belong to the same Account as the Opportunity, instead of showing every Contact in the org. What should the administrator configure on the lookup field?",
+    "questionTextDe": "Auf dem Opportunity-Seitenlayout soll das Lookup-Feld ‚Primary Contact' Nutzern nur Contacts zur Auswahl anbieten, die zum selben Account gehören wie die Opportunity, statt jeden Contact in der Organisation zu zeigen. Was sollte der Administrator am Lookup-Feld konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -3420,6 +3501,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers creates a Master-Detail relationship between the custom objects 'Warranty Claim' (child) and 'Product Registration' (parent). Which two behaviors are direct consequences of this relationship type?",
+    "questionTextDe": "Universal Containers erstellt eine Master-Detail-Beziehung zwischen den benutzerdefinierten Objekten ‚Warranty Claim' (Kind) und ‚Product Registration' (Elternteil). Welche zwei Verhaltensweisen sind direkte Folgen dieses Beziehungstyps?",
     "type": "multiple-select",
     "options": [
       {
@@ -3463,6 +3545,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator is deciding between adding a Global Action and an object-specific Quick Action to a page layout. Which two statements correctly describe a Global Action?",
+    "questionTextDe": "Ein Administrator entscheidet zwischen einer Global Action und einer objektbezogenen Quick Action auf einem Seitenlayout. Welche zwei Aussagen beschreiben eine Global Action korrekt?",
     "type": "multiple-select",
     "options": [
       {
@@ -3506,6 +3589,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers runs a conference and needs to track that many Speakers can present at many Conference Sessions, with each Speaker-Session pairing recording a specific time slot and room. What is the most appropriate data model?",
+    "questionTextDe": "Universal Containers veranstaltet eine Konferenz und muss erfassen, dass viele Speaker bei vielen Konferenz-Sessions vortragen können, wobei jedes Speaker-Session-Paar einen bestimmten Zeitfenster-Slot und Raum erfasst. Was ist das passendste Datenmodell?",
     "type": "single-choice",
     "options": [
       {
@@ -3548,6 +3632,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants a field on the parent 'Product Registration' object that automatically shows the total count of related 'Warranty Claim' child records, always staying accurate without any manual update or Flow. Both objects are connected by a master-detail relationship. What should the administrator create?",
+    "questionTextDe": "Universal Containers möchte auf dem Elternobjekt ‚Product Registration' ein Feld, das automatisch die Gesamtzahl zugehöriger ‚Warranty Claim'-Kinddatensätze anzeigt, immer aktuell bleibt – ohne manuelle Aktualisierung oder Flow. Beide Objekte sind über eine Master-Detail-Beziehung verbunden. Was sollte der Administrator erstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -3590,6 +3675,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers receives Leads from its website contact form and wants Leads from the West region automatically routed to the West sales team, while Leads from the East region go to the East sales team, without any manual sorting. What should the administrator configure?",
+    "questionTextDe": "Universal Containers erhält Leads über das Website-Kontaktformular und möchte, dass Leads aus der Westregion automatisch dem West-Vertriebsteam zugewiesen werden, während Leads aus der Ostregion zum Ostteam gehen – ohne manuelle Sortierung. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -3632,6 +3718,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "The sales team is overwhelmed by hundreds of new Leads each week and wants Salesforce to highlight which Leads are statistically most likely to convert, based on patterns from historical data, without the team manually reviewing every single one. What feature addresses this?",
+    "questionTextDe": "Das Vertriebsteam ist von Hunderten neuer Leads pro Woche überfordert und möchte, dass Salesforce hervorhebt, welche Leads statistisch am wahrscheinlichsten konvertieren – basierend auf Mustern historischer Daten, ohne dass das Team jeden einzelnen manuell prüft. Welche Funktion adressiert dies?",
     "type": "single-choice",
     "options": [
       {
@@ -3674,6 +3761,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales director wants Salesforce to highlight which open Opportunities are statistically most likely to close as won, based on patterns in historical deal data, to help reps prioritize their time. Which feature should the administrator enable?",
+    "questionTextDe": "Ein Vertriebsleiter möchte, dass Salesforce hervorhebt, welche offenen Opportunities statistisch am wahrscheinlichsten als gewonnen abgeschlossen werden – basierend auf Mustern historischer Geschäftsdaten –, damit Mitarbeiter ihre Zeit priorisieren können. Welche Funktion sollte der Administrator aktivieren?",
     "type": "single-choice",
     "options": [
       {
@@ -3716,6 +3804,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers organizes its sales force by geographic region rather than by named account ownership, and wants Opportunity and Account access to automatically follow each rep's assigned region as reps move between regions over time. What should the administrator implement?",
+    "questionTextDe": "Universal Containers organisiert seinen Vertrieb nach geografischer Region statt nach benannten Kundenverantwortlichkeiten und möchte, dass Opportunity- und Account-Zugriff automatisch der zugewiesenen Region jedes Mitarbeiters folgt, wenn sich Mitarbeiter über die Zeit zwischen Regionen bewegen. Was sollte der Administrator implementieren?",
     "type": "single-choice",
     "options": [
       {
@@ -3758,6 +3847,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Marketing wants to track, for each contact added to the 'Spring Webinar' campaign, whether that person actually attended the webinar or merely registered. What should the administrator use?",
+    "questionTextDe": "Das Marketing möchte für jeden zu der Kampagne ‚Spring Webinar' hinzugefügten Kontakt erfassen, ob die Person tatsächlich am Webinar teilgenommen oder sich nur registriert hat. Was sollte der Administrator verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -3800,6 +3890,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants visitors who fill out the 'Request a Demo' form on its public website to automatically create a Lead record in Salesforce, without anyone manually retyping the submitted information. What should the administrator set up?",
+    "questionTextDe": "Universal Containers möchte, dass Besucher, die das Formular ‚Demo anfragen' auf der öffentlichen Website ausfüllen, automatisch einen Lead-Datensatz in Salesforce anlegen – ohne dass jemand die übermittelten Daten manuell neu erfasst. Was sollte der Administrator einrichten?",
     "type": "single-choice",
     "options": [
       {
@@ -3842,6 +3933,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A large Opportunity at Universal Containers involves several people at the customer company: one who approves the budget, one who will use the product daily, and one who evaluates technical fit. The sales rep wants to record each person's specific role in the buying decision on the Opportunity itself. What should be used?",
+    "questionTextDe": "Eine große Opportunity bei Universal Containers umfasst mehrere Personen auf Kundenseite: eine, die das Budget genehmigt, eine, die das Produkt täglich nutzt, und eine, die die technische Eignung bewertet. Der Vertriebsmitarbeiter möchte die spezifische Rolle jeder Person in der Kaufentscheidung direkt an der Opportunity festhalten. Was sollte verwendet werden?",
     "type": "single-choice",
     "options": [
       {
@@ -3884,6 +3976,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales manager wants reps to open Salesforce each morning and immediately see which leads and opportunities deserve the most attention that day, based on Einstein's predictive analysis rather than gut feeling. Which two features most directly support this goal?",
+    "questionTextDe": "Ein Vertriebsleiter möchte, dass Mitarbeiter jeden Morgen Salesforce öffnen und sofort sehen, welche Leads und Opportunities an diesem Tag die meiste Aufmerksamkeit verdienen – basierend auf Einsteins prädiktiver Analyse statt auf Bauchgefühl. Welche zwei Funktionen unterstützen dieses Ziel am direktesten?",
     "type": "multiple-select",
     "options": [
       {
@@ -3927,6 +4020,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants any case that has remained unresolved for more than 48 hours to automatically be reassigned to a senior support manager, without an agent having to notice and escalate it manually. What should the administrator configure?",
+    "questionTextDe": "Universal Containers möchte, dass jeder Case, der länger als 48 Stunden ungelöst bleibt, automatisch an einen Senior-Supportmanager neu zugewiesen wird – ohne dass ein Mitarbeiter dies bemerken und manuell eskalieren muss. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -3969,6 +4063,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers handles both software bug reports and general feature requests through the Case object, but wants each type to follow a different sequence of status values and show a different set of fields on the page. What is the most appropriate configuration?",
+    "questionTextDe": "Universal Containers bearbeitet sowohl Software-Fehlermeldungen als auch allgemeine Feature-Anfragen über das Case-Objekt, möchte aber, dass jeder Typ einer anderen Abfolge von Statuswerten folgt und einen anderen Feldsatz auf der Seite zeigt. Was ist die passendste Konfiguration?",
     "type": "single-choice",
     "options": [
       {
@@ -4011,6 +4106,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A support team lead wants incoming cases that are not routed to a specific individual to sit in a shared pool that any available agent on the team can claim and work on. What should the administrator set up?",
+    "questionTextDe": "Ein Teamleiter im Support möchte, dass eingehende Cases, die keinem bestimmten Mitarbeiter zugewiesen sind, in einem gemeinsamen Pool landen, aus dem jeder verfügbare Mitarbeiter des Teams sie sich nehmen und bearbeiten kann. Was sollte der Administrator einrichten?",
     "type": "single-choice",
     "options": [
       {
@@ -4053,6 +4149,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "When a new case is created from an email, Universal Containers wants Salesforce to automatically suggest the most likely Case Reason and Case Type based on the wording of the email, so agents don't have to classify every case manually. What Service Cloud AI feature addresses this?",
+    "questionTextDe": "Wenn ein neuer Case per E-Mail erstellt wird, möchte Universal Containers, dass Salesforce automatisch den wahrscheinlichsten Case Reason und Case Type basierend auf dem Wortlaut der E-Mail vorschlägt, damit Mitarbeiter nicht jeden Case manuell klassifizieren müssen. Welche Service-Cloud-KI-Funktion adressiert dies?",
     "type": "single-choice",
     "options": [
       {
@@ -4095,6 +4192,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants incoming chats and cases to be automatically routed to the specific available agent who has the right skill set and current capacity, rather than to a static queue that any agent might pick up regardless of workload. What should the administrator implement?",
+    "questionTextDe": "Universal Containers möchte, dass eingehende Chats und Cases automatisch an den konkreten verfügbaren Mitarbeiter mit dem passenden Skillset und aktueller Auslastung geroutet werden – statt an eine statische Warteschlange, aus der jeder Mitarbeiter unabhängig von der Auslastung entnehmen könnte. Was sollte der Administrator implementieren?",
     "type": "single-choice",
     "options": [
       {
@@ -4137,6 +4235,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "For complex cases involving multiple departments, Universal Containers wants a defined set of roles (e.g., technical specialist, account manager) to be automatically added as collaborators to the case record itself. What should the administrator configure?",
+    "questionTextDe": "Für komplexe Cases mit mehreren Abteilungen möchte Universal Containers, dass ein definierter Satz von Rollen (z. B. technischer Spezialist, Account Manager) automatisch als Mitarbeiter am Case-Datensatz selbst hinzugefügt werden. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -4179,6 +4278,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers receives support requests by email and wants every incoming email to automatically become a case that is immediately routed to the correct team's queue based on the email subject line, without any agent manually creating or sorting cases. Which two features does the administrator need to combine?",
+    "questionTextDe": "Universal Containers erhält Supportanfragen per E-Mail und möchte, dass jede eingehende E-Mail automatisch zu einem Case wird, der sofort anhand der E-Mail-Betreffzeile der korrekten Team-Warteschlange zugewiesen wird – ohne dass ein Mitarbeiter Cases manuell erstellt oder sortiert. Welche zwei Funktionen muss der Administrator kombinieren?",
     "type": "multiple-select",
     "options": [
       {
@@ -4222,6 +4322,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An agent working on a case about a recurring product issue wants to quickly find and attach a previously written internal article that explains the known fix, instead of writing the explanation from scratch each time. What should Universal Containers have set up?",
+    "questionTextDe": "Ein Mitarbeiter arbeitet an einem Case zu einem wiederkehrenden Produktproblem und möchte schnell einen zuvor geschriebenen internen Artikel finden und anhängen, der die bekannte Lösung erklärt, statt die Erklärung jedes Mal neu zu formulieren. Was sollte Universal Containers eingerichtet haben?",
     "type": "single-choice",
     "options": [
       {
@@ -4264,6 +4365,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales rep just had a phone call with a prospect and needs a reminder to send a follow-up proposal in three days. What should the rep create?",
+    "questionTextDe": "Ein Vertriebsmitarbeiter hat gerade ein Telefonat mit einem Interessenten geführt und braucht eine Erinnerung, in drei Tagen ein Folgeangebot zu senden. Was sollte der Mitarbeiter erstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -4306,6 +4408,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales rep needs to schedule a one-hour product demo meeting next Tuesday at 2 PM with the customer and invite two internal colleagues, so it appears correctly on everyone's calendar. What should the rep create?",
+    "questionTextDe": "Ein Vertriebsmitarbeiter muss einen einstündigen Produktdemo-Termin für nächsten Dienstag um 14 Uhr mit dem Kunden planen und zwei interne Kollegen einladen, damit er korrekt in jedermanns Kalender erscheint. Was sollte der Mitarbeiter erstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -4348,6 +4451,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants to invite a customer to collaborate directly in Chatter on a single specific Opportunity record — commenting and viewing updates — without giving that customer a full internal Salesforce license or access to any other records. What should the administrator use?",
+    "questionTextDe": "Universal Containers möchte einen Kunden einladen, direkt in Chatter an einem einzigen bestimmten Opportunity-Datensatz mitzuwirken – kommentieren und Updates sehen –, ohne diesem Kunden eine vollständige interne Salesforce-Lizenz oder Zugriff auf andere Datensätze zu geben. Was sollte der Administrator verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -4390,6 +4494,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants the Salesforce mobile app to display the company's own logo and brand colors instead of the default Salesforce look, so field reps immediately recognize it as their company's app. What should the administrator configure?",
+    "questionTextDe": "Universal Containers möchte, dass die Salesforce-Mobile-App das eigene Logo und die eigenen Markenfarben der Firma statt des Standard-Salesforce-Looks anzeigt, damit Außendienstmitarbeiter sie sofort als App ihres Unternehmens erkennen. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -4432,6 +4537,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Field reps using the Salesforce mobile app should see a compact Opportunity page optimized for small screens, while the same Opportunity page shown on desktop should keep all the additional components. What should the administrator do, beyond just building one Lightning page?",
+    "questionTextDe": "Außendienstmitarbeiter in der Salesforce-Mobile-App sollen eine kompakte Opportunity-Seite für kleine Bildschirme sehen, während dieselbe Opportunity-Seite auf dem Desktop alle zusätzlichen Komponenten behält. Was sollte der Administrator tun – über das bloße Erstellen einer Lightning-Seite hinaus?",
     "type": "single-choice",
     "options": [
       {
@@ -4474,6 +4580,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator builds a small internal utility on the AppExchange for the company's own use, made up of a few custom objects and a Flow, and wants other admins on the team to be able to freely view and modify every component after installing it, without depending on the original creator for future updates. What packaging type fits best?",
+    "questionTextDe": "Ein Administrator baut ein kleines internes Dienstprogramm auf der AppExchange für den eigenen Firmengebrauch – aus ein paar benutzerdefinierten Objekten und einem Flow –, und möchte, dass andere Administratoren im Team nach der Installation alle Komponenten frei einsehen und ändern können, ohne vom ursprünglichen Ersteller für künftige Updates abhängig zu sein. Welcher Pakettyp passt am besten?",
     "type": "single-choice",
     "options": [
       {
@@ -4516,6 +4623,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An independent software vendor (ISV) wants to publish a new app on the AppExchange for other Salesforce customers to install. Before it becomes publicly listed, what must the vendor typically complete?",
+    "questionTextDe": "Ein unabhängiger Softwareanbieter (ISV) möchte eine neue App auf der AppExchange für andere Salesforce-Kunden veröffentlichen. Bevor sie öffentlich gelistet wird, was muss der Anbieter typischerweise abschließen?",
     "type": "single-choice",
     "options": [
       {
@@ -4558,6 +4666,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers is deciding whether to build a loyalty-points feature from scratch or install an existing, well-reviewed solution from the AppExchange. Which two are realistic advantages of installing an AppExchange package instead of building the same functionality in-house?",
+    "questionTextDe": "Universal Containers entscheidet, ob es ein Treuepunkte-Feature von Grund auf baut oder eine bestehende, gut bewertete Lösung von der AppExchange installiert. Welche zwei sind realistische Vorteile der Installation eines AppExchange-Pakets statt den Bau derselben Funktionalität im Haus?",
     "type": "multiple-select",
     "options": [
       {
@@ -4601,6 +4710,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers needs to import 250,000 new Contact records from a legacy system into Salesforce in one batch, with the option to map fields precisely and run it from the command line as part of a larger migration script. Which tool is most appropriate?",
+    "questionTextDe": "Universal Containers muss 250.000 neue Contact-Datensätze aus einem Altsystem in einem Batch nach Salesforce importieren – mit der Möglichkeit, Felder präzise zuzuordnen und den Import per Kommandozeile als Teil eines größeren Migrationsskripts auszuführen. Welches Werkzeug ist am geeignetsten?",
     "type": "single-choice",
     "options": [
       {
@@ -4643,6 +4753,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "After a data cleanup project, Universal Containers has identified 40,000 obsolete Lead records that must be permanently removed from the org, not just sent to the Recycle Bin temporarily. What is the most efficient approach?",
+    "questionTextDe": "Nach einem Datenbereinigungsprojekt hat Universal Containers 40.000 veraltete Lead-Datensätze identifiziert, die dauerhaft aus der Organisation entfernt werden müssen – nicht nur vorübergehend in den Papierkorb verschoben. Was ist der effizienteste Ansatz?",
     "type": "single-choice",
     "options": [
       {
@@ -4685,6 +4796,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "For compliance reasons, Universal Containers must retain a full copy of all Salesforce data outside the org, refreshed automatically on a recurring schedule, without an administrator manually exporting files every time. What should be configured?",
+    "questionTextDe": "Aus Compliance-Gründen muss Universal Containers eine vollständige Kopie aller Salesforce-Daten außerhalb der Organisation aufbewahren, die automatisch nach festem Zeitplan aktualisiert wird, ohne dass ein Administrator jedes Mal Dateien manuell exportiert. Was sollte konfiguriert werden?",
     "type": "single-choice",
     "options": [
       {
@@ -4727,6 +4839,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants to move Closed cases older than five years out of active storage to reduce data storage costs, while still being able to access them if legally required, without permanently deleting them. What concept addresses this?",
+    "questionTextDe": "Universal Containers möchte geschlossene Cases, die älter als fünf Jahre sind, aus dem aktiven Speicher auslagern, um Speicherkosten zu senken – und trotzdem bei rechtlicher Notwendigkeit darauf zugreifen können, ohne sie dauerhaft zu löschen. Welches Konzept adressiert dies?",
     "type": "single-choice",
     "options": [
       {
@@ -4769,6 +4882,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants to prevent sales reps from marking an Opportunity as 'Closed Won' if the Close Date field is set to a date in the past, since this indicates likely data-entry error. What should the administrator create?",
+    "questionTextDe": "Universal Containers möchte verhindern, dass Vertriebsmitarbeiter eine Opportunity als ‚Closed Won' markieren, wenn das Close-Date-Feld ein Datum in der Vergangenheit enthält – da dies wahrscheinlich auf einen Dateneingabefehler hindeutet. Was sollte der Administrator erstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -4811,6 +4925,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers has had repeated problems with duplicate Account records and now wants the system to completely prevent a new Account from being saved if it closely matches an existing one, with no exceptions. What Duplicate Rule action should the administrator select?",
+    "questionTextDe": "Universal Containers hatte wiederholt Probleme mit doppelten Account-Datensätzen und möchte jetzt, dass das System das Speichern eines neuen Accounts vollständig verhindert, wenn er einem bestehenden sehr ähnlich ist – ohne Ausnahmen. Welche Duplicate-Rule-Aktion sollte der Administrator wählen?",
     "type": "single-choice",
     "options": [
       {
@@ -4853,6 +4968,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants Leads to be flagged as potential duplicates even when the Company name is spelled slightly differently (e.g., 'Acme Inc.' vs 'Acme Incorporated'), instead of requiring an exact character-for-character match. What should the administrator configure in the Matching Rule?",
+    "questionTextDe": "Universal Containers möchte, dass Leads als potenzielle Duplikate markiert werden, selbst wenn der Firmenname leicht anders geschrieben ist (z. B. ‚Acme Inc.' vs. ‚Acme Incorporated'), statt eine exakte zeichenweise Übereinstimmung zu verlangen. Was sollte der Administrator in der Matching Rule konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -4895,6 +5011,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A custom report type is being built on Account with related Opportunities. Universal Containers wants the report to include Accounts that have no Opportunities at all, not just Accounts that have at least one. What must be selected when defining the custom report type?",
+    "questionTextDe": "Ein benutzerdefinierter Berichtstyp wird auf Account mit zugehörigen Opportunities erstellt. Universal Containers möchte, dass der Bericht auch Accounts enthält, die gar keine Opportunities haben – nicht nur Accounts mit mindestens einer. Was muss beim Definieren des benutzerdefinierten Berichtstyps ausgewählt werden?",
     "type": "single-choice",
     "options": [
       {
@@ -4937,6 +5054,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales manager wants an Opportunity report to visually group deals into 'Small' (under $10,000), 'Medium' ($10,000–$100,000), and 'Large' (over $100,000) categories directly within the report, without creating a new field on the Opportunity object itself. What should the administrator use?",
+    "questionTextDe": "Ein Vertriebsleiter möchte einen Opportunity-Bericht, der Deals visuell in die Kategorien ‚Small' (unter 10.000 $), ‚Medium' (10.000–100.000 $) und ‚Large' (über 100.000 $) gruppiert – direkt im Bericht, ohne ein neues Feld auf dem Opportunity-Objekt zu erstellen. Was sollte der Administrator verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -4979,6 +5097,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A manager wants a single report that shows both Case data and unrelated Opportunity data side by side, using two different report types that are not connected by a lookup or master-detail relationship. What report format allows this?",
+    "questionTextDe": "Ein Manager möchte einen einzelnen Bericht, der Case-Daten und nicht verwandte Opportunity-Daten nebeneinander zeigt – mit zwei verschiedenen Berichtstypen, die durch keine Lookup- oder Master-Detail-Beziehung verbunden sind. Welches Berichtsformat erlaubt dies?",
     "type": "single-choice",
     "options": [
       {
@@ -5021,6 +5140,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales manager wants a report on closed Opportunities that shows Amount subtotals broken down both by Sales Rep (rows) and by Quarter (columns) at the same time, in a grid-like layout. Which report format fits best?",
+    "questionTextDe": "Ein Vertriebsleiter möchte einen Bericht über abgeschlossene Opportunities, der Amount-Zwischensummen sowohl nach Vertriebsmitarbeiter (Zeilen) als auch nach Quartal (Spalten) gleichzeitig aufschlüsselt, in einem rasterartigen Layout. Welches Berichtsformat passt am besten?",
     "type": "single-choice",
     "options": [
       {
@@ -5063,6 +5183,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A dashboard shows regional sales data, and Universal Containers wants viewers to be able to select a specific region from a dropdown directly on the dashboard and instantly see the components update, without the administrator building a separate dashboard per region. What feature should be used?",
+    "questionTextDe": "Ein Dashboard zeigt regionale Vertriebsdaten, und Universal Containers möchte, dass Betrachter direkt auf dem Dashboard eine bestimmte Region aus einem Dropdown auswählen können und die Komponenten sofort aktualisiert sehen – ohne dass der Administrator für jede Region ein separates Dashboard baut. Welche Funktion sollte verwendet werden?",
     "type": "single-choice",
     "options": [
       {
@@ -5105,6 +5226,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A report on Opportunities is run by a regular sales rep, not an administrator. Which two factors determine which specific Opportunity records that rep will actually see in the report results?",
+    "questionTextDe": "Ein Bericht über Opportunities wird von einem normalen Vertriebsmitarbeiter ausgeführt, nicht von einem Administrator. Welche zwei Faktoren bestimmen, welche Opportunity-Datensätze dieser Mitarbeiter in den Berichtsergebnissen tatsächlich sehen wird?",
     "type": "multiple-select",
     "options": [
       {
@@ -5148,6 +5270,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales director does not want to log into Salesforce every day just to check the latest pipeline dashboard. Which two native features let them receive dashboard data automatically without manually opening it each time?",
+    "questionTextDe": "Ein Vertriebsleiter möchte sich nicht jeden Tag bei Salesforce anmelden müssen, nur um das aktuelle Pipeline-Dashboard zu prüfen. Welche zwei nativen Funktionen lassen ihn Dashboard-Daten automatisch erhalten, ohne es jedes Mal manuell zu öffnen?",
     "type": "multiple-select",
     "options": [
       {
@@ -5191,6 +5314,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A record-triggered Flow on Opportunity needs to update a field on the same record that triggered it, and Universal Containers wants this update to happen as efficiently as possible, without a second, separate save operation to the database. What should the administrator configure?",
+    "questionTextDe": "Ein datensatzgesteuerter Flow auf Opportunity muss ein Feld auf demselben Datensatz aktualisieren, der ihn ausgelöst hat, und Universal Containers möchte, dass diese Aktualisierung so effizient wie möglich erfolgt – ohne einen zweiten, separaten Speichervorgang in der Datenbank. Was sollte der Administrator konfigurieren?",
     "type": "single-choice",
     "options": [
       {
@@ -5233,6 +5357,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Whenever a new Case is created, Universal Containers wants a Flow to automatically create a related Task for the assigned agent and send an outbound message to an external system — actions that only make sense once the Case has actually been committed to the database. What type of record-triggered Flow is needed?",
+    "questionTextDe": "Immer wenn ein neuer Case erstellt wird, möchte Universal Containers, dass ein Flow automatisch eine zugehörige Task für den zugewiesenen Mitarbeiter erstellt und eine ausgehende Nachricht an ein externes System sendet – Aktionen, die erst dann sinnvoll sind, wenn der Case tatsächlich in der Datenbank gespeichert wurde. Welcher Typ eines datensatzgesteuerten Flows wird benötigt?",
     "type": "single-choice",
     "options": [
       {
@@ -5275,6 +5400,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An integration developer wants to call a reusable piece of Flow logic directly from Apex code, passing in input variables and receiving output variables back, without any screen shown to a user and without the Flow being tied to a record being saved. What type of Flow should be built?",
+    "questionTextDe": "Ein Integrationsentwickler möchte eine wiederverwendbare Flow-Logik direkt aus Apex-Code aufrufen, Eingabevariablen übergeben und Ausgabevariablen zurückerhalten – ohne dass ein Bildschirm für einen Nutzer angezeigt wird und ohne dass der Flow an das Speichern eines Datensatzes gebunden ist. Welcher Flow-Typ sollte gebaut werden?",
     "type": "single-choice",
     "options": [
       {
@@ -5317,6 +5443,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An integration user account with a restrictive profile triggers a record-triggered Flow that needs to update fields the integration user itself does not have edit access to, but the automation must still succeed reliably. Which concept explains how Salesforce can still complete this update?",
+    "questionTextDe": "Ein Integrations-Benutzerkonto mit einem restriktiven Profil löst einen datensatzgesteuerten Flow aus, der Felder aktualisieren muss, auf die der Integrations-Nutzer selbst keinen Bearbeitungszugriff hat – die Automation muss dennoch zuverlässig gelingen. Welches Konzept erklärt, wie Salesforce diese Aktualisierung trotzdem abschließen kann?",
     "type": "single-choice",
     "options": [
       {
@@ -5359,6 +5486,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers currently uses a simple Lead Assignment Rule based only on postal code, but now needs leads to be routed based on a combination of postal code, industry, and company size — logic too complex for the assignment rule's criteria rows alone. What is the most appropriate solution?",
+    "questionTextDe": "Universal Containers verwendet derzeit eine einfache Lead-Zuweisungsregel, die nur auf die Postleitzahl beruht, benötigt jetzt aber eine Zuweisung von Leads basierend auf einer Kombination aus Postleitzahl, Branche und Unternehmensgröße – eine Logik, die für die Kriterienzeilen der Zuweisungsregel allein zu komplex ist. Was ist die passendste Lösung?",
     "type": "single-choice",
     "options": [
       {
@@ -5401,6 +5529,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants unresolved high-priority cases to automatically be reassigned to a manager after a set number of hours, using a purpose-built native feature rather than reinventing the same time-based logic manually inside a custom Flow. What is the best-practice tool here?",
+    "questionTextDe": "Universal Containers möchte, dass ungelöste Cases mit hoher Priorität nach einer festgelegten Stundenzahl automatisch an einen Manager neu zugewiesen werden – mit einer dafür vorgesehenen nativen Funktion, statt dieselbe zeitbasierte Logik manuell in einem eigenen Flow nachzubauen. Welches Werkzeug ist hier Best Practice?",
     "type": "single-choice",
     "options": [
       {
@@ -5443,6 +5572,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A newly submitted expense report over $5,000 must go to the requester's direct manager for approval first, and only if the manager approves, it should then go to the Finance Director for a final approval. What approval process configuration is required?",
+    "questionTextDe": "Ein neu eingereichter Spesenbericht über 5.000 $ muss zuerst vom direkten Vorgesetzten des Antragstellers genehmigt werden, und erst wenn der Vorgesetzte genehmigt, soll er zur endgültigen Freigabe an den Finanzdirektor gehen. Welche Genehmigungsprozess-Konfiguration ist erforderlich?",
     "type": "single-choice",
     "options": [
       {
@@ -5485,6 +5615,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A submitted approval request is rejected by the approver. By default, what happens to the record's approval status?",
+    "questionTextDe": "Ein eingereichter Genehmigungsantrag wird vom Genehmiger abgelehnt. Was passiert standardmäßig mit dem Genehmigungsstatus des Datensatzes?",
     "type": "single-choice",
     "options": [
       {
@@ -5527,6 +5658,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "When setting up a new Approval Process for expense reports, which two components must the administrator define for it to function?",
+    "questionTextDe": "Beim Einrichten eines neuen Genehmigungsprozesses für Spesenberichte: Welche zwei Komponenten muss der Administrator definieren, damit er funktioniert?",
     "type": "multiple-select",
     "options": [
       {
@@ -5570,6 +5702,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator is comparing Flow types. Which two of the following run entirely in the background, without ever displaying a screen to an end user?",
+    "questionTextDe": "Ein Administrator vergleicht Flow-Typen. Welche zwei der folgenden laufen vollständig im Hintergrund, ohne jemals einen Bildschirm für einen Endnutzer anzuzeigen?",
     "type": "multiple-select",
     "options": [
       {
@@ -5613,6 +5746,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Considering the Order of Execution when a record is saved, which two of the following happen before the record is actually committed to the database?",
+    "questionTextDe": "Betrachtet man die Reihenfolge der Ausführung beim Speichern eines Datensatzes: Welche zwei der folgenden Vorgänge finden statt, bevor der Datensatz tatsächlich in der Datenbank gespeichert wird?",
     "type": "multiple-select",
     "options": [
       {
@@ -5656,6 +5790,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers still has an old Workflow Rule that sends an email alert when a high-value Opportunity is created. The administrator wants to add AI-generated context to that email in the future and knows this is not possible in Workflow Rules. What should they do?",
+    "questionTextDe": "Universal Containers hat noch eine alte Workflow Rule, die eine E-Mail-Benachrichtigung sendet, wenn eine Opportunity mit hohem Wert erstellt wird. Der Administrator möchte künftig KI-generierten Kontext zu dieser E-Mail hinzufügen und weiß, dass dies in Workflow Rules nicht möglich ist. Was sollte er tun?",
     "type": "single-choice",
     "options": [
       {
@@ -5698,6 +5833,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers needs Salesforce to calculate an exact shipping cost using a fixed, deterministic formula based on weight and destination for every order, with no variation allowed. An administrator is asked whether an Agentforce agent using generative AI is the appropriate tool for this specific calculation. What is the correct assessment?",
+    "questionTextDe": "Universal Containers benötigt, dass Salesforce für jede Bestellung die exakten Versandkosten über eine feste, deterministische Formel basierend auf Gewicht und Ziel berechnet – ohne jede Abweichung. Ein Administrator wird gefragt, ob ein Agentforce-Agent mit generativer KI das passende Werkzeug für diese spezifische Berechnung ist. Wie lautet die korrekte Einschätzung?",
     "type": "single-choice",
     "options": [
       {
@@ -5741,6 +5877,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An Agentforce agent successfully updates Case records for most support agents, but consistently fails to update a specific custom field on Case for one particular agent, even though the agent's topics and actions are configured correctly. What should the administrator investigate first?",
+    "questionTextDe": "Ein Agentforce-Agent aktualisiert Case-Datensätze für die meisten Supportmitarbeiter erfolgreich, schlägt aber konsistent fehl, wenn ein bestimmtes benutzerdefiniertes Feld auf Case für einen ganz bestimmten Mitarbeiter aktualisiert werden soll – obwohl die Topics und Actions des Agenten korrekt konfiguriert sind. Was sollte der Administrator zuerst untersuchen?",
     "type": "single-choice",
     "options": [
       {
@@ -5783,6 +5920,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator is organizing an Agentforce agent's capabilities and wants to group several related actions and instructions — all concerned with order status inquiries — under one coherent area of the agent's scope, separate from an unrelated group of actions about billing questions. What concept should be used to group these?",
+    "questionTextDe": "Ein Administrator organisiert die Fähigkeiten eines Agentforce-Agenten und möchte mehrere verwandte Aktionen und Anweisungen – alle zum Thema Bestellstatus-Anfragen – unter einem kohärenten Bereich des Agenten-Scope zusammenfassen, getrennt von einer nicht verwandten Gruppe von Aktionen zu Abrechnungsfragen. Welches Konzept sollte zur Gruppierung verwendet werden?",
     "type": "single-choice",
     "options": [
       {
@@ -5825,6 +5963,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Instead of building a new Agentforce action from scratch, an administrator finds a pre-built agent action template published by a partner that matches the company's exact use case for order tracking. Where would the administrator most likely find and install this template?",
+    "questionTextDe": "Statt eine neue Agentforce-Action von Grund auf zu bauen, findet ein Administrator eine vorgefertigte Agent-Action-Vorlage, die ein Partner veröffentlicht hat und exakt zum Anwendungsfall des Unternehmens für die Auftragsverfolgung passt. Wo würde der Administrator diese Vorlage am wahrscheinlichsten finden und installieren?",
     "type": "single-choice",
     "options": [
       {
@@ -5867,6 +6006,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A customer service leader wants to deflect a high volume of repetitive 'where is my order' questions from live agents by letting customers get instant answers themselves at any time of day, based on existing order data. Is an Agentforce agent an appropriate use case here?",
+    "questionTextDe": "Ein Leiter des Kundenservice möchte das hohe Volumen sich wiederholender ‚Wo ist meine Bestellung?'-Fragen von Live-Mitarbeitern ablenken, indem Kunden zu jeder Tageszeit sofort selbst Antworten auf Basis bestehender Bestelldaten erhalten. Ist ein Agentforce-Agent hier ein geeigneter Anwendungsfall?",
     "type": "single-choice",
     "options": [
       {
@@ -5909,6 +6049,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Universal Containers wants to strictly control which specific records and fields an Agentforce agent instance can access at runtime, separate from simply defining what topics and actions the agent conceptually offers. Which concept governs this specific access boundary?",
+    "questionTextDe": "Universal Containers möchte strikt kontrollieren, auf welche spezifischen Datensätze und Felder eine Agentforce-Agent-Instanz zur Laufzeit zugreifen kann – getrennt von der bloßen Definition, welche Topics und Actions der Agent konzeptionell anbietet. Welches Konzept regelt diese spezifische Zugriffsgrenze?",
     "type": "single-choice",
     "options": [
       {
@@ -5951,6 +6092,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Before publishing an update to a live, already-deployed Agentforce agent that customers actively use, which two steps should the administrator complete?",
+    "questionTextDe": "Bevor ein Administrator ein Update für einen live eingesetzten, bereits produktiven Agentforce-Agenten veröffentlicht, den Kunden aktiv nutzen, welche zwei Schritte sollte er abschließen?",
     "type": "multiple-select",
     "options": [
       {
@@ -5994,6 +6136,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A furniture retailer wants one system where every sales rep can log calls, emails, and meeting notes about a customer, so nothing gets lost when a rep goes on vacation. Which broad category of software addresses this need?",
+    "questionTextDe": "Ein Möbelhändler möchte ein System, in dem jeder Vertriebsmitarbeiter Anrufe, E-Mails und Gesprächsnotizen zu einem Kunden protokollieren kann, damit nichts verloren geht, wenn ein Mitarbeiter in den Urlaub geht. Welche breite Softwarekategorie adressiert diesen Bedarf?",
     "type": "single-choice",
     "options": [
       {
@@ -6037,6 +6180,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A startup wants to use powerful computing resources for its applications without buying, installing, or maintaining any physical servers itself. Which concept describes this approach?",
+    "questionTextDe": "Ein Startup möchte leistungsstarke Rechenressourcen für seine Anwendungen nutzen, ohne selbst physische Server kaufen, installieren oder warten zu müssen. Welches Konzept beschreibt diesen Ansatz?",
     "type": "single-choice",
     "options": [
       {
@@ -6080,6 +6224,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Salesforce runs thousands of different customer organizations on the same underlying infrastructure, while keeping each customer's data completely separate and secure. Which architectural concept describes this?",
+    "questionTextDe": "Salesforce betreibt Tausende verschiedener Kundenorganisationen auf derselben zugrunde liegenden Infrastruktur und hält dabei die Daten jedes Kunden vollständig getrennt und sicher. Welches architektonische Konzept beschreibt dies?",
     "type": "single-choice",
     "options": [
       {
@@ -6123,6 +6268,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company wants a Salesforce product focused specifically on managing leads, opportunities, and the sales pipeline. Which product should they look at?",
+    "questionTextDe": "Ein Unternehmen möchte ein Salesforce-Produkt, das sich speziell auf die Verwaltung von Leads, Opportunities und der Vertriebspipeline konzentriert. Welches Produkt sollte es sich ansehen?",
     "type": "single-choice",
     "options": [
       {
@@ -6165,6 +6311,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company wants a Salesforce product focused specifically on managing customer support cases and helping agents resolve issues faster. Which product should they look at?",
+    "questionTextDe": "Ein Unternehmen möchte ein Salesforce-Produkt, das sich speziell auf die Verwaltung von Kundenservice-Cases konzentriert und Mitarbeitern hilft, Probleme schneller zu lösen. Welches Produkt sollte es sich ansehen?",
     "type": "single-choice",
     "options": [
       {
@@ -6207,6 +6354,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company wants a Salesforce product focused specifically on planning and automating email, social media, and other marketing campaigns. Which product should they look at?",
+    "questionTextDe": "Ein Unternehmen möchte ein Salesforce-Produkt, das sich speziell auf die Planung und Automatisierung von E-Mail-, Social-Media- und anderen Marketingkampagnen konzentriert. Welches Produkt sollte es sich ansehen?",
     "type": "single-choice",
     "options": [
       {
@@ -6249,6 +6397,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A retailer wants to run its online store, including product catalog and checkout, on the Salesforce platform. Which product is designed for this?",
+    "questionTextDe": "Ein Einzelhändler möchte seinen Online-Shop, einschließlich Produktkatalog und Checkout, auf der Salesforce-Plattform betreiben. Welches Produkt ist dafür konzipiert?",
     "type": "single-choice",
     "options": [
       {
@@ -6291,6 +6440,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A new admin has a question about a tricky configuration and wants to ask other Salesforce users worldwide for advice, outside of formal Trailhead modules. Where should they go?",
+    "questionTextDe": "Ein neuer Administrator hat eine Frage zu einer kniffligen Konfiguration und möchte andere Salesforce-Nutzer weltweit um Rat fragen – außerhalb formeller Trailhead-Module. Wohin sollte er gehen?",
     "type": "single-choice",
     "options": [
       {
@@ -6333,6 +6483,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Someone works for an external firm, moving between different client companies to plan and implement Salesforce setups tailored to each business, rather than being employed full-time by just one company. Which role best fits this description?",
+    "questionTextDe": "Jemand arbeitet für eine externe Firma und wechselt zwischen verschiedenen Kundenunternehmen, um Salesforce-Einrichtungen passend zu jedem Geschäft zu planen und umzusetzen – statt Vollzeit bei nur einem Unternehmen angestellt zu sein. Welche Rolle passt am besten zu dieser Beschreibung?",
     "type": "single-choice",
     "options": [
       {
@@ -6376,6 +6527,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A business requirement is too complex to solve with point-and-click tools alone and requires custom code to work correctly. Who is typically responsible for building this kind of solution?",
+    "questionTextDe": "Eine Geschäftsanforderung ist zu komplex, um allein mit Point-and-Click-Werkzeugen gelöst zu werden, und erfordert eigenen Code, um korrekt zu funktionieren. Wer ist typischerweise für den Bau solcher Lösungen verantwortlich?",
     "type": "single-choice",
     "options": [
       {
@@ -6418,6 +6570,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Before any configuration work begins, someone needs to talk to different departments, understand what they actually need, and turn those needs into clear written requirements for the technical team. Which role focuses on this task?",
+    "questionTextDe": "Bevor Konfigurationsarbeiten beginnen, muss jemand mit verschiedenen Abteilungen sprechen, verstehen, was sie tatsächlich brauchen, und diese Bedürfnisse in klare schriftliche Anforderungen für das technische Team übersetzen. Welche Rolle konzentriert sich auf diese Aufgabe?",
     "type": "single-choice",
     "options": [
       {
@@ -6460,6 +6613,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A large company needs someone to design how Salesforce will connect with several other systems and scale across the whole organization, making high-level technical decisions rather than day-to-day configuration. Which role fits best?",
+    "questionTextDe": "Ein großes Unternehmen benötigt jemanden, der entwirft, wie Salesforce sich mit mehreren anderen Systemen verbindet und über die ganze Organisation skaliert – mit High-Level-technischen Entscheidungen statt täglicher Konfiguration. Welche Rolle passt am besten?",
     "type": "single-choice",
     "options": [
       {
@@ -6502,6 +6656,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Before installing a third-party app from the AppExchange, a company wants to check what other customers experienced with it. What should they look at?",
+    "questionTextDe": "Bevor ein Unternehmen eine App von Drittanbietern aus der AppExchange installiert, möchte es sehen, was andere Kunden damit erlebt haben. Wonach sollte es suchen?",
     "type": "single-choice",
     "options": [
       {
@@ -6544,6 +6699,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A university and a homeless shelter are both looking for Salesforce products designed specifically for their type of organization, not general-purpose sales or service tools. Which two products should they each consider?",
+    "questionTextDe": "Eine Universität und eine Obdachlosenhilfe suchen beide nach Salesforce-Produkten, die speziell für ihre Art von Organisation konzipiert sind – nicht nach allgemeinen Vertriebs- oder Service-Werkzeugen. Welche zwei Produkte sollte jede von ihnen in Betracht ziehen?",
     "type": "multiple-select",
     "options": [
       {
@@ -6587,6 +6743,7 @@
     "difficulty": "hard",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A candidate is trying to understand what a Salesforce certification actually means once earned. Which two statements are correct?",
+    "questionTextDe": "Ein Bewerber möchte verstehen, was eine Salesforce-Zertifizierung nach dem Erwerb tatsächlich bedeutet. Welche zwei Aussagen sind korrekt?",
     "type": "multiple-select",
     "options": [
       {
@@ -6630,6 +6787,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales rep uses the Opportunities tab constantly but has to scroll through several other tabs to reach it every time. What can they do to fix this?",
+    "questionTextDe": "Ein Vertriebsmitarbeiter nutzt den Opportunities-Tab ständig, muss aber jedes Mal durch mehrere andere Tabs scrollen, um ihn zu erreichen. Was kann er tun, um das zu beheben?",
     "type": "single-choice",
     "options": [
       {
@@ -6672,6 +6830,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user just moved to a different time zone and wants their meeting times to display correctly in Salesforce going forward. Where should they make this change?",
+    "questionTextDe": "Ein Nutzer ist gerade in eine andere Zeitzone gezogen und möchte, dass seine Meeting-Zeiten in Salesforce künftig korrekt angezeigt werden. Wo sollte er diese Änderung vornehmen?",
     "type": "single-choice",
     "options": [
       {
@@ -6714,6 +6873,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator is inside Setup and needs to jump directly to the page for managing Profiles, without clicking through several menu levels. What should they use?",
+    "questionTextDe": "Ein Administrator ist in Setup und muss direkt zur Seite für die Verwaltung von Profilen springen, ohne durch mehrere Menüebenen zu klicken. Was sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -6756,6 +6916,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A rep wants a reusable view that shows only Accounts located in Germany with more than 500 employees, instead of scrolling through every account each time. What should they create?",
+    "questionTextDe": "Ein Mitarbeiter möchte eine wiederverwendbare Ansicht, die nur Accounts in Deutschland mit mehr als 500 Mitarbeitern zeigt, statt jedes Mal durch alle Accounts zu scrollen. Was sollte er erstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -6798,6 +6959,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "While viewing an Account record, a user wants to see all the Contacts and Opportunities that belong to that specific company without leaving the page. Where should they look?",
+    "questionTextDe": "Beim Ansehen eines Account-Datensatzes möchte ein Nutzer alle Contacts und Opportunities sehen, die zu genau dieser Firma gehören, ohne die Seite zu verlassen. Wo sollte er suchen?",
     "type": "single-choice",
     "options": [
       {
@@ -6840,6 +7002,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "When a user opens an Opportunity record, they immediately see its Amount, Stage, and Close Date summarized at the very top, before scrolling down to any other details. What is this area called?",
+    "questionTextDe": "Wenn ein Nutzer einen Opportunity-Datensatz öffnet, sieht er sofort oben dessen Amount, Stage und Close Date zusammengefasst – bevor er zu anderen Details scrollt. Wie heißt dieser Bereich?",
     "type": "single-choice",
     "options": [
       {
@@ -6882,6 +7045,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user is on their Home page and wants to log a new Task right away, without first navigating to the Tasks tab or an existing record. What lets them do this?",
+    "questionTextDe": "Ein Nutzer ist auf seiner Startseite und möchte sofort eine neue Task protokollieren, ohne zuerst zum Tasks-Tab oder zu einem bestehenden Datensatz zu navigieren. Was ermöglicht ihm das?",
     "type": "single-choice",
     "options": [
       {
@@ -6924,6 +7088,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user visits the same custom report every single day and wants a one-click shortcut to it from anywhere in Salesforce, instead of navigating to the Reports tab each time. What should they use?",
+    "questionTextDe": "Ein Nutzer besucht jeden einzelnen Tag denselben benutzerdefinierten Bericht und möchte einen Ein-Klick-Shortcut dorthin von überall in Salesforce – statt jedes Mal zum Reports-Tab zu navigieren. Was sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -6966,6 +7131,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user wants to be alerted inside Salesforce whenever someone mentions them in a Chatter post or assigns them a new Task. Where do these alerts appear?",
+    "questionTextDe": "Ein Nutzer möchte in Salesforce benachrichtigt werden, wann immer jemand ihn in einem Chatter-Post erwähnt oder ihm eine neue Task zuweist. Wo erscheinen diese Benachrichtigungen?",
     "type": "single-choice",
     "options": [
       {
@@ -7008,6 +7174,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user is looking at a list of Opportunities as a plain table but wants to switch the same list to a card-based Kanban view without creating a new list view from scratch. What should they do?",
+    "questionTextDe": "Ein Nutzer sieht eine Liste von Opportunities als einfache Tabelle, möchte dieselbe Liste aber in eine kartenbasierte Kanban-Ansicht umschalten, ohne eine neue Listenansicht von Grund auf zu erstellen. Was sollte er tun?",
     "type": "single-choice",
     "options": [
       {
@@ -7050,6 +7217,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "When a sales rep logs in each morning, they land on a page showing their key tasks, top deals, and performance assistant widgets tailored to them. What is this landing page called?",
+    "questionTextDe": "Wenn sich ein Vertriebsmitarbeiter jeden Morgen anmeldet, landet er auf einer Seite, die seine wichtigsten Aufgaben, Top-Deals und Performance-Assistent-Widgets zeigt – zugeschnitten auf ihn. Wie heißt diese Landingpage?",
     "type": "single-choice",
     "options": [
       {
@@ -7092,6 +7260,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A support agent wants to see the list of open Cases on the left side of the screen and the details of the currently selected Case on the right side at the same time, without switching between separate pages. What should they enable?",
+    "questionTextDe": "Ein Supportmitarbeiter möchte die Liste offener Cases links auf dem Bildschirm und gleichzeitig die Details des aktuell ausgewählten Cases rechts sehen – ohne zwischen separaten Seiten zu wechseln. Was sollte er aktivieren?",
     "type": "single-choice",
     "options": [
       {
@@ -7134,6 +7303,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A regular sales user, without any special admin permissions, wants to make a couple of changes to how they personally work in Salesforce. Which two of these can they do on their own, without contacting an administrator?",
+    "questionTextDe": "Ein normaler Vertriebsnutzer ohne besondere Admin-Berechtigungen möchte ein paar Änderungen daran vornehmen, wie er persönlich in Salesforce arbeitet. Welche zwei der folgenden kann er allein tun, ohne einen Administrator zu kontaktieren?",
     "type": "multiple-select",
     "options": [
       {
@@ -7177,6 +7347,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "An administrator is asked to make two structural changes: add a new custom field to the Contact object, and rearrange which fields appear on the Case page layout. Which two things does this require?",
+    "questionTextDe": "Ein Administrator soll zwei strukturelle Änderungen vornehmen: ein neues benutzerdefiniertes Feld auf dem Contact-Objekt hinzufügen und umarrangieren, welche Felder auf dem Case-Seitenlayout erscheinen. Was erfordert dies beides?",
     "type": "multiple-select",
     "options": [
       {
@@ -7220,6 +7391,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A sales rep wants to track a specific potential deal with a company, including its estimated value, sales stage, and expected close date. Which standard object should they use?",
+    "questionTextDe": "Ein Vertriebsmitarbeiter möchte ein bestimmtes potenzielles Geschäft mit einer Firma verfolgen – einschließlich geschätztem Wert, Verkaufsphase und erwartetem Abschlussdatum. Welches Standardobjekt sollte er verwenden?",
     "type": "single-choice",
     "options": [
       {
@@ -7262,6 +7434,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A customer calls in with a problem about a product they already bought, and the support team needs to track the issue until it's resolved. Which standard object should be used?",
+    "questionTextDe": "Ein Kunde meldet sich mit einem Problem zu einem bereits gekauften Produkt, und das Supportteam muss das Problem bis zur Lösung verfolgen. Welches Standardobjekt sollte verwendet werden?",
     "type": "single-choice",
     "options": [
       {
@@ -7304,6 +7477,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company record in Salesforce shows a related list with five different people who all work at that company. What does this illustrate about the relationship between Account and Contact?",
+    "questionTextDe": "Ein Firmen-Datensatz in Salesforce zeigt eine zugehörige Liste mit fünf verschiedenen Personen, die alle in dieser Firma arbeiten. Was verdeutlicht das über die Beziehung zwischen Account und Contact?",
     "type": "single-choice",
     "options": [
       {
@@ -7346,6 +7520,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A single company account has three separate deals in progress with different products and different expected close dates. How does the data model typically represent this?",
+    "questionTextDe": "Ein einzelner Firmenaccount hat drei separate laufende Geschäfte mit unterschiedlichen Produkten und unterschiedlichen erwarteten Abschlussdaten. Wie stellt das Datenmodell dies typischerweise dar?",
     "type": "single-choice",
     "options": [
       {
@@ -7388,6 +7563,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A moving company needs to track details that don't fit any existing Salesforce object, such as truck assignments and moving dates for each job. What should they create?",
+    "questionTextDe": "Ein Umzugsunternehmen muss Details verfolgen, die in kein vorhandenes Salesforce-Objekt passen – etwa LKW-Zuweisungen und Umzugsdaten für jeden Auftrag. Was sollten sie erstellen?",
     "type": "single-choice",
     "options": [
       {
@@ -7430,6 +7606,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "Sales reps sometimes save a new Opportunity without entering a Close Date, which causes problems in later reporting. Which type of tool ensures this field can never be left empty?",
+    "questionTextDe": "Vertriebsmitarbeiter speichern manchmal eine neue Opportunity, ohne ein Close Date einzugeben, was später Probleme im Reporting verursacht. Welcher Werkzeugtyp stellt sicher, dass dieses Feld nie leer bleiben kann?",
     "type": "single-choice",
     "options": [
       {
@@ -7472,6 +7649,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A support case needs to clearly show exactly which individual customer reported the problem, not just which company they work for. Which field/relationship on the Case makes this possible?",
+    "questionTextDe": "Ein Support-Case muss klar zeigen, welcher einzelne Kunde das Problem gemeldet hat – nicht nur bei welcher Firma er arbeitet. Welches Feld/die welche Beziehung auf dem Case ermöglicht dies?",
     "type": "single-choice",
     "options": [
       {
@@ -7514,6 +7692,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A junior sales rep is not able to see Opportunities that belong to a colleague on a different team, even though both work at the same company. Which concept explains why they don't automatically see each other's records?",
+    "questionTextDe": "Ein junges Teammitglied im Vertrieb kann die Opportunities eines Kollegen aus einem anderen Team nicht sehen, obwohl beide in derselben Firma arbeiten. Welches Konzept erklärt, warum sie Datensätze nicht automatisch sehen?",
     "type": "single-choice",
     "options": [
       {
@@ -7556,6 +7735,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "On a Contact record, the box labeled 'Email' holds one specific piece of information about that person. What is this individual piece of information technically called?",
+    "questionTextDe": "Auf einem Contact-Datensatz enthält das Feld ‚E-Mail' eine einzelne spezifische Information über diese Person. Wie heißt diese einzelne Information technisch?",
     "type": "single-choice",
     "options": [
       {
@@ -7598,6 +7778,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A specific customer named 'Maria Fischer,' stored with all her individual details in the Contact object, represents one single entry in that object. What is this single entry called?",
+    "questionTextDe": "Ein bestimmter Kunde namens ‚Maria Fischer', gespeichert mit all ihren individuellen Details im Contact-Objekt, repräsentiert einen einzigen Eintrag in diesem Objekt. Wie heißt dieser einzelne Eintrag?",
     "type": "single-choice",
     "options": [
       {
@@ -7640,6 +7821,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A new user is trying to understand which of the following come built into Salesforce by default, without anyone having to create them first. Which two are standard objects?",
+    "questionTextDe": "Ein neuer Nutzer versucht zu verstehen, welche der folgenden standardmäßig in Salesforce eingebaut sind, ohne dass jemand sie zuerst erstellen muss. Welche zwei sind Standardobjekte?",
     "type": "multiple-select",
     "options": [
       {
@@ -7683,6 +7865,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A company wants to stop bad data from entering Salesforce in the first place, both by requiring correctly formatted entries and by catching likely duplicate customer records. Which two tools help ensure this kind of data integrity?",
+    "questionTextDe": "Ein Unternehmen möchte verhindern, dass schlechte Daten überhaupt in Salesforce gelangen – sowohl durch erzwungene korrekte Eingabeformate als auch durch Erkennen wahrscheinlicher Kunden-Duplikate. Welche zwei Werkzeuge tragen zu dieser Datenintegrität bei?",
     "type": "multiple-select",
     "options": [
       {
@@ -7726,6 +7909,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A user wants a simple list of every Contact created this month, shown as a flat table with no grouping or subtotals at all. Which report format fits this need?",
+    "questionTextDe": "Ein Nutzer möchte eine einfache Liste aller diesen Monat erstellten Contacts – als flache Tabelle ohne Gruppierung oder Zwischensummen. Welches Berichtsformat passt zu diesem Bedarf?",
     "type": "single-choice",
     "options": [
       {
@@ -7768,6 +7952,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A manager wants a dashboard component that shows progress toward a single sales target as a needle moving toward a goal, rather than comparing multiple categories. Which chart type fits best?",
+    "questionTextDe": "Ein Manager möchte eine Dashboard-Komponente, die den Fortschritt auf ein einzelnes Vertriebsziel zeigt – als Nadel, die sich auf ein Ziel zubewegt –, statt mehrere Kategorien zu vergleichen. Welcher Diagrammtyp passt am besten?",
     "type": "single-choice",
     "options": [
       {
@@ -7810,6 +7995,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A finance team wants their reports kept together in one place and shared only with people in finance, separate from reports used by other departments. What should be used to organize this?",
+    "questionTextDe": "Ein Finanzteam möchte seine Berichte an einem Ort zusammengefasst haben und nur mit Personen aus dem Finanzbereich geteilt – getrennt von Berichten anderer Abteilungen. Was sollte zur Organisation thereof verwendet werden?",
     "type": "single-choice",
     "options": [
       {
@@ -7852,6 +8038,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A dashboard should show up-to-date numbers automatically every morning at 6 AM, without anyone having to open it and click refresh manually. What should be configured?",
+    "questionTextDe": "Ein Dashboard soll jeden Morgen um 6 Uhr automatisch aktuelle Zahlen anzeigen, ohne dass jemand es öffnen und manuell aktualisieren muss. Was sollte konfiguriert werden?",
     "type": "single-choice",
     "options": [
       {
@@ -7894,6 +8081,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A rep only wants to see Opportunities with an Amount greater than $50,000 in their report, instead of every single Opportunity. What should they add to the report?",
+    "questionTextDe": "Ein Mitarbeiter möchte in seinem Bericht nur Opportunities mit einem Betrag über 50.000 $ sehen, statt jede einzelne Opportunity. Was sollte er zum Bericht hinzufügen?",
     "type": "single-choice",
     "options": [
       {
@@ -7936,6 +8124,7 @@
     "difficulty": "medium",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A new user is trying to understand what a dashboard actually is in Salesforce. Which two statements are correct?",
+    "questionTextDe": "Ein neuer Nutzer versucht zu verstehen, was ein Dashboard in Salesforce tatsächlich ist. Welche zwei Aussagen sind korrekt?",
     "type": "multiple-select",
     "options": [
       {
@@ -7979,6 +8168,7 @@
     "difficulty": "easy",
     "disclaimer": "Synthetische, prüfungsähnliche Übungsfrage – keine Originalprüfungsfrage.",
     "questionText": "A manager wants a report listing Opportunities grouped by Sales Rep, with a subtotal of total Amount shown under each rep's name. Which report format fits this need?",
+    "questionTextDe": "Ein Manager möchte einen Bericht, der Opportunities nach Vertriebsmitarbeiter gruppiert, mit einer Amount-Zwischensumme unter dem Namen jedes Mitarbeiters. Welches Berichtsformat passt zu diesem Bedarf?",
     "type": "single-choice",
     "options": [
       {

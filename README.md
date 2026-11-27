@@ -13,7 +13,7 @@ Der Trainer verbindet Salesforce-Fachwissen und englisches Leseverständnis auf 
 Im Repository kannst du den Server auch manuell starten.
 
     cd sfz_app
-    python3 -m http.server 8000 --bind 127.0.0.1
+    python3 serve.py 8000
 
 Der Lernfortschritt liegt im Browser. Beim ersten Start über die bisherige Adresse und im selben Browserprofil übernimmt die App die Salesforce-Datensätze aus dem bisherigen Speicher. Eine JSON-Sicherung kannst du in den Einstellungen exportieren und importieren.
 

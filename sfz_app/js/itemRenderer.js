@@ -380,6 +380,26 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
     attrs: { lang: "en" }
   }));
 
+  if (questionContent.questionTextDe) {
+    const deText = el("p", {
+      class: "item-question-de",
+      text: questionContent.questionTextDe,
+      attrs: { lang: "de", hidden: "" }
+    });
+    const deToggle = el("button", {
+      class: "secondary-btn translation-toggle",
+      text: "Deutsch anzeigen",
+      attrs: { type: "button", "aria-expanded": "false" }
+    });
+    deToggle.addEventListener("click", () => {
+      const show = deText.hidden;
+      deText.hidden = !show;
+      deToggle.textContent = show ? "Deutsch ausblenden" : "Deutsch anzeigen";
+      deToggle.setAttribute("aria-expanded", String(show));
+    });
+    card.append(deToggle, deText);
+  }
+
   if (isMulti) {
     card.appendChild(el("p", { class: "item-hint", text: "Mehrfachauswahl möglich — wähle alle zutreffenden Antworten." }));
   }
