@@ -35,6 +35,16 @@ const navRoot = document.getElementById("nav");
 const header = navRoot.parentElement;
 const navToggle = document.getElementById("nav-toggle");
 const settingsLink = document.getElementById("settings-link");
+const brandLink = document.querySelector(".app-title");
+
+if (brandLink) {
+  brandLink.addEventListener("click", (event) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    const target = state.settings.certificationPath ? "#/dashboard" : "#/onboarding";
+    if (currentHash !== target) navigate(target);
+  });
+}
 
 function setMenuOpen(open) {
   header.classList.toggle("menu-open", open);
@@ -148,6 +158,25 @@ function buildNav() {
     });
     navRoot.appendChild(link);
   }
+
+  const mobileSettings = document.createElement("a");
+  mobileSettings.href = "#/settings";
+  mobileSettings.textContent = "Einstellungen";
+  mobileSettings.className = "nav-link nav-link-mobile-settings";
+  if (activeRoute === "#/settings") {
+    mobileSettings.classList.add("nav-link-active");
+    mobileSettings.setAttribute("aria-current", "page");
+  }
+  mobileSettings.addEventListener("click", (event) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (navToggle.getAttribute("aria-expanded") === "true") {
+      setMenuOpen(false);
+      navToggle.focus();
+    }
+    if (currentHash !== "#/settings") navigate("#/settings");
+  });
+  navRoot.appendChild(mobileSettings);
 }
 
 if (settingsLink) {
@@ -213,7 +242,15 @@ async function renderRoute() {
     const message = document.createElement("p");
     message.setAttribute("role", "alert");
     message.textContent = `Die Ansicht konnte nicht geladen werden. ${error.message}`;
-    viewRoot.replaceChildren(message);
+    const recoverBtn = document.createElement("button");
+    recoverBtn.type = "button";
+    recoverBtn.className = "primary-btn";
+    recoverBtn.textContent = routeKey === "#/dashboard" ? "Erneut laden" : "Zurück zum Dashboard";
+    recoverBtn.addEventListener("click", () => {
+      if (routeKey === "#/dashboard") location.reload();
+      else navigate("#/dashboard");
+    });
+    viewRoot.replaceChildren(message, recoverBtn);
   }
   if (!controller.signal.aborted && !viewRoot.contains(document.activeElement)) {
     focusContent(viewRoot.querySelector("h1") || appRoot, { page: true });

@@ -4,7 +4,7 @@ import { state, allLearnableContent, domainWeightMap, pathCertifications, refres
 import { dueForPath, markForReview, saveAnswers } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { renderItem } from "../itemRenderer.js";
-import { render as renderExamEnglish } from "./examEnglish.js";
+import { openExamEnglishModal } from "./examEnglish.js";
 import { el, clear, shuffle, focusContent } from "../utils.js";
 
 const SESSION_LIMITS = { due: 10, vocabulary: 5, definition: 3, readingPassage: 2 };
@@ -26,7 +26,7 @@ export async function render(container, ctx) {
     class: "secondary-btn session-ref-btn",
     text: "Prüfungsenglisch",
     attrs: { type: "button" },
-    on: { click: () => openExamEnglishModal(refBtn) }
+    on: { click: () => openExamEnglishModal(refBtn, "Zurück zur Lerneinheit") }
   });
   const statusBar = el("div", { class: "session-status-bar" }, [progressLabel, refBtn]);
   container.appendChild(statusBar);
@@ -43,9 +43,11 @@ export async function render(container, ctx) {
   const toolbar = el("div", { class: "quiz-toolbar session-toolbar-bottom" });
   const laterBtn = el("button", {
     class: "secondary-btn",
-    text: "Später wiederholen markieren",
     attrs: { type: "button", "aria-pressed": "false" }
-  });
+  }, [
+    el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
+    document.createTextNode(" Später wiederholen markieren")
+  ]);
   const stopBtn = el("button", { class: "secondary-btn", text: "Einheit beenden", attrs: { type: "button" } });
   toolbar.append(laterBtn, stopBtn);
   container.appendChild(toolbar);
@@ -53,8 +55,21 @@ export async function render(container, ctx) {
   const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
   container.appendChild(status);
 
+  const sessionStartedAt = Date.now();
   const cumulative = { total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: 0 };
   stopBtn.addEventListener("click", () => renderSummary(container, cumulative, ctx));
+
+  function onSessionKeydown(ev) {
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    if (document.querySelector(".modal-overlay")) return;
+    const tag = document.activeElement?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if ((ev.key === "m" || ev.key === "M") && !toolbar.hidden && !laterBtn.disabled) {
+      ev.preventDefault();
+      laterBtn.click();
+    }
+  }
+  document.addEventListener("keydown", onSessionKeydown, { signal: ctx.signal });
 
   async function runRound(queue) {
     cumulative.rounds += 1;
@@ -68,12 +83,16 @@ export async function render(container, ctx) {
         await finishRound();
         return;
       }
-      progressLabel.textContent = `Tagesziel: ${state.settings.dailySessionMinutesTarget} Min. · Runde ${cumulative.rounds} · ${index + 1} von ${queue.length}`;
+      const elapsedMin = Math.floor((Date.now() - sessionStartedAt) / 60000);
+      progressLabel.textContent = `Runde ${cumulative.rounds} · ${index + 1} von ${queue.length} · ${elapsedMin}/${state.settings.dailySessionMinutesTarget} Min.`;
       sessionFill.style.width = `${Math.round(((index + 1) / queue.length) * 100)}%`;
       const current = queue[index];
       status.textContent = "";
       status.setAttribute("role", "status");
-      laterBtn.textContent = "Später wiederholen markieren";
+      laterBtn.replaceChildren(
+        el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
+        document.createTextNode(" Später wiederholen markieren")
+      );
       laterBtn.setAttribute("aria-pressed", "false");
       laterBtn.onclick = async () => {
         laterBtn.disabled = true;
@@ -101,7 +120,7 @@ export async function render(container, ctx) {
           try {
             await saveAnswers([{ item: effectiveItem, result, mode: "daily" }]);
           } catch {
-            showSaveError(itemHost, () => ctx.navigate("#/learn"));
+            showSaveError(itemHost, () => ctx.navigate("#/learn"), () => ctx.navigate("#/dashboard"));
             return;
           }
           if (isIntroOnly) {
@@ -206,14 +225,15 @@ export function selectSessionItems(dueCandidates, freshCandidates, minutesTarget
   return [...selectedDue, ...selectedFresh];
 }
 
-function showSaveError(host, restart) {
+function showSaveError(host, restart, goHome) {
   clear(host);
   const error = el("p", { attrs: { role: "alert" }, text: "Der Lernstand konnte nicht gespeichert werden." });
   host.appendChild(error);
   focusContent(error);
-  host.appendChild(el("button", {
-    class: "primary-btn", text: "Einheit neu laden", attrs: { type: "button" }, on: { click: restart }
-  }));
+  host.appendChild(el("div", { class: "quiz-actions" }, [
+    el("button", { class: "primary-btn", text: "Einheit neu laden", attrs: { type: "button" }, on: { click: restart } }),
+    el("button", { class: "secondary-btn", text: "Zurück zum Dashboard", attrs: { type: "button" }, on: { click: goHome } })
+  ]));
 }
 
 /**
@@ -271,7 +291,15 @@ function renderSummary(container, summary, ctx) {
     container.appendChild(el("div", { class: "card" }, [
       el("h2", { text: "Optionale Praxisaufgabe" }),
       el("p", { class: "item-hint", text: `${task.title} (${task.estimatedMinutes} Min., ${task.environment})` }),
-      el("p", { text: task.instructions })
+      el("p", { text: task.instructions }),
+      el("p", { class: "item-hint" }, [
+        document.createTextNode("Tipp: Öffne dazu deinen kostenlosen "),
+        el("a", {
+          text: "Trailhead Playground",
+          attrs: { href: "https://trailhead.salesforce.com/", target: "_blank", rel: "noopener noreferrer" }
+        }),
+        document.createTextNode(" (nach Login unter Hands-On Orgs → Launch).")
+      ])
     ]));
   }
 
@@ -279,38 +307,4 @@ function renderSummary(container, summary, ctx) {
   backBtn.addEventListener("click", () => ctx.navigate("#/dashboard"));
   container.appendChild(backBtn);
   focusContent(container.querySelector("h1"), { page: true });
-}
-
-function openExamEnglishModal(returnFocusEl) {
-  const overlay = el("div", { class: "modal-overlay", attrs: { role: "presentation" } });
-  const box = el("div", {
-    class: "modal-box modal-box-wide",
-    attrs: { role: "dialog", "aria-modal": "true", "aria-label": "Leitfaden: Prüfungsenglisch" }
-  });
-  const topBar = el("div", { class: "modal-ref-header" });
-  const closeBtn = el("button", { class: "primary-btn", text: "Zurück zur Lerneinheit", attrs: { type: "button" } });
-  topBar.appendChild(closeBtn);
-  const contentHost = el("div", { class: "modal-ref-body" });
-  renderExamEnglish(contentHost);
-  box.append(topBar, contentHost);
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-
-  function close() {
-    document.removeEventListener("keydown", onKeydown);
-    overlay.remove();
-    if (returnFocusEl?.isConnected) returnFocusEl.focus();
-  }
-  function onKeydown(ev) {
-    if (ev.key === "Escape") {
-      ev.preventDefault();
-      close();
-    }
-  }
-  closeBtn.addEventListener("click", close);
-  overlay.addEventListener("click", (ev) => {
-    if (ev.target === overlay) close();
-  });
-  document.addEventListener("keydown", onKeydown);
-  closeBtn.focus();
 }

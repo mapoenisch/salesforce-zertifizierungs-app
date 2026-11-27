@@ -3,6 +3,7 @@
 import { state, refreshLearningData, domainMap, pathCertifications } from "../state.js";
 import { markForReview, saveAnswers } from "../learning.js";
 import { renderItem, addOptionKeycap } from "../itemRenderer.js";
+import { openExamEnglishModal } from "./examEnglish.js";
 import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDialog } from "../utils.js";
 
 const MINI_EXAM_COUNT = 10;
@@ -25,21 +26,13 @@ export async function render(container, ctx) {
   clear(container);
   const setup = el("section");
   const setupTitle = el("h1", { text: "Frage- und Prüfungsmodus" });
-  const headRow = el("div", { class: "view-header-row" }, [
-    setupTitle,
-    el("a", {
-      class: "secondary-btn compact-link-btn",
-      text: "Leitfaden: Prüfungsenglisch",
-      attrs: { href: "#/exam-english" },
-      on: {
-        click: (ev) => {
-          if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
-          ev.preventDefault();
-          ctx.navigate("#/exam-english");
-        }
-      }
-    })
-  ]);
+  const refBtn = el("button", {
+    class: "secondary-btn compact-link-btn",
+    text: "Leitfaden: Prüfungsenglisch",
+    attrs: { type: "button" },
+    on: { click: () => openExamEnglishModal(refBtn, "Zurück zum Prüfungsmodus") }
+  });
+  const headRow = el("div", { class: "view-header-row" }, [setupTitle, refBtn]);
   setup.appendChild(headRow);
   container.appendChild(setup);
 
@@ -56,7 +49,7 @@ export async function render(container, ctx) {
   const filters = { ...defaultFilters, examDomainId: validDomain };
 
   const actions = el("div", { class: "quiz-actions" });
-  const freeBtn = el("button", { class: "primary-btn", text: "Freies Üben starten", attrs: { type: "button" } });
+  const freeBtn = el("button", { class: "primary-btn", text: "Gezielt üben starten", attrs: { type: "button" } });
   const examBtn = el("button", {
     class: "secondary-btn",
     text: `Mini-Prüfung starten (${MINI_EXAM_COUNT} Fragen, ${MINI_EXAM_SECONDS / 60} Min.)`,
@@ -68,7 +61,7 @@ export async function render(container, ctx) {
   const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
   setup.appendChild(status);
 
-  const presetRow = el("div", { class: "quiz-preset-row", attrs: { role: "group", "aria-label": "Schnellfilter" } });
+  const presetRow = el("div", { class: "quiz-preset-row", attrs: { role: "group", "aria-label": "Fokus" } });
   const formHost = el("details", { class: "quiz-filters" });
   const initialCount = filterPool(allQuizItems(), filters).length;
   if (validDomain !== "all") {
@@ -77,7 +70,7 @@ export async function render(container, ctx) {
   } else {
     status.textContent = `${initialCount} passende Übungen verfügbar`;
   }
-  formHost.appendChild(el("summary", { text: "Übungen filtern" }));
+  formHost.appendChild(el("summary", { text: "Erweiterte Filter (Domain, Format, CEFR)" }));
   const fields = el("div");
   formHost.appendChild(fields);
   function updateCountStatus() {
@@ -91,18 +84,36 @@ export async function render(container, ctx) {
     { label: "Vorgemerkte", patch: { ...defaultFilters, errorStatus: "later" } },
     { label: "B2-Fokus", patch: { ...defaultFilters, cefr: "B2" } }
   ];
-  presets.forEach(({ label, patch }) => {
-    const chip = el("button", { class: "secondary-btn quiz-preset-chip", text: label, attrs: { type: "button" } });
+  let activePresetIdx = validDomain === "all" ? 0 : -1;
+  const presetChips = presets.map(({ label, patch }, idx) => {
+    const chip = el("button", {
+      class: `secondary-btn quiz-preset-chip${idx === activePresetIdx ? " confidence-selected" : ""}`,
+      text: label,
+      attrs: { type: "button", "aria-pressed": String(idx === activePresetIdx) }
+    });
     chip.addEventListener("click", () => {
       Object.assign(filters, patch);
+      activePresetIdx = idx;
+      presetChips.forEach((c, i) => {
+        c.classList.toggle("confidence-selected", i === activePresetIdx);
+        c.setAttribute("aria-pressed", String(i === activePresetIdx));
+      });
       syncFiltersUI();
       updateCountStatus();
     });
     presetRow.appendChild(chip);
+    return chip;
   });
   setup.appendChild(presetRow);
   setup.appendChild(formHost);
-  fields.addEventListener("change", updateCountStatus);
+  fields.addEventListener("change", () => {
+    activePresetIdx = -1;
+    presetChips.forEach((c) => {
+      c.classList.remove("confidence-selected");
+      c.setAttribute("aria-pressed", "false");
+    });
+    updateCountStatus();
+  });
 
   const runHost = el("div");
   container.appendChild(runHost);
@@ -145,6 +156,19 @@ function renderFilterForm(host, filters, defaultFilters, activePath, certificati
   // Domain-Auswahl nur mit Domains des aktiven Lernpfads bestücken (bei administrator-full: beide Domain-Sets).
   const domains = [...domainMap().values()].filter((d) => certifications.includes(d.certification));
   const hasMultiPartPassages = state.content.readingPassages.some((p) => (p.questions?.length || 0) > 1);
+  const formatOptions = [
+    ["all", "Alle"],
+    ["vocabulary", "Vokabel im Kontext"],
+    ["definition", "Definitions-Matching"],
+    ["question", "Szenario-Frage"],
+    ["readingPassage", "Reading-Passage (alle)"],
+    ...(hasMultiPartPassages
+      ? [
+          ["readingPassage-single", "Reading-Passage (einteilig)"],
+          ["readingPassage-multi", "Reading-Passage (mehrteilig)"]
+        ]
+      : [])
+  ];
   const selects = [];
 
   const row1 = el("div", { class: "filter-row" });
@@ -259,7 +283,7 @@ function filterPool(items, filters) {
 
 // ---------- Freies Üben ----------
 
-function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
+function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
   const host = el("div");
   runHost.replaceChildren(host);
   let index = 0;
@@ -272,9 +296,11 @@ function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
   const stopBtn = el("button", { class: "secondary-btn", text: "Beenden", attrs: { type: "button" } });
   const laterBtn = el("button", {
     class: "secondary-btn",
-    text: "Später wiederholen markieren",
     attrs: { type: "button", "aria-pressed": "false" }
-  });
+  }, [
+    el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
+    document.createTextNode(" Später wiederholen markieren")
+  ]);
   toolbar.appendChild(laterBtn);
   toolbar.appendChild(stopBtn);
 
@@ -285,16 +311,41 @@ function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
   host.appendChild(toolbar);
   host.appendChild(status);
 
-  stopBtn.addEventListener("click", () => showFreeResult());
+  function onFreeKeydown(ev) {
+    if (!host.isConnected) {
+      document.removeEventListener("keydown", onFreeKeydown);
+      return;
+    }
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    if (document.querySelector(".modal-overlay")) return;
+    const tag = document.activeElement?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if ((ev.key === "m" || ev.key === "M") && !laterBtn.disabled) {
+      ev.preventDefault();
+      laterBtn.click();
+    }
+  }
+  document.addEventListener("keydown", onFreeKeydown);
+
+  stopBtn.addEventListener("click", () => {
+    document.removeEventListener("keydown", onFreeKeydown);
+    showFreeResult();
+  });
 
   function showFreeResult() {
+    document.removeEventListener("keydown", onFreeKeydown);
     clear(host);
     const resultHeading = el("h1", { text: "Übung beendet" });
+    const pct = stats.total ? Math.round((stats.correct / stats.total) * 100) : 0;
+    const summaryCard = el("div", { class: "card studio-celebration-card" }, [
+      el("p", { class: "big-number", text: `${stats.correct} / ${stats.total}` }),
+      el("p", { text: `Trefferquote: ${pct}%` })
+    ]);
     const back = el("button", {
       class: "primary-btn", text: "Zur Übungsauswahl",
       attrs: { type: "button" }, on: { click: () => showSetup() }
     });
-    host.append(resultHeading, el("p", { text: `${stats.correct} / ${stats.total} richtig` }), back);
+    host.append(resultHeading, summaryCard, back);
     focusContent(resultHeading, { page: true });
   }
 
@@ -307,7 +358,10 @@ function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
     const current = pool[index];
     status.textContent = "";
     status.setAttribute("role", "status");
-    laterBtn.textContent = "Später wiederholen markieren";
+    laterBtn.replaceChildren(
+      el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
+      document.createTextNode(" Später wiederholen markieren")
+    );
     laterBtn.setAttribute("aria-pressed", "false");
     laterBtn.onclick = async () => {
       laterBtn.disabled = true;

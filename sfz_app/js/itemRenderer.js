@@ -146,36 +146,62 @@ function renderVocabulary(container, content, startTime, onAnswered) {
 
   const optionsWrap = el("div", { class: "item-options" });
   let answered = false;
+  let chosenOption = null;
+  let chosenBtn = null;
+
+  const submitBtn = el("button", {
+    class: "primary-btn",
+    text: "Prüfen",
+    attrs: { type: "button", disabled: "" }
+  });
 
   const optButtons = shuffle(content.options).map((opt, idx) => {
-    const btn = el("button", { class: "option-btn", attrs: { type: "button", lang: "en" } }, [
+    const btn = el("button", { class: "option-btn", attrs: { type: "button", lang: "en", "aria-pressed": "false" } }, [
       el("span", { class: "option-text", text: opt })
     ]);
     addOptionKeycap(btn, idx);
     btn.dataset.option = opt;
     btn.addEventListener("click", () => {
       if (answered) return;
-      answered = true;
-      const correct = opt === content.correctOption;
-      [...optionsWrap.children].forEach((b) => {
-        b.disabled = true;
-        markOptionState(b, b.dataset.option === content.correctOption, !correct && b === btn);
-      });
-      showVocabExplanation(card, content, correct, startTime, onAnswered);
+      chosenOption = opt;
+      chosenBtn = btn;
+      for (const b of optButtons) {
+        const isSel = b === btn;
+        b.classList.toggle("option-selected", isSel);
+        b.setAttribute("aria-pressed", String(isSel));
+      }
+      submitBtn.disabled = false;
     });
     optionsWrap.appendChild(btn);
     return btn;
   });
 
+  submitBtn.addEventListener("click", () => {
+    if (answered || chosenOption == null) return;
+    answered = true;
+    submitBtn.disabled = true;
+    const correct = chosenOption === content.correctOption;
+    [...optionsWrap.children].forEach((b) => {
+      b.disabled = true;
+      markOptionState(b, b.dataset.option === content.correctOption, !correct && b === chosenBtn);
+    });
+    showVocabExplanation(card, content, correct, startTime, onAnswered);
+  });
+
   bindItemShortcuts(card, () => ({
     onNumber: (n) => {
       if (!answered && n <= optButtons.length) { optButtons[n - 1].click(); return true; }
-      return triggerConfidenceShortcut(card, n);
+      if (answered) return triggerConfidenceShortcut(card, n);
+      return false;
     },
-    onEnter: () => triggerContinueShortcut(card)
+    onEnter: () => {
+      if (!answered && !submitBtn.disabled) { submitBtn.click(); return true; }
+      return triggerContinueShortcut(card);
+    }
   }));
 
   card.appendChild(optionsWrap);
+  card.appendChild(submitBtn);
   container.appendChild(card);
 }
 
@@ -233,47 +259,73 @@ function renderDefinition(container, content, startTime, onAnswered) {
   const allDefs = shuffle([content.definition, ...content.distractorDefinitions]);
   const optionsWrap = el("div", { class: "item-options item-options-list" });
   let answered = false;
+  let chosenDef = null;
+  let chosenBtn = null;
+
+  const submitBtn = el("button", {
+    class: "primary-btn",
+    text: "Prüfen",
+    attrs: { type: "button", disabled: "" }
+  });
 
   const optButtons = allDefs.map((defText, idx) => {
-    const btn = el("button", { class: "option-btn option-btn-wide", attrs: { type: "button", lang: "en" } }, [
+    const btn = el("button", { class: "option-btn option-btn-wide", attrs: { type: "button", lang: "en", "aria-pressed": "false" } }, [
       el("span", { class: "option-text", text: defText })
     ]);
     addOptionKeycap(btn, idx);
     btn.dataset.option = defText;
     btn.addEventListener("click", () => {
       if (answered) return;
-      answered = true;
-      const correct = defText === content.definition;
-      [...optionsWrap.children].forEach((b) => {
-        b.disabled = true;
-        markOptionState(b, b.dataset.option === content.definition, !correct && b === btn);
-      });
-
-      const panel = el("div", { class: "explanation-panel" });
-      panel.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig!" : "Nicht ganz." }));
-      if (!correct) {
-        panel.appendChild(el("p", {}, [
-          el("strong", { text: "Richtige Definition: " }),
-          el("span", { text: content.definition, attrs: { lang: "en" } })
-        ]));
+      chosenDef = defText;
+      chosenBtn = btn;
+      for (const b of optButtons) {
+        const isSel = b === btn;
+        b.classList.toggle("option-selected", isSel);
+        b.setAttribute("aria-pressed", String(isSel));
       }
-      panel.appendChild(el("p", {}, [el("strong", { text: "Erklärung: " }), document.createTextNode(content.germanExplanation)]));
-      card.appendChild(panel);
-      appendConfidenceAndContinue(card, content, correct, startTime, onAnswered);
+      submitBtn.disabled = false;
     });
     optionsWrap.appendChild(btn);
     return btn;
   });
 
+  submitBtn.addEventListener("click", () => {
+    if (answered || chosenDef == null) return;
+    answered = true;
+    submitBtn.disabled = true;
+    const correct = chosenDef === content.definition;
+    [...optionsWrap.children].forEach((b) => {
+      b.disabled = true;
+      markOptionState(b, b.dataset.option === content.definition, !correct && b === chosenBtn);
+    });
+
+    const panel = el("div", { class: "explanation-panel" });
+    panel.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig!" : "Nicht ganz." }));
+    if (!correct) {
+      panel.appendChild(el("p", {}, [
+        el("strong", { text: "Richtige Definition: " }),
+        el("span", { text: content.definition, attrs: { lang: "en" } })
+      ]));
+    }
+    panel.appendChild(el("p", {}, [el("strong", { text: "Erklärung: " }), document.createTextNode(content.germanExplanation)]));
+    card.appendChild(panel);
+    appendConfidenceAndContinue(card, content, correct, startTime, onAnswered);
+  });
+
   bindItemShortcuts(card, () => ({
     onNumber: (n) => {
       if (!answered && n <= optButtons.length) { optButtons[n - 1].click(); return true; }
-      return triggerConfidenceShortcut(card, n);
+      if (answered) return triggerConfidenceShortcut(card, n);
+      return false;
     },
-    onEnter: () => triggerContinueShortcut(card)
+    onEnter: () => {
+      if (!answered && !submitBtn.disabled) { submitBtn.click(); return true; }
+      return triggerContinueShortcut(card);
+    }
   }));
 
   card.appendChild(optionsWrap);
+  card.appendChild(submitBtn);
   container.appendChild(card);
 }
 
@@ -309,11 +361,17 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
   let answered = false;
 
   const options = questionContent.options;
-  let submitBtn;
+  const submitBtn = el("button", {
+    class: "primary-btn",
+    text: isMulti ? "Antwort abgeben" : "Prüfen",
+    attrs: { type: "button", disabled: "" }
+  });
+  submitBtn.addEventListener("click", () => submit());
+
   const optButtons = options.map((opt, idx) => {
     const btn = el("button", {
       class: "option-btn option-btn-wide",
-      attrs: { type: "button", lang: "en", ...(isMulti && { "aria-pressed": "false" }) }
+      attrs: { type: "button", lang: "en", "aria-pressed": "false" }
     }, [el("span", { class: "option-text", text: opt.text })]);
     addOptionKeycap(btn, idx);
     btn.addEventListener("click", () => {
@@ -321,35 +379,33 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
       if (isMulti) {
         if (selected.has(opt.id)) selected.delete(opt.id);
         else selected.add(opt.id);
-        btn.classList.toggle("option-selected", selected.has(opt.id));
-        btn.setAttribute("aria-pressed", String(selected.has(opt.id)));
-        submitBtn.disabled = selected.size === 0;
-        return;
+      } else {
+        selected.clear();
+        selected.add(opt.id);
       }
-      selected.add(opt.id);
-      submit();
+      for (const b of optButtons) {
+        const isSel = selected.has(b.dataset.optId);
+        b.classList.toggle("option-selected", isSel);
+        b.setAttribute("aria-pressed", String(isSel));
+      }
+      submitBtn.disabled = selected.size === 0;
     });
     optionsWrap.appendChild(btn);
     btn.dataset.optId = opt.id;
     return btn;
   });
   card.appendChild(optionsWrap);
-
-  if (isMulti) {
-    submitBtn = el("button", { class: "primary-btn", text: "Antwort abgeben", attrs: { type: "button", disabled: "" } });
-    submitBtn.addEventListener("click", () => submit());
-    card.appendChild(submitBtn);
-  }
+  card.appendChild(submitBtn);
 
   const shortcutScope = opts.shortcutScope || card;
   bindItemShortcuts(shortcutScope, () => ({
     onNumber: (n) => {
       if (!answered && n <= optButtons.length) { optButtons[n - 1].click(); return true; }
-      if (!opts.skipConfidence) return triggerConfidenceShortcut(shortcutScope, n);
+      if (answered && !opts.skipConfidence) return triggerConfidenceShortcut(shortcutScope, n);
       return false;
     },
     onEnter: () => {
-      if (!answered && isMulti && submitBtn && !submitBtn.disabled) { submitBtn.click(); return true; }
+      if (!answered && !submitBtn.disabled) { submitBtn.click(); return true; }
       return triggerContinueShortcut(shortcutScope);
     }
   }));
@@ -426,7 +482,7 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
   wrap.appendChild(disclaimerNote());
   wrap.appendChild(el("p", { class: "item-scenario", text: content.scenario, attrs: { lang: "en" } }));
 
-  const recapList = el("ul", { class: "passage-recap", attrs: { hidden: "" } });
+  const recapList = el("ul", { class: "passage-recap", attrs: { hidden: "", "aria-live": "polite" } });
   wrap.appendChild(recapList);
 
   const questions = content.questions || [];
@@ -502,8 +558,13 @@ const CONFIDENCE_LEVELS = [
   { key: "3", label: "Sicher", value: 5 }
 ];
 
-function formatSm2Preview(existingProgress, correct, confidence) {
-  const next = computeNextProgress(existingProgress || {}, { correct, confidence });
+function formatSm2Preview(existingProgress, correct, confidence, languageSlip = false) {
+  const next = computeNextProgress(existingProgress || {}, { correct, confidence, languageSlip });
+  if (languageSlip && !correct) {
+    return next.intervalDays === 1
+      ? "Wiederholung: morgen (Sprachfehler — Intervall bleibt)"
+      : `Wiederholung: in ${next.intervalDays} Tagen (Sprachfehler — Intervall bleibt)`;
+  }
   if (next.flag === "relearn") return "Morgen erneut lernen";
   if (next.intervalDays === 1) {
     return next.flag === "later" ? "Wiederholung: morgen (vorgemerkt)" : "Nächste Wiederholung: morgen";
@@ -516,20 +577,37 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
   const existingProgress = content?.id ? state.progressByContentId.get(content.id) || emptyProgress(content, "") : {};
   const wrap = el("div", { class: "confidence-wrap session-action-bar" });
 
+  let chosen = null;
+  let languageSlip = false;
+
   const headerRow = el("div", { class: "confidence-header" });
   const label = "Wie sicher warst du dir? (optional)";
   headerRow.appendChild(el("span", { class: "confidence-label", text: label }));
   const sm2Preview = el("span", {
     class: "sm2-preview",
-    text: formatSm2Preview(existingProgress, correct, null),
+    text: formatSm2Preview(existingProgress, correct, null, false),
     attrs: { role: "status" }
   });
   headerRow.appendChild(sm2Preview);
   wrap.appendChild(headerRow);
 
+  if (!correct) {
+    const slipBtn = el("button", {
+      class: "secondary-btn language-slip-btn",
+      text: "Sprachfehler, nicht Fachfehler",
+      attrs: { type: "button", "aria-pressed": "false" }
+    });
+    slipBtn.addEventListener("click", () => {
+      languageSlip = !languageSlip;
+      slipBtn.classList.toggle("confidence-selected", languageSlip);
+      slipBtn.setAttribute("aria-pressed", String(languageSlip));
+      sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen, languageSlip);
+    });
+    wrap.appendChild(slipBtn);
+  }
+
   const controlsRow = el("div", { class: "confidence-controls-row" });
   const scale = el("div", { class: "confidence-scale", attrs: { role: "group", "aria-label": label } });
-  let chosen = null;
 
   CONFIDENCE_LEVELS.forEach(({ key, label: text, value }) => {
     const b = el("button", {
@@ -546,7 +624,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
         button.classList.toggle("confidence-selected", pressed);
         button.setAttribute("aria-pressed", String(pressed));
       }
-      sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen);
+      sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen, languageSlip);
     });
     scale.appendChild(b);
   });
@@ -563,7 +641,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
     "click",
     () => {
       continueBtn.disabled = true;
-      onAnswered({ correct, confidence: chosen, responseTimeMs });
+      onAnswered({ correct, confidence: chosen, responseTimeMs, languageSlip });
     },
     { once: true }
   );

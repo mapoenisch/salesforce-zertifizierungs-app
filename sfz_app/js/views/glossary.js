@@ -1,26 +1,22 @@
 // views/glossary.js — Durchsuchbares Glossar aller Vokabeln mit Filtern und persönlichem Wiederholungsstatus.
 
 import { state, domainMap, pathCertifications } from "../state.js";
+import { openExamEnglishModal } from "./examEnglish.js";
 import { el, clear, certLabel } from "../utils.js";
 
 const PAGE_SIZE = 40;
 
-export async function render(container, ctx) {
+export async function render(container) {
   clear(container);
+  const refBtn = el("button", {
+    class: "secondary-btn compact-link-btn",
+    text: "Leitfaden: Prüfungsenglisch",
+    attrs: { type: "button" },
+    on: { click: () => openExamEnglishModal(refBtn, "Zurück zum Glossar") }
+  });
   const headRow = el("div", { class: "view-header-row" }, [
     el("h1", { text: "Glossar" }),
-    el("a", {
-      class: "secondary-btn compact-link-btn",
-      text: "Leitfaden: Prüfungsenglisch",
-      attrs: { href: "#/exam-english" },
-      on: {
-        click: (ev) => {
-          if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
-          ev.preventDefault();
-          ctx.navigate("#/exam-english");
-        }
-      }
-    })
+    refBtn
   ]);
   container.appendChild(headRow);
 
@@ -28,7 +24,7 @@ export async function render(container, ctx) {
   const certifications = pathCertifications(activePath);
   // Bei Foundations-only/Administrator-only wird der Zertifizierungsfilter gar nicht erst angezeigt
   // (fest auf den Pfad gesetzt). Nur administrator-full bietet Beide/Foundations/Administrator zur Wahl.
-  const filters = { search: "", certification: activePath === "administrator-full" ? "both" : activePath, examDomainId: "all", cefr: "both" };
+  const filters = { search: "", certification: activePath === "administrator-full" ? "both" : activePath, examDomainId: "all", cefr: "both", status: "all" };
   const domainsById = domainMap();
   const domains = [...domainsById.values()].filter((d) => certifications.includes(d.certification));
   const indexedVocab = state.content.vocabulary.map((v) => ({
@@ -39,11 +35,16 @@ export async function render(container, ctx) {
 
   const formCard = el("div", { class: "card glossary-filter-card" });
   const searchInput = el("input", { attrs: { type: "search", placeholder: "Begriff oder Erklärung suchen…" } });
-  searchInput.addEventListener("input", () => { filters.search = searchInput.value.toLowerCase(); renderList(); });
+  let searchTimer = null;
+  searchInput.addEventListener("input", () => {
+    filters.search = searchInput.value.toLowerCase();
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(renderList, 150);
+  });
   formCard.appendChild(el("label", { class: "filter-field" }, [el("span", { text: "Suche" }), searchInput]));
 
   const filterDetails = el("details", { class: "quiz-filters glossary-filters-details" });
-  const filterSummary = el("summary", { text: "Weitere Filter (Zertifizierung, Domain, CEFR)" });
+  const filterSummary = el("summary", { text: "Weitere Filter (Domain, CEFR, Lernstatus)" });
   filterDetails.appendChild(filterSummary);
 
   const row = el("div", { class: "filter-row" });
@@ -67,13 +68,23 @@ export async function render(container, ctx) {
   selectControls.push({ key: "cefr", defaultVal: "both", select: cefrField.querySelector("select") });
   row.appendChild(cefrField);
 
+  const statusField = selectField("Lernstatus", filters, "status", [
+    ["all", "Alle"],
+    ["unseen", "Noch nicht gelernt"],
+    ["relearn", "Erneut lernen"],
+    ["later", "Vorgemerkt"],
+    ["active", "In Wiederholung"]
+  ], onFilterChange);
+  selectControls.push({ key: "status", defaultVal: "all", select: statusField.querySelector("select") });
+  row.appendChild(statusField);
+
   filterDetails.appendChild(row);
   const resetBtn = el("button", { class: "secondary-btn", text: "Filter zurücksetzen", attrs: { type: "button" } });
   function updateFilterSummary() {
     const activeCount = selectControls.filter((c) => filters[c.key] !== c.defaultVal).length;
     filterSummary.textContent = activeCount > 0
       ? `Weitere Filter (${activeCount} aktiv)`
-      : "Weitere Filter (Zertifizierung, Domain, CEFR)";
+      : "Weitere Filter (Domain, CEFR, Lernstatus)";
   }
   function onFilterChange() {
     updateFilterSummary();
@@ -107,6 +118,13 @@ export async function render(container, ctx) {
         if (filters.certification !== "both" && v.certification !== filters.certification) return false;
         if (filters.examDomainId !== "all" && v.examDomainId !== filters.examDomainId) return false;
         if (filters.cefr !== "both" && v.cefr !== filters.cefr) return false;
+        if (filters.status !== "all") {
+          const p = state.progressByContentId.get(v.id);
+          if (filters.status === "unseen" && p) return false;
+          if (filters.status === "relearn" && p?.flag !== "relearn") return false;
+          if (filters.status === "later" && p?.flag !== "later") return false;
+          if (filters.status === "active" && (!p || p.flag === "relearn" || p.flag === "later")) return false;
+        }
         if (filters.search && !termLower.includes(filters.search) && !explanationLower.includes(filters.search)) return false;
         return true;
       })
@@ -188,11 +206,15 @@ function renderCard(v, domain) {
   ]);
   card.appendChild(metaPills);
   card.appendChild(el("p", {}, [el("strong", { text: "Deutsch: " }), document.createTextNode(v.germanExplanation)]));
-  card.appendChild(el("p", {}, [el("strong", { text: "Kontext: " }), document.createTextNode(v.salesforceContext)]));
-  card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), el("span", { text: exampleSentence, attrs: { lang: "en" } })]));
-  if (v.confusableTerms?.length) {
-    card.appendChild(el("p", { class: "confusable" }, [el("strong", { text: "Verwechslungsgefahr: " }), el("span", { text: v.confusableTerms.join(", "), attrs: { lang: "en" } })]));
-  }
+  const details = el("details", { class: "glossary-card-details" }, [
+    el("summary", { text: "Kontext, Beispiel & Verwechslungsgefahr" }),
+    el("p", {}, [el("strong", { text: "Kontext: " }), document.createTextNode(v.salesforceContext)]),
+    el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), el("span", { text: exampleSentence, attrs: { lang: "en" } })]),
+    v.confusableTerms?.length
+      ? el("p", { class: "confusable" }, [el("strong", { text: "Verwechslungsgefahr: " }), el("span", { text: v.confusableTerms.join(", "), attrs: { lang: "en" } })])
+      : null
+  ]);
+  card.appendChild(details);
   const statusPillClass = !progress
     ? "meta-pill"
     : progress.flag === "relearn"

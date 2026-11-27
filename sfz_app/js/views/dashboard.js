@@ -15,10 +15,20 @@ export async function render(container, ctx) {
 
   const weekNumber = weeklyPlan.getCurrentWeekNumber(state.settings.startDate);
   const weekTarget = weeklyPlan.getWeekTarget(state.content.weeklyPlan, weekNumber, certification);
-  const weekActual = weeklyPlan.computeWeekActual(state.activity, state.settings.startDate, weekNumber, certifications);
+  const planStatus = weeklyPlan.computePlanStatus(
+    state.content.weeklyPlan,
+    state.activity,
+    state.settings.startDate,
+    certification,
+    certifications
+  );
 
   container.appendChild(el("h1", { text: "Dashboard" }));
-  container.appendChild(el("p", { class: "active-path-banner", text: `Aktiver Lernpfad: ${pathLabel(certification)}` }));
+  const bannerRow = el("div", { class: "dashboard-banner-row" }, [
+    el("p", { class: "active-path-banner", text: `Aktiver Lernpfad: ${pathLabel(certification)}` }),
+    el("p", { class: `plan-status-pill plan-status-${planStatus.status}`, text: planStatus.label })
+  ]);
+  container.appendChild(bannerRow);
 
   // Tagesfokus-Hero-Karte (kompakt, über dem Fold)
   const heroCard = el("section", { class: "card dashboard-hero-card", attrs: { "aria-label": "Tagesfokus" } });
@@ -69,11 +79,12 @@ export async function render(container, ctx) {
   statusGrid.appendChild(el("div", { class: "card" }, [
     el("h2", { text: "Fällige Wiederholungen" }),
     el("p", { class: "big-number", text: String(dueCount) }),
-    el("p", { class: "item-hint", text: dueCount > 0 ? "Diese Inhalte warten auf Wiederholung." : "Aktuell nichts fällig — gute Gelegenheit für neue Inhalte." })
+    el("p", { class: "item-hint", text: dueCount > 0 ? "Diese Inhalte stehen heute nach SM-2 (Abstandslernen) zur Wiederholung an." : "Aktuell nichts fällig — gute Gelegenheit für neue Inhalte." })
   ]));
 
   const overviewCard = el("div", { class: "card" }, [
-    el("h2", { text: "Abdeckung nach Pfad & CEFR" })
+    el("h2", { text: "Abdeckung nach Pfad & CEFR" }),
+    el("p", { class: "item-hint", text: "CEFR B1 = Grundlagenenglisch · CEFR B2 = komplexere Szenariofragen." })
   ]);
   for (const cert of certifications) {
     const items = all.filter((item) => item.content.certification === cert);
@@ -118,14 +129,6 @@ export async function render(container, ctx) {
     })
   ]);
   container.appendChild(footerLinks);
-}
-
-function soll_ist_row(label, actual, target) {
-  if (target === 0 && actual === 0) {
-    return el("p", { class: "item-hint soll-empty", text: `${label}: Kein Soll in dieser Woche` });
-  }
-  const pct = target > 0 ? (actual / target) * 100 : actual > 0 ? 100 : 0;
-  return progressBar(pct, `${label}: ${actual} / ${target} (Soll)`);
 }
 
 function computeWeakDomains(activity, domains) {

@@ -163,3 +163,53 @@ export function buildWeeklyRecommendation({ weekActual, weekTarget, weakDomains 
     ? "Alle Wochenziele erreicht. Nutze weitere Einheiten zum Festigen."
     : "Der zwölfwöchige Plan ist abgeschlossen. Übe gezielt anhand deiner aktuellen Trefferquote.";
 }
+
+/**
+ * Berechnet einen kompakten Plan-Status ("Im Plan" vs. "X Tage Rückstand") gegen das 12-Wochen-Ziel.
+ * @returns {{status: "on-track"|"behind"|"completed", label: string, daysBehind: number}}
+ */
+export function computePlanStatus(weeklyPlan, activity, startDateISO, path, certifications, today = new Date()) {
+  const start = new Date(startDateISO + "T00:00:00");
+  const elapsedDays = Math.max(0, Math.floor(calendarDay(today) - calendarDay(start)));
+  const weekNumber = getCurrentWeekNumber(startDateISO, today);
+  const pathWeeks = weeklyPlan.filter((w) => w.certification === path);
+  const totalTarget = pathWeeks.reduce(
+    (sum, w) => sum + w.newVocabTarget + w.reviewsTarget + w.readingExercisesTarget,
+    0
+  );
+  const end = addCalendarDays(start, 12 * 7);
+  const actualStats = computeActual(activity, start, today < end ? addCalendarDays(today, 1) : end, certifications);
+  const actualTotal = actualStats.newVocab + actualStats.reviews + actualStats.readingExercises;
+
+  if (weekNumber > 12 && actualTotal >= totalTarget) {
+    return { status: "completed", label: "Plan-Status: 12-Wochen-Ziel erreicht", daysBehind: 0 };
+  }
+
+  let expectedTotal = 0;
+  for (const w of pathWeeks) {
+    const weekSum = w.newVocabTarget + w.reviewsTarget + w.readingExercisesTarget;
+    if (w.week < weekNumber) {
+      expectedTotal += weekSum;
+    } else if (w.week === weekNumber) {
+      const dayInWeek = (elapsedDays % 7) + 1;
+      // Am ersten Tag der Woche gilt der Tagesanteil erst nach etwas Puffer; ab Tag 2 anteilig.
+      expectedTotal += weekSum * (Math.max(0, dayInWeek - 1) / 7);
+    }
+  }
+
+  if (expectedTotal <= 0 || actualTotal >= expectedTotal * 0.9) {
+    return { status: "on-track", label: "Plan-Status: Im Plan", daysBehind: 0 };
+  }
+
+  const currentTarget = getWeekTarget(weeklyPlan, Math.min(12, weekNumber), path);
+  const weekSum = currentTarget
+    ? currentTarget.newVocabTarget + currentTarget.reviewsTarget + currentTarget.readingExercisesTarget
+    : Math.max(1, totalTarget / 12);
+  const dailyPace = Math.max(1, weekSum / 7);
+  const daysBehind = Math.max(1, Math.round((expectedTotal - actualTotal) / dailyPace));
+  return {
+    status: "behind",
+    label: `Plan-Status: ${daysBehind} ${daysBehind === 1 ? "Tag" : "Tage"} Rückstand`,
+    daysBehind
+  };
+}

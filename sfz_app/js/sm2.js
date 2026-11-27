@@ -52,7 +52,12 @@ export function computeNextProgress(progress, answer, now = new Date()) {
   let intervalDays;
   let flag = null;
 
-  if (q < 3) {
+  if (!answer.correct && answer.languageSlip) {
+    // Sprachfehler (z. B. englisches Signalwort überlesen): Fachkonzept nicht auf 0 zurücksetzen,
+    // sondern nur zur zeitnahen Wiederholung vormerken.
+    intervalDays = Math.max(1, Math.min(3, progress.intervalDays || 1));
+    flag = "later";
+  } else if (q < 3) {
     repetitions = 0;
     intervalDays = 1;
     flag = "relearn";
@@ -72,6 +77,7 @@ export function computeNextProgress(progress, answer, now = new Date()) {
     lastResult: answer.correct ? "correct" : "incorrect",
     confidence: answer.confidence ?? null,
     responseTimeMs: answer.responseTimeMs ?? null,
+    languageSlip: Boolean(!answer.correct && answer.languageSlip),
     easeFactor,
     intervalDays,
     nextReviewDate: todayISO(addCalendarDays(now, intervalDays)),

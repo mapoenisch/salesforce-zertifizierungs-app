@@ -32,6 +32,58 @@ export async function render(container) {
   container.appendChild(wrap);
 }
 
+/** Öffnet den Leitfaden Prüfungsenglisch als barrierefreies Modal mit Focus-Trap. */
+export function openExamEnglishModal(returnFocusEl, closeLabel = "Schließen") {
+  const overlay = el("div", { class: "modal-overlay", attrs: { role: "presentation" } });
+  const box = el("div", {
+    class: "modal-box modal-box-wide",
+    attrs: { role: "dialog", "aria-modal": "true", "aria-label": "Leitfaden: Prüfungsenglisch" }
+  });
+  const topBar = el("div", { class: "modal-ref-header" });
+  const closeBtn = el("button", { class: "primary-btn", text: closeLabel, attrs: { type: "button" } });
+  topBar.appendChild(closeBtn);
+  const contentHost = el("div", { class: "modal-ref-body" });
+  render(contentHost);
+  box.append(topBar, contentHost);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  function close() {
+    document.removeEventListener("keydown", onKeydown);
+    overlay.remove();
+    if (returnFocusEl?.isConnected) returnFocusEl.focus();
+  }
+
+  function onKeydown(ev) {
+    if (ev.key === "Escape") {
+      ev.preventDefault();
+      close();
+      return;
+    }
+    if (ev.key === "Tab") {
+      const focusable = [...box.querySelectorAll('a[href], button:not([disabled]), summary, [tabindex]:not([tabindex="-1"])')]
+        .filter((node) => node.offsetParent !== null);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (ev.shiftKey && document.activeElement === first) {
+        ev.preventDefault();
+        last.focus();
+      } else if (!ev.shiftKey && document.activeElement === last) {
+        ev.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
+  closeBtn.addEventListener("click", close);
+  overlay.addEventListener("click", (ev) => {
+    if (ev.target === overlay) close();
+  });
+  document.addEventListener("keydown", onKeydown);
+  closeBtn.focus();
+}
+
 function card(titleText) {
   const c = el("div", { class: "card" });
   c.appendChild(el("h2", { text: titleText }));
