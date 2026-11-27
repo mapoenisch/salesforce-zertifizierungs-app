@@ -2,7 +2,18 @@
 // und ruft nach Abschluss onAnswered({correct, confidence, responseTimeMs}) auf.
 // Wird sowohl vom Lernmodus (learn.js) als auch vom freien Üben (quiz.js) genutzt.
 
+import { domainMap } from "./state.js";
 import { el, clear, shuffle, disclaimerNote, focusContent } from "./utils.js";
+
+function renderItemMetaPills(content) {
+  if (!content) return null;
+  const domain = domainMap().get(content.examDomainId);
+  const cefrClass = content.cefr === "B2" ? "meta-pill meta-pill-b2" : "meta-pill meta-pill-b1";
+  return el("div", { class: "meta-pills item-meta-pills" }, [
+    domain && el("span", { class: "meta-pill", text: domain.name }),
+    content.cefr && el("span", { class: cefrClass, text: `CEFR ${content.cefr}` })
+  ]);
+}
 
 /**
  * @param {HTMLElement} container
@@ -32,6 +43,8 @@ export function renderItem(container, item, { onAnswered }) {
 function renderVocabularyIntro(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card vocab-intro-card" });
   card.appendChild(el("h2", { class: "vocab-intro-term", text: content.term, attrs: { lang: "en" } }));
+  const meta = renderItemMetaPills(content);
+  if (meta) card.appendChild(meta);
   const exampleSentence = content.clozeSentence.replace("____", content.term);
   card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), el("span", { text: exampleSentence, attrs: { lang: "en" } })]));
   card.appendChild(el("p", {}, [el("strong", { text: "Deutsch: " }), document.createTextNode(content.germanExplanation)]));
@@ -101,13 +114,15 @@ function bindItemShortcuts(root, getHandlers) {
   activeShortcutCleanup = cleanup;
 }
 
-function addOptionKeycap(btn, idx) {
+export function addOptionKeycap(btn, idx) {
   if (idx < 9) btn.prepend(el("kbd", { class: "keycap", text: String(idx + 1), attrs: { "aria-hidden": "true" } }));
 }
 
 function renderVocabulary(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card" });
   card.appendChild(el("h2", { class: "item-title", text: "Vokabel im Kontext" }));
+  const meta = renderItemMetaPills(content);
+  if (meta) card.appendChild(meta);
   card.appendChild(el("p", { class: "item-cloze", text: content.clozeSentence, attrs: { lang: "en" } }));
 
   const optionsWrap = el("div", { class: "item-options" });
@@ -187,6 +202,8 @@ function triggerContinueShortcut(root) {
 function renderDefinition(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card" });
   card.appendChild(el("h2", { class: "item-title", text: "Definitions-Matching" }));
+  const meta = renderItemMetaPills(content);
+  if (meta) card.appendChild(meta);
   card.appendChild(el("p", { class: "item-term", text: content.term, attrs: { lang: "en" } }));
   card.appendChild(el("p", { class: "item-hint" }, [
     document.createTextNode("Wähle die passende Definition"),
@@ -255,6 +272,10 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
   const card = el("div", { class: opts.embedded ? "passage-subquestion" : "item-card" });
   const headingText = opts.subTotal > 1 ? `Teilfrage ${opts.subIndex + 1} von ${opts.subTotal}` : "Szenario-Frage";
   card.appendChild(el(opts.skipConfidence ? "h3" : "h2", { class: "item-title", text: headingText }));
+  if (!opts.embedded) {
+    const meta = renderItemMetaPills(questionContent);
+    if (meta) card.appendChild(meta);
+  }
   if (!opts.disclaimerAlreadyShown) {
     card.appendChild(disclaimerNote());
     if (questionContent.scenario) card.appendChild(el("p", { class: "item-scenario", text: questionContent.scenario, attrs: { lang: "en" } }));
@@ -375,6 +396,8 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
 function renderReadingPassage(container, content, startTime, onAnswered) {
   const wrap = el("div", { class: "item-card" });
   wrap.appendChild(el("h2", { class: "item-title", text: "Szenario lesen und beantworten" }));
+  const meta = renderItemMetaPills(content);
+  if (meta) wrap.appendChild(meta);
   wrap.appendChild(disclaimerNote());
   wrap.appendChild(el("p", { class: "item-scenario", text: content.scenario, attrs: { lang: "en" } }));
 

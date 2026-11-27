@@ -16,8 +16,6 @@ export async function render(container, ctx) {
   const weekNumber = weeklyPlan.getCurrentWeekNumber(state.settings.startDate);
   const weekTarget = weeklyPlan.getWeekTarget(state.content.weeklyPlan, weekNumber, certification);
   const weekActual = weeklyPlan.computeWeekActual(state.activity, state.settings.startDate, weekNumber, certifications);
-  const monthNumber = weeklyPlan.getMonthForWeek(weekNumber);
-  const milestone = weeklyPlan.getMonthMilestone(state.content.weeklyPlan, monthNumber, certification);
 
   container.appendChild(el("h1", { text: "Dashboard" }));
   container.appendChild(el("p", { class: "active-path-banner", text: `Aktiver Lernpfad: ${pathLabel(certification)}` }));
@@ -53,21 +51,8 @@ export async function render(container, ctx) {
   topGrid.appendChild(weekCard);
   container.appendChild(topGrid);
 
-  // Zweite Cockpit-Reihe: Monat + Zertifizierung/CEFR
+  // Zweite Cockpit-Reihe: Abdeckung nach Pfad & CEFR + Top-3 Schwachpunkte
   const midGrid = el("div", { class: "cockpit-grid" });
-  const monthly = weeklyPlan.computeMilestoneProgress(
-    state.content.weeklyPlan, state.activity, state.settings.startDate, monthNumber, certification, certifications
-  );
-  const monthCard = el("div", { class: "card" }, [
-    el("h2", { text: `Monat ${monthNumber} · Meilenstein` }),
-    milestone && el("p", { class: "milestone", text: milestone })
-  ]);
-  for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
-    monthCard.appendChild(soll_ist_row(label, monthly.actual[actual], monthly.target[target]));
-  }
-  midGrid.appendChild(monthCard);
-
-  // Nur Inhalte des aktiven Lernpfads berücksichtigen (bei administrator-full: Foundations + Administrator zusammen)
   const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));
   const pathActivity = state.activity.filter((a) => certifications.includes(a.certification));
   const { answered } = summarizeActivity(pathActivity, state.progressByContentId);
@@ -84,41 +69,14 @@ export async function render(container, ctx) {
     const items = all.filter((i) => i.content.cefr === cefr);
     const attempted = items.filter((i) => answered.has(i.content.id)).length;
     const pct = items.length ? (attempted / items.length) * 100 : 0;
-    overviewCard.appendChild(progressBar(pct, `CEFR ${cefr} — ${attempted}/${items.length} bearbeitet`));
+    const bar = progressBar(pct, `CEFR ${cefr} — ${attempted}/${items.length} bearbeitet`);
+    if (cefr === "B2") bar.classList.add("progress-bar-b2");
+    overviewCard.appendChild(bar);
   });
   midGrid.appendChild(overviewCard);
-  container.appendChild(midGrid);
-
-  // Fortschritt je Domain (nur Domains des aktiven Lernpfads, Top 4 sichtbar + Rest klappbar)
-  const domains = domainMap();
-  const domainCard = el("div", { class: "card" });
-  domainCard.appendChild(el("h2", { text: "Fortschritt je Exam-Domain" }));
-  const sortedDomains = [...domains.values()]
-    .filter((d) => certifications.includes(d.certification))
-    .sort((a, b) => b.weightPercent - a.weightPercent)
-    .map((domain) => {
-      const items = all.filter((i) => i.content.examDomainId === domain.id);
-      return { domain, items };
-    })
-    .filter(({ items }) => items.length > 0);
-
-  const renderDomainBar = ({ domain, items }) => {
-    const attempted = items.filter((i) => answered.has(i.content.id)).length;
-    const pct = (attempted / items.length) * 100;
-    return progressBar(pct, `${domain.name} (${domain.weightPercent}%) — ${attempted}/${items.length} bearbeitet`);
-  };
-
-  sortedDomains.slice(0, 4).forEach((entry) => domainCard.appendChild(renderDomainBar(entry)));
-  if (sortedDomains.length > 4) {
-    const more = el("details", { class: "domain-more" }, [
-      el("summary", { text: `Weitere ${sortedDomains.length - 4} Exam-Domains anzeigen` })
-    ]);
-    sortedDomains.slice(4).forEach((entry) => more.appendChild(renderDomainBar(entry)));
-    domainCard.appendChild(more);
-  }
-  container.appendChild(domainCard);
 
   // Top-3 Schwachpunkte (als direkte Übungslinks)
+  const domains = domainMap();
   const weakCard = el("div", { class: "card" });
   weakCard.appendChild(el("h2", { text: "Top-3 Schwachpunkte" }));
   const weakDomains = computeWeakDomains(pathActivity, domains);
@@ -137,7 +95,36 @@ export async function render(container, ctx) {
     });
     weakCard.appendChild(list);
   }
-  container.appendChild(weakCard);
+  midGrid.appendChild(weakCard);
+  container.appendChild(midGrid);
+
+  const footerLinks = el("div", { class: "dashboard-footer-links" }, [
+    el("a", {
+      class: "secondary-btn compact-link-btn",
+      text: "Alle Exam-Domains & Monatsmeilenstein ansehen",
+      attrs: { href: "#/progress" },
+      on: {
+        click: (ev) => {
+          if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+          ev.preventDefault();
+          ctx.navigate("#/progress");
+        }
+      }
+    }),
+    el("a", {
+      class: "secondary-btn compact-link-btn",
+      text: "Leitfaden: Prüfungsenglisch",
+      attrs: { href: "#/exam-english" },
+      on: {
+        click: (ev) => {
+          if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+          ev.preventDefault();
+          ctx.navigate("#/exam-english");
+        }
+      }
+    })
+  ]);
+  container.appendChild(footerLinks);
 }
 
 function soll_ist_row(label, actual, target) {

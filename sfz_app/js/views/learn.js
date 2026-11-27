@@ -36,9 +36,6 @@ export async function render(container, ctx) {
   const statusBar = el("div", { class: "session-status-bar" }, [progressLabel, refLink]);
   container.appendChild(statusBar);
 
-  const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
-  container.appendChild(status);
-
   const itemHost = el("div");
   container.appendChild(itemHost);
 
@@ -47,6 +44,9 @@ export async function render(container, ctx) {
   const stopBtn = el("button", { class: "secondary-btn", text: "Einheit beenden", attrs: { type: "button" } });
   toolbar.append(laterBtn, stopBtn);
   container.appendChild(toolbar);
+
+  const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
+  container.appendChild(status);
 
   const cumulative = { total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: 0 };
   stopBtn.addEventListener("click", () => renderSummary(container, cumulative, ctx));
@@ -65,13 +65,20 @@ export async function render(container, ctx) {
       progressLabel.textContent = `Tagesziel: ${state.settings.dailySessionMinutesTarget} Min. · Runde ${cumulative.rounds} · ${index + 1} von ${queue.length}`;
       const current = queue[index];
       status.textContent = "";
+      status.setAttribute("role", "status");
       laterBtn.onclick = async () => {
         laterBtn.disabled = true;
         try {
           await markForReview(current);
-          if (queue[index] === current) status.textContent = "Für die Lerneinheit vorgemerkt.";
+          if (queue[index] === current) {
+            status.setAttribute("role", "status");
+            status.textContent = "Für die Lerneinheit vorgemerkt.";
+          }
         } catch {
-          if (queue[index] === current) status.textContent = "Die Markierung konnte nicht gespeichert werden.";
+          if (queue[index] === current) {
+            status.setAttribute("role", "alert");
+            status.textContent = "Die Markierung konnte nicht gespeichert werden.";
+          }
         } finally {
           laterBtn.disabled = false;
         }
@@ -210,7 +217,7 @@ function renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, onConti
 
   clear(itemHost);
   const pct = cumulative.scored ? Math.round((cumulative.correct / cumulative.scored) * 100) : 0;
-  const card = el("div", { class: "card" }, [
+  const card = el("div", { class: "card studio-celebration-card" }, [
     el("h2", { text: `Runde ${cumulative.rounds} geschafft` }),
     el("p", { class: "big-number", text: `${cumulative.correct} / ${cumulative.scored}` }),
     el("p", { text: `Trefferquote bisher heute: ${pct}%` }),
@@ -233,7 +240,7 @@ function renderSummary(container, summary, ctx) {
   clear(container);
   container.appendChild(el("h1", { text: "Einheit abgeschlossen" }));
   const pct = summary.scored ? Math.round((summary.correct / summary.scored) * 100) : 0;
-  const summaryCard = el("div", { class: "card" }, [
+  const summaryCard = el("div", { class: "card studio-celebration-card" }, [
     el("p", { class: "big-number", text: `${summary.correct} / ${summary.scored}` }),
     el("p", { text: `Trefferquote: ${pct}%` })
   ]);

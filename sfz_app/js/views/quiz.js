@@ -2,7 +2,7 @@
 
 import { state, refreshLearningData, domainMap, pathCertifications } from "../state.js";
 import { markForReview, saveAnswers } from "../learning.js";
-import { renderItem } from "../itemRenderer.js";
+import { renderItem, addOptionKeycap } from "../itemRenderer.js";
 import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDialog } from "../utils.js";
 
 const MINI_EXAM_COUNT = 10;
@@ -49,10 +49,11 @@ export async function render(container, ctx) {
   const queryParams = new URLSearchParams(location.hash.split("?")[1] || "");
   const requestedDomain = queryParams.get("domain");
   const validDomain = requestedDomain && domainMap().has(requestedDomain) ? requestedDomain : "all";
-  const filters = {
+  const defaultFilters = {
     certification: activePath === "administrator-full" ? "both" : activePath,
-    examDomainId: validDomain, cefr: "both", format: "all", difficulty: "all", errorStatus: "all"
+    examDomainId: "all", cefr: "both", format: "all", difficulty: "all", errorStatus: "all"
   };
+  const filters = { ...defaultFilters, examDomainId: validDomain };
 
   const actions = el("div", { class: "quiz-actions" });
   const freeBtn = el("button", { class: "primary-btn", text: "Freies Üben starten", attrs: { type: "button" } });
@@ -77,12 +78,13 @@ export async function render(container, ctx) {
   formHost.appendChild(el("summary", { text: "Übungen filtern" }));
   const fields = el("div");
   formHost.appendChild(fields);
-  renderFilterForm(fields, filters, activePath, certifications);
-  setup.appendChild(formHost);
-  fields.addEventListener("change", () => {
+  function updateCountStatus() {
     const count = filterPool(allQuizItems(), filters).length;
     status.textContent = `${count} passende Übungen`;
-  });
+  }
+  renderFilterForm(fields, filters, defaultFilters, activePath, certifications, updateCountStatus);
+  setup.appendChild(formHost);
+  fields.addEventListener("change", updateCountStatus);
 
   const runHost = el("div");
   container.appendChild(runHost);
@@ -120,38 +122,73 @@ export async function render(container, ctx) {
 
 // ---------- Filterformular ----------
 
-function renderFilterForm(host, filters, activePath, certifications) {
+function renderFilterForm(host, filters, defaultFilters, activePath, certifications, onReset) {
   clear(host);
   // Domain-Auswahl nur mit Domains des aktiven Lernpfads bestücken (bei administrator-full: beide Domain-Sets).
   const domains = [...domainMap().values()].filter((d) => certifications.includes(d.certification));
+  const hasMultiPartPassages = state.content.readingPassages.some((p) => (p.questions?.length || 0) > 1);
+  const selects = [];
 
   const row1 = el("div", { class: "filter-row" });
   if (activePath === "administrator-full") {
-    row1.appendChild(selectField("Zertifizierung", filters, "certification", [
+    const f = selectField("Zertifizierung", filters, "certification", [
       ["both", "Beide Pfade"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
-    ]));
+    ]);
+    selects.push({ key: "certification", el: f.querySelector("select") });
+    row1.appendChild(f);
   }
-  row1.appendChild(selectField("Exam-Domain", filters, "examDomainId", [
+  const domField = selectField("Exam-Domain", filters, "examDomainId", [
     ["all", "Alle"], ...domains.map((d) => [d.id, `${d.name} (${certLabel(d.certification)})`])
-  ]));
-  row1.appendChild(selectField("CEFR-Level", filters, "cefr", [
+  ]);
+  selects.push({ key: "examDomainId", el: domField.querySelector("select") });
+  row1.appendChild(domField);
+
+  const cefrField = selectField("CEFR-Level", filters, "cefr", [
     ["both", "Beide"], ["B1", "B1"], ["B2", "B2"]
-  ]));
+  ]);
+  selects.push({ key: "cefr", el: cefrField.querySelector("select") });
+  row1.appendChild(cefrField);
   host.appendChild(row1);
 
-  const row2 = el("div", { class: "filter-row" });
-  row2.appendChild(selectField("Übungsformat", filters, "format", [
+  const formatOptions = [
     ["all", "Alle"], ["vocabulary", "Vokabel im Kontext"], ["definition", "Definitions-Matching"],
-    ["question", "Szenario-Frage"], ["readingPassage", "Reading-Passage (alle)"],
-    ["readingPassage-single", "Reading-Passage (1 Frage)"], ["readingPassage-multi", "Reading-Passage (mehrteilig)"]
-  ]));
-  row2.appendChild(selectField("Schwierigkeit", filters, "difficulty", [
+    ["question", "Szenario-Frage"],
+    ...(hasMultiPartPassages
+      ? [["readingPassage", "Reading-Passage (alle)"], ["readingPassage-single", "Reading-Passage (1 Frage)"], ["readingPassage-multi", "Reading-Passage (mehrteilig)"]]
+      : [["readingPassage", "Reading-Passage"]])
+  ];
+
+  const row2 = el("div", { class: "filter-row" });
+  const fmtField = selectField("Übungsformat", filters, "format", formatOptions);
+  selects.push({ key: "format", el: fmtField.querySelector("select") });
+  row2.appendChild(fmtField);
+
+  const diffField = selectField("Schwierigkeit", filters, "difficulty", [
     ["all", "Alle"], ["easy", "Leicht"], ["medium", "Mittel"], ["hard", "Schwer"]
-  ]));
-  row2.appendChild(selectField("Fehlerstatus", filters, "errorStatus", [
+  ]);
+  selects.push({ key: "difficulty", el: diffField.querySelector("select") });
+  row2.appendChild(diffField);
+
+  const errField = selectField("Fehlerstatus", filters, "errorStatus", [
     ["all", "Alle"], ["wrong", "Nur zuletzt falsch"], ["later", "Als 'später wiederholen' markiert"], ["new", "Nur neue Inhalte"]
-  ]));
+  ]);
+  selects.push({ key: "errorStatus", el: errField.querySelector("select") });
+  row2.appendChild(errField);
   host.appendChild(row2);
+
+  const resetBtn = el("button", {
+    class: "secondary-btn",
+    text: "Filter zurücksetzen",
+    attrs: { type: "button" },
+    on: {
+      click: () => {
+        Object.assign(filters, defaultFilters);
+        for (const s of selects) s.el.value = defaultFilters[s.key];
+        onReset?.();
+      }
+    }
+  });
+  host.appendChild(el("div", { class: "filter-actions-row" }, [resetBtn]));
 }
 
 function selectField(label, filters, key, options) {
@@ -213,7 +250,7 @@ function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
 
   const progressLabel = el("p", { class: "session-progress" });
   const itemHost = el("div");
-  const toolbar = el("div", { class: "quiz-toolbar" });
+  const toolbar = el("div", { class: "quiz-toolbar session-toolbar-bottom" });
   const stopBtn = el("button", { class: "secondary-btn", text: "Beenden", attrs: { type: "button" } });
   const laterBtn = el("button", { class: "secondary-btn", text: "Später wiederholen markieren", attrs: { type: "button" } });
   toolbar.appendChild(laterBtn);
@@ -222,9 +259,9 @@ function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
   const heading = el("h1", { text: title });
   host.appendChild(heading);
   host.appendChild(progressLabel);
+  host.appendChild(itemHost);
   host.appendChild(toolbar);
   host.appendChild(status);
-  host.appendChild(itemHost);
 
   stopBtn.addEventListener("click", () => showFreeResult());
 
@@ -247,13 +284,20 @@ function startFreePractice(runHost, pool, showSetup, title = "Freies Üben") {
     progressLabel.textContent = `Frage ${index + 1} von ${pool.length}`;
     const current = pool[index];
     status.textContent = "";
+    status.setAttribute("role", "status");
     laterBtn.onclick = async () => {
       laterBtn.disabled = true;
       try {
         await markForReview(current);
-        if (pool[index] === current) status.textContent = "Für die Lerneinheit vorgemerkt.";
+        if (pool[index] === current) {
+          status.setAttribute("role", "status");
+          status.textContent = "Für die Lerneinheit vorgemerkt.";
+        }
       } catch {
-        if (pool[index] === current) status.textContent = "Die Markierung konnte nicht gespeichert werden.";
+        if (pool[index] === current) {
+          status.setAttribute("role", "alert");
+          status.textContent = "Die Markierung konnte nicht gespeichert werden.";
+        }
       } finally {
         laterBtn.disabled = false;
       }
@@ -361,9 +405,30 @@ function startMiniExam(runHost, pool, showSetup) {
   const navigation = el("div", { class: "quiz-nav" }, [prev, next]);
   host.append(title, stats, qHost, navigation, jump, actions);
 
+  function onExamKeydown(ev) {
+    if (activeExam !== attempt || !host.isConnected || pendingConfirmation) return;
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    const tag = document.activeElement?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if (/^[1-9]$/.test(ev.key)) {
+      const btn = qHost.querySelectorAll(".option-btn")[Number(ev.key) - 1];
+      if (btn && !btn.disabled) {
+        ev.preventDefault();
+        btn.click();
+      }
+    } else if (ev.key === "ArrowLeft" && !prev.disabled) {
+      ev.preventDefault();
+      prev.click();
+    } else if (ev.key === "ArrowRight" && !next.disabled) {
+      ev.preventDefault();
+      next.click();
+    }
+  }
+
   const attempt = { stop, confirmAbandon };
   activeExam = attempt;
   window.addEventListener("beforeunload", warnBeforeUnload);
+  document.addEventListener("keydown", onExamKeydown);
 
   function warnBeforeUnload(event) {
     event.preventDefault();
@@ -374,6 +439,7 @@ function startMiniExam(runHost, pool, showSetup) {
     clearInterval(timerHandle);
     pendingConfirmation?.abort();
     window.removeEventListener("beforeunload", warnBeforeUnload);
+    document.removeEventListener("keydown", onExamKeydown);
     if (activeExam === attempt) activeExam = null;
   }
 
@@ -440,6 +506,15 @@ function startMiniExam(runHost, pool, showSetup) {
     const card = el("div", { class: "item-card exam-question" });
     const heading = el("h2", { class: "exam-question-heading", text: `Frage ${current + 1} von ${examQuestions.length}` });
     card.append(heading);
+    const source = q.source;
+    if (source) {
+      const domain = domainMap().get(source.examDomainId);
+      const cefrClass = source.cefr === "B2" ? "meta-pill meta-pill-b2" : "meta-pill meta-pill-b1";
+      card.append(el("div", { class: "meta-pills item-meta-pills" }, [
+        domain && el("span", { class: "meta-pill", text: domain.name }),
+        source.cefr && el("span", { class: cefrClass, text: `CEFR ${source.cefr}` })
+      ]));
+    }
     if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
     card.appendChild(el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
     const multi = q.type === "multiple-select";
@@ -448,12 +523,12 @@ function startMiniExam(runHost, pool, showSetup) {
     const options = el("div", {
       class: "item-options item-options-list", attrs: { role: "group", "aria-label": "Antwortoptionen" }
     });
-    for (const option of q.options) {
+    q.options.forEach((option, idx) => {
       const button = el("button", {
         class: "option-btn option-btn-wide",
-        text: option.text,
         attrs: { type: "button", lang: "en" }
-      });
+      }, [el("span", { class: "option-text", text: option.text })]);
+      addOptionKeycap(button, idx);
       button.dataset.optionId = option.id;
       button.addEventListener("click", () => {
         if (activeExam !== attempt || Date.now() >= deadline) {
@@ -470,7 +545,7 @@ function startMiniExam(runHost, pool, showSetup) {
         refreshStatus();
       });
       options.appendChild(button);
-    }
+    });
     function markSelection() {
       for (const button of options.children) {
         const pressed = selected.has(button.dataset.optionId);

@@ -43,18 +43,39 @@ export async function render(container, ctx) {
   formCard.appendChild(el("label", { class: "filter-field" }, [el("span", { text: "Suche" }), searchInput]));
 
   const row = el("div", { class: "filter-row" });
+  const selectControls = [];
   if (activePath === "administrator-full") {
-    row.appendChild(selectField("Zertifizierung", filters, "certification", [
+    const field = selectField("Zertifizierung", filters, "certification", [
       ["both", "Beide Pfade"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
-    ], renderListRef));
+    ], renderListRef);
+    selectControls.push({ key: "certification", defaultVal: "both", select: field.querySelector("select") });
+    row.appendChild(field);
   }
-  row.appendChild(selectField("Exam-Domain", filters, "examDomainId", [
+  const domainField = selectField("Exam-Domain", filters, "examDomainId", [
     ["all", "Alle"], ...domains.map((d) => [d.id, `${d.name} (${certLabel(d.certification)})`])
-  ], renderListRef));
-  row.appendChild(selectField("CEFR-Level", filters, "cefr", [
+  ], renderListRef);
+  selectControls.push({ key: "examDomainId", defaultVal: "all", select: domainField.querySelector("select") });
+  row.appendChild(domainField);
+
+  const cefrField = selectField("CEFR-Level", filters, "cefr", [
     ["both", "Beide"], ["B1", "B1"], ["B2", "B2"]
-  ], renderListRef));
+  ], renderListRef);
+  selectControls.push({ key: "cefr", defaultVal: "both", select: cefrField.querySelector("select") });
+  row.appendChild(cefrField);
+
   formCard.appendChild(row);
+  const resetBtn = el("button", { class: "secondary-btn", text: "Filter zurücksetzen", attrs: { type: "button" } });
+  function resetFilters() {
+    filters.search = "";
+    searchInput.value = "";
+    for (const ctrl of selectControls) {
+      filters[ctrl.key] = ctrl.defaultVal;
+      ctrl.select.value = ctrl.defaultVal;
+    }
+    renderList();
+  }
+  resetBtn.addEventListener("click", resetFilters);
+  formCard.appendChild(el("div", { class: "filter-actions-row" }, [resetBtn]));
   container.appendChild(formCard);
 
   const countStatus = el("p", { class: "glossary-count", attrs: { role: "status" } });
@@ -79,7 +100,12 @@ export async function render(container, ctx) {
 
     if (matches.length === 0) {
       countStatus.textContent = "0 Treffer";
-      listHost.appendChild(el("p", { text: "Keine Treffer." }));
+      const emptyReset = el("button", { class: "secondary-btn", text: "Filter zurücksetzen", attrs: { type: "button" } });
+      emptyReset.addEventListener("click", () => { resetFilters(); searchInput.focus(); });
+      listHost.appendChild(el("div", { class: "card" }, [
+        el("p", { text: "Keine Begriffe für diese Filter gefunden." }),
+        emptyReset
+      ]));
       return;
     }
 
@@ -93,6 +119,7 @@ export async function render(container, ctx) {
       countStatus.textContent = rendered < matches.length
         ? `${rendered} von ${matches.length} Begriffen angezeigt`
         : `${matches.length} ${matches.length === 1 ? "Begriff" : "Begriffe"}`;
+      const bottomActions = el("div", { class: "glossary-bottom-actions" });
       if (rendered < matches.length) {
         const moreBtn = el("button", {
           class: "secondary-btn",
@@ -100,11 +127,21 @@ export async function render(container, ctx) {
           attrs: { type: "button" }
         });
         moreBtn.addEventListener("click", () => {
-          moreBtn.remove();
+          bottomActions.remove();
           appendBatch();
         });
-        listHost.appendChild(moreBtn);
+        bottomActions.appendChild(moreBtn);
       }
+      if (rendered > PAGE_SIZE || matches.length > 10) {
+        const topBtn = el("button", {
+          class: "secondary-btn",
+          text: "Nach oben",
+          attrs: { type: "button" },
+          on: { click: () => { window.scrollTo({ top: 0, behavior: "smooth" }); searchInput.focus({ preventScroll: true }); } }
+        });
+        bottomActions.appendChild(topBtn);
+      }
+      if (bottomActions.childElementCount) listHost.appendChild(bottomActions);
     }
 
     appendBatch();

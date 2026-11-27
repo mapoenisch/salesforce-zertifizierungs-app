@@ -37,12 +37,22 @@ export async function render(container, ctx) {
     pathSelect.appendChild(el("option", { text, attrs: { value } }));
   });
   pathSelect.value = state.settings.certificationPath;
+  const pathStatus = el("p", { class: "item-hint settings-goal-status", attrs: { role: "status" } });
+  const toDashBtn = el("button", {
+    class: "secondary-btn",
+    text: "Zum Dashboard",
+    attrs: { type: "button", hidden: "" },
+    on: { click: () => ctx.navigate("#/dashboard") }
+  });
   pathSelect.addEventListener("change", () => {
     saveSettings({ certificationPath: pathSelect.value });
-    ctx.navigate("#/dashboard");
+    pathStatus.textContent = "Lernpfad gespeichert.";
+    toDashBtn.hidden = false;
   });
   pathSelectLabel.appendChild(pathSelect);
   pathCard.appendChild(pathSelectLabel);
+  pathCard.appendChild(pathStatus);
+  pathCard.appendChild(toDashBtn);
   pathCard.appendChild(el("p", {
     class: "item-hint",
     text:
