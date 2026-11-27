@@ -26,6 +26,66 @@ export async function render(container, ctx) {
   const avgConfidence = averageOf(selfReported, "confidence");
   const avgTime = averageOf(scoredActivity, "responseTimeMs");
 
+  // 3-Tab-Struktur für schnelle Orientierung ohne Endlos-Scrollen
+  const tabDefs = [
+    { id: "overview", label: "Übersicht" },
+    { id: "domains", label: "Exam-Domains" },
+    { id: "formats", label: "Formate & Meilenstein" }
+  ];
+  const tabBar = el("div", { class: "studio-tabs", attrs: { role: "tablist", "aria-label": "Fortschrittsbereiche" } });
+  const panels = new Map();
+  const tabButtons = [];
+
+  function activateTab(activeId, focusTab = false) {
+    tabButtons.forEach((btn) => {
+      const selected = btn.dataset.tabId === activeId;
+      btn.setAttribute("aria-selected", String(selected));
+      btn.tabIndex = selected ? 0 : -1;
+      btn.classList.toggle("studio-tab-active", selected);
+      if (selected && focusTab) btn.focus();
+    });
+    for (const [id, panel] of panels) {
+      panel.hidden = id !== activeId;
+    }
+  }
+
+  tabDefs.forEach((def, idx) => {
+    const btn = el("button", {
+      class: "studio-tab" + (idx === 0 ? " studio-tab-active" : ""),
+      text: def.label,
+      attrs: {
+        type: "button",
+        role: "tab",
+        id: `progress-tab-${def.id}`,
+        "aria-selected": String(idx === 0),
+        "aria-controls": `progress-panel-${def.id}`,
+        tabindex: idx === 0 ? "0" : "-1"
+      }
+    });
+    btn.dataset.tabId = def.id;
+    btn.addEventListener("click", () => activateTab(def.id));
+    btn.addEventListener("keydown", (ev) => {
+      if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+      ev.preventDefault();
+      const nextIdx = ev.key === "ArrowRight" ? (idx + 1) % tabDefs.length : (idx - 1 + tabDefs.length) % tabDefs.length;
+      activateTab(tabDefs[nextIdx].id, true);
+    });
+    tabButtons.push(btn);
+    tabBar.appendChild(btn);
+
+    const panel = el("div", {
+      class: "studio-tabpanel",
+      attrs: { role: "tabpanel", id: `progress-panel-${def.id}`, "aria-labelledby": `progress-tab-${def.id}`, ...(idx !== 0 && { hidden: "" }) }
+    });
+    panels.set(def.id, panel);
+  });
+
+  container.appendChild(tabBar);
+  const overviewPanel = panels.get("overview");
+  const domainsPanel = panels.get("domains");
+  const formatsPanel = panels.get("formats");
+  container.append(overviewPanel, domainsPanel, formatsPanel);
+
   const statsGrid = el("div", { class: "cockpit-grid" });
   statsGrid.appendChild(el("div", { class: "card" }, [
     el("h2", { text: "Gesamtstatistik" }),
@@ -45,72 +105,52 @@ export async function render(container, ctx) {
     el("p", { text: `Fällig heute oder überfällig: ${due.length}` }),
     el("p", { class: "item-hint", text: `Davon überfällig: ${overdue}` })
   ]));
-  container.appendChild(statsGrid);
+  overviewPanel.appendChild(statsGrid);
 
-  // Zielerreichung Woche/Monat
+  // Zielerreichung Woche + Wochenrückblick
   const weekNumber = weeklyPlan.getCurrentWeekNumber(state.settings.startDate);
   const weekTarget = weeklyPlan.getWeekTarget(state.content.weeklyPlan, weekNumber, certification);
   const weekActual = weeklyPlan.computeWeekActual(activity, state.settings.startDate, weekNumber, certifications);
   const monthNumber = weeklyPlan.getMonthForWeek(weekNumber);
   const milestone = weeklyPlan.getMonthMilestone(state.content.weeklyPlan, monthNumber, certification);
-
-  const goalCard = el("div", { class: "card" });
-  goalCard.appendChild(el("h2", { text: `Zielerreichung — Woche ${weekNumber}, Monat ${monthNumber}` }));
-  for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
-    if (weekTarget) {
-      if (weekTarget[target] === 0 && weekActual[actual] === 0) {
-        goalCard.appendChild(el("p", { class: "item-hint soll-empty", text: `${label}: Kein Soll in dieser Woche` }));
-      } else {
-        goalCard.appendChild(progressBar(targetPercent(weekActual[actual], weekTarget[target]), `${label} · ${weekActual[actual]}/${weekTarget[target]}`));
-      }
-    } else {
-      goalCard.appendChild(el("p", { text: `${label} · ${weekActual[actual]} diese Woche` }));
-    }
-  }
-  const monthly = weeklyPlan.computeMilestoneProgress(
-    state.content.weeklyPlan, activity, state.settings.startDate, monthNumber, certification, certifications
-  );
-  goalCard.appendChild(el("h3", { text: `Monat ${monthNumber} · kumulierter Stand zum Meilenstein` }));
-  if (milestone) goalCard.appendChild(el("p", { class: "milestone", text: milestone }));
-  for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
-    if (monthly.target[target] === 0 && monthly.actual[actual] === 0) {
-      goalCard.appendChild(el("p", { class: "item-hint soll-empty", text: `${label}: Kein Soll in diesem Monat` }));
-    } else {
-      goalCard.appendChild(progressBar(targetPercent(monthly.actual[actual], monthly.target[target]), `${label} · ${monthly.actual[actual]}/${monthly.target[target]}`));
-    }
-  }
-  goalCard.appendChild(el("p", { class: "item-hint", text: "Die Lernreifeanzeige ist ein Indikator für deinen Lernfortschritt, keine Garantie für das Bestehen der Prüfung." }));
-  container.appendChild(goalCard);
-
-  // Wochenrückblick: Trefferquote, Wiederholungsquote, schwächste Themen dieser Woche, konkrete Empfehlung.
   const weekWeakDomains = weeklyPlan.getWeekWeakDomains(activity, state.settings.startDate, weekNumber, certifications, domains);
   const reviewRatePercent =
     weekTarget && weekTarget.reviewsTarget > 0 ? Math.round((weekActual.reviews / weekTarget.reviewsTarget) * 100) : null;
   const recommendation = weeklyPlan.buildWeeklyRecommendation({ weekActual, weekTarget, weakDomains: weekWeakDomains });
 
-  const reviewCard = el("div", { class: "card" });
-  reviewCard.appendChild(el("h2", { text: `Wochenrückblick — Woche ${weekNumber}` }));
-  reviewCard.appendChild(el("p", {
+  const weekSummaryCard = el("div", { class: "card" });
+  weekSummaryCard.appendChild(el("h2", { text: `Woche ${weekNumber} — Ziel & Rückblick` }));
+  for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
+    if (weekTarget) {
+      if (weekTarget[target] === 0 && weekActual[actual] === 0) {
+        weekSummaryCard.appendChild(el("p", { class: "item-hint soll-empty", text: `${label}: Kein Soll in dieser Woche` }));
+      } else {
+        weekSummaryCard.appendChild(progressBar(targetPercent(weekActual[actual], weekTarget[target]), `${label} · ${weekActual[actual]}/${weekTarget[target]}`));
+      }
+    } else {
+      weekSummaryCard.appendChild(el("p", { text: `${label} · ${weekActual[actual]} diese Woche` }));
+    }
+  }
+  weekSummaryCard.appendChild(el("p", {
     text: `Trefferquote diese Woche: ${weekActual.accuracy != null ? weekActual.accuracy + "%" : "– (noch keine gewerteten Antworten)"} (${weekActual.totalAnswers} Antworten)`
   }));
-  reviewCard.appendChild(el("p", {
+  weekSummaryCard.appendChild(el("p", {
     text:
       reviewRatePercent != null
         ? `Wiederholungsquote: ${reviewRatePercent}% des Wochenziels erreicht (${weekActual.reviews}/${weekTarget.reviewsTarget} Wiederholungen)`
         : `Wiederholungen diese Woche · ${weekActual.reviews} (kein Soll)`
   }));
   if (weekWeakDomains.length > 0) {
-    reviewCard.appendChild(el("p", { text: "Schwächste Themen diese Woche:" }));
+    weekSummaryCard.appendChild(el("p", { text: "Schwächste Themen diese Woche:" }));
     const list = el("ul");
     weekWeakDomains.slice(0, 3).forEach((w) => list.appendChild(el("li", { text: `${w.name}: ${w.accuracy}% (${w.total} Antworten)` })));
-    reviewCard.appendChild(list);
-  } else {
-    reviewCard.appendChild(el("p", { class: "item-hint", text: "Noch nicht genug Antworten diese Woche für eine Schwachpunktanalyse (mindestens 2 pro Domain nötig)." }));
+    weekSummaryCard.appendChild(list);
   }
-  reviewCard.appendChild(el("p", { class: "milestone" }, [el("strong", { text: "Empfehlung: " }), document.createTextNode(recommendation)]));
-  container.appendChild(reviewCard);
+  weekSummaryCard.appendChild(el("p", { class: "milestone" }, [el("strong", { text: "Empfehlung: " }), document.createTextNode(recommendation)]));
+  weekSummaryCard.appendChild(el("p", { class: "item-hint", text: "Die Lernreifeanzeige ist ein Indikator für deinen Lernfortschritt, keine Garantie für das Bestehen der Prüfung." }));
+  overviewPanel.appendChild(weekSummaryCard);
 
-  // Domain-Abdeckung nach Gewichtung (nur Domains des aktiven Lernpfads, Top 4 + Rest klappbar)
+  // Tab 2: Domain-Abdeckung + Schwachpunktanalyse
   const all = allLearnableContent().filter((i) => certifications.includes(i.content.certification));
   const { answered, consolidated } = summarizeActivity(activity, state.progressByContentId);
   const domainCard = el("div", { class: "card" });
@@ -139,19 +179,7 @@ export async function render(container, ctx) {
     class: "item-hint",
     text: "Als gefestigt zählt eine Aufgabe nach richtigen Antworten an zwei verschiedenen Kalendertagen seit dem letzten Fehler."
   }));
-  container.appendChild(domainCard);
-
-  const formats = el("div", { class: "card" }, [el("h2", { text: "Fortschritt je Übungsformat" })]);
-  for (const [title, types] of [
-    ["Vokabel im Kontext", ["vocabulary"]],
-    ["Definitions-Matching", ["definition"]],
-    ["Szenario und Reading", ["readingPassage", "question"]]
-  ]) {
-    const items = all.filter((item) => types.includes(item.contentType));
-    const done = items.filter((item) => answered.has(item.content.id)).length;
-    formats.appendChild(progressBar(done / Math.max(1, items.length) * 100, `${title} · ${done}/${items.length} bearbeitet`));
-  }
-  container.appendChild(formats);
+  domainsPanel.appendChild(domainCard);
 
   // Schwachpunktanalyse (direkt anklickbar zum gezielten Üben)
   const weakCard = el("div", { class: "card" });
@@ -159,7 +187,7 @@ export async function render(container, ctx) {
   const byDomain = new Map();
   for (const a of activity) {
     if (!a.examDomainId) continue;
-    if (typeof a.correct !== "boolean") continue; // reines Kennenlernen einer Vokabel zählt nicht als Trefferquote
+    if (typeof a.correct !== "boolean") continue;
     if (!byDomain.has(a.examDomainId)) byDomain.set(a.examDomainId, { correct: 0, total: 0 });
     const e = byDomain.get(a.examDomainId);
     e.total += 1;
@@ -171,7 +199,7 @@ export async function render(container, ctx) {
     .sort((a, b) => a.accuracy - b.accuracy);
 
   if (weak.length === 0) {
-    weakCard.appendChild(el("p", { class: "item-hint", text: "Noch nicht genug Daten für eine Schwachpunktanalyse." }));
+    weakCard.appendChild(el("p", { class: "item-hint", text: "Noch nicht genug Daten für eine Schwachpunktanalyse (mindestens 3 Antworten pro Domain nötig)." }));
   } else {
     const list = el("ul", { class: "weak-links-list" });
     weak.forEach((w) => {
@@ -185,7 +213,35 @@ export async function render(container, ctx) {
     });
     weakCard.appendChild(list);
   }
-  container.appendChild(weakCard);
+  domainsPanel.appendChild(weakCard);
+
+  // Tab 3: Formate & Monatsmeilenstein
+  const formats = el("div", { class: "card" }, [el("h2", { text: "Fortschritt je Übungsformat" })]);
+  for (const [title, types] of [
+    ["Vokabel im Kontext", ["vocabulary"]],
+    ["Definitions-Matching", ["definition"]],
+    ["Szenario und Reading", ["readingPassage", "question"]]
+  ]) {
+    const items = all.filter((item) => types.includes(item.contentType));
+    const done = items.filter((item) => answered.has(item.content.id)).length;
+    formats.appendChild(progressBar(done / Math.max(1, items.length) * 100, `${title} · ${done}/${items.length} bearbeitet`));
+  }
+  formatsPanel.appendChild(formats);
+
+  const monthly = weeklyPlan.computeMilestoneProgress(
+    state.content.weeklyPlan, activity, state.settings.startDate, monthNumber, certification, certifications
+  );
+  const milestoneCard = el("div", { class: "card" });
+  milestoneCard.appendChild(el("h2", { text: `Monat ${monthNumber} · kumulierter Stand zum Meilenstein` }));
+  if (milestone) milestoneCard.appendChild(el("p", { class: "milestone", text: milestone }));
+  for (const [label, actual, target] of weeklyPlan.GOAL_METRICS) {
+    if (monthly.target[target] === 0 && monthly.actual[actual] === 0) {
+      milestoneCard.appendChild(el("p", { class: "item-hint soll-empty", text: `${label}: Kein Soll in diesem Monat` }));
+    } else {
+      milestoneCard.appendChild(progressBar(targetPercent(monthly.actual[actual], monthly.target[target]), `${label} · ${monthly.actual[actual]}/${monthly.target[target]}`));
+    }
+  }
+  formatsPanel.appendChild(milestoneCard);
 }
 
 

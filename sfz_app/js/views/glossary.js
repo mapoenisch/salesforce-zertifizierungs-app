@@ -37,34 +37,48 @@ export async function render(container, ctx) {
     explanationLower: v.germanExplanation.toLowerCase()
   }));
 
-  const formCard = el("div", { class: "card" });
-  const searchInput = el("input", { attrs: { type: "text", placeholder: "Begriff suchen…" } });
+  const formCard = el("div", { class: "card glossary-filter-card" });
+  const searchInput = el("input", { attrs: { type: "search", placeholder: "Begriff oder Erklärung suchen…" } });
   searchInput.addEventListener("input", () => { filters.search = searchInput.value.toLowerCase(); renderList(); });
   formCard.appendChild(el("label", { class: "filter-field" }, [el("span", { text: "Suche" }), searchInput]));
+
+  const filterDetails = el("details", { class: "quiz-filters glossary-filters-details" });
+  const filterSummary = el("summary", { text: "Weitere Filter (Zertifizierung, Domain, CEFR)" });
+  filterDetails.appendChild(filterSummary);
 
   const row = el("div", { class: "filter-row" });
   const selectControls = [];
   if (activePath === "administrator-full") {
     const field = selectField("Zertifizierung", filters, "certification", [
       ["both", "Beide Pfade"], ["foundations", "Nur Foundations"], ["administrator", "Nur Administrator"]
-    ], renderListRef);
+    ], onFilterChange);
     selectControls.push({ key: "certification", defaultVal: "both", select: field.querySelector("select") });
     row.appendChild(field);
   }
   const domainField = selectField("Exam-Domain", filters, "examDomainId", [
     ["all", "Alle"], ...domains.map((d) => [d.id, `${d.name} (${certLabel(d.certification)})`])
-  ], renderListRef);
+  ], onFilterChange);
   selectControls.push({ key: "examDomainId", defaultVal: "all", select: domainField.querySelector("select") });
   row.appendChild(domainField);
 
   const cefrField = selectField("CEFR-Level", filters, "cefr", [
     ["both", "Beide"], ["B1", "B1"], ["B2", "B2"]
-  ], renderListRef);
+  ], onFilterChange);
   selectControls.push({ key: "cefr", defaultVal: "both", select: cefrField.querySelector("select") });
   row.appendChild(cefrField);
 
-  formCard.appendChild(row);
+  filterDetails.appendChild(row);
   const resetBtn = el("button", { class: "secondary-btn", text: "Filter zurücksetzen", attrs: { type: "button" } });
+  function updateFilterSummary() {
+    const activeCount = selectControls.filter((c) => filters[c.key] !== c.defaultVal).length;
+    filterSummary.textContent = activeCount > 0
+      ? `Weitere Filter (${activeCount} aktiv)`
+      : "Weitere Filter (Zertifizierung, Domain, CEFR)";
+  }
+  function onFilterChange() {
+    updateFilterSummary();
+    renderList();
+  }
   function resetFilters() {
     filters.search = "";
     searchInput.value = "";
@@ -72,10 +86,12 @@ export async function render(container, ctx) {
       filters[ctrl.key] = ctrl.defaultVal;
       ctrl.select.value = ctrl.defaultVal;
     }
+    updateFilterSummary();
     renderList();
   }
   resetBtn.addEventListener("click", resetFilters);
-  formCard.appendChild(el("div", { class: "filter-actions-row" }, [resetBtn]));
+  filterDetails.appendChild(el("div", { class: "filter-actions-row" }, [resetBtn]));
+  formCard.appendChild(filterDetails);
   container.appendChild(formCard);
 
   const countStatus = el("p", { class: "glossary-count", attrs: { role: "status" } });

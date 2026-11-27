@@ -74,8 +74,12 @@ export async function render(container, ctx) {
     const minutes = minutesInput.valueAsNumber;
     if (Number.isInteger(minutes) && minutes >= 5 && minutes <= 120) {
       saveSettings({ dailySessionMinutesTarget: minutes });
+      goalStatus.classList.remove("status-error");
+      minutesInput.removeAttribute("aria-invalid");
       goalStatus.textContent = `Tagesziel auf ${minutes} Min. gespeichert.`;
     } else {
+      goalStatus.classList.add("status-error");
+      minutesInput.setAttribute("aria-invalid", "true");
       goalStatus.textContent = "Ungültiges Tagesziel (erlaubt: 5 bis 120 Minuten) — vorheriger Wert wiederhergestellt.";
     }
     minutesInput.value = state.settings.dailySessionMinutesTarget;
@@ -89,8 +93,12 @@ export async function render(container, ctx) {
   startInput.addEventListener("change", () => {
     if (isCalendarDate(startInput.value)) {
       saveSettings({ startDate: startInput.value });
+      goalStatus.classList.remove("status-error");
+      startInput.removeAttribute("aria-invalid");
       goalStatus.textContent = `Startdatum auf ${startInput.value} gespeichert.`;
     } else {
+      goalStatus.classList.add("status-error");
+      startInput.setAttribute("aria-invalid", "true");
       goalStatus.textContent = "Ungültiges Datum (erwartet JJJJ-MM-TT) — vorheriger Wert wiederhergestellt.";
     }
     startInput.value = state.settings.startDate;
@@ -167,8 +175,8 @@ export async function render(container, ctx) {
   const resetBtn = el("button", { class: "danger-btn", text: "Lernfortschritt löschen", attrs: { type: "button" } });
   resetBtn.addEventListener("click", async () => {
     const confirmed = await confirmDialog("Lernfortschritt wirklich löschen? Kann nicht rückgängig gemacht werden!", {
-      confirmText: "Ja",
-      cancelText: "Nein",
+      confirmText: "Fortschritt löschen",
+      cancelText: "Abbrechen",
       danger: true,
       signal: ctx.signal
     });

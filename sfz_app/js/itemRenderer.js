@@ -2,14 +2,16 @@
 // und ruft nach Abschluss onAnswered({correct, confidence, responseTimeMs}) auf.
 // Wird sowohl vom Lernmodus (learn.js) als auch vom freien Üben (quiz.js) genutzt.
 
-import { domainMap } from "./state.js";
+import { state, domainMap } from "./state.js";
+import { computeNextProgress, emptyProgress } from "./sm2.js";
 import { el, clear, shuffle, disclaimerNote, focusContent } from "./utils.js";
 
-function renderItemMetaPills(content) {
+function renderItemMetaPills(content, opts = {}) {
   if (!content) return null;
   const domain = domainMap().get(content.examDomainId);
   const cefrClass = content.cefr === "B2" ? "meta-pill meta-pill-b2" : "meta-pill meta-pill-b1";
   return el("div", { class: "meta-pills item-meta-pills" }, [
+    opts.isIntro && el("span", { class: "meta-pill meta-pill-intro", text: "Neue Vokabel" }),
     domain && el("span", { class: "meta-pill", text: domain.name }),
     content.cefr && el("span", { class: cefrClass, text: `CEFR ${content.cefr}` })
   ]);
@@ -43,7 +45,7 @@ export function renderItem(container, item, { onAnswered }) {
 function renderVocabularyIntro(container, content, startTime, onAnswered) {
   const card = el("div", { class: "item-card vocab-intro-card" });
   card.appendChild(el("h2", { class: "vocab-intro-term", text: content.term, attrs: { lang: "en" } }));
-  const meta = renderItemMetaPills(content);
+  const meta = renderItemMetaPills(content, { isIntro: true });
   if (meta) card.appendChild(meta);
   const exampleSentence = content.clozeSentence.replace("____", content.term);
   card.appendChild(el("p", { class: "example-sentence" }, [el("strong", { text: "Beispiel: " }), el("span", { text: exampleSentence, attrs: { lang: "en" } })]));
@@ -69,7 +71,7 @@ function renderVocabularyIntro(container, content, startTime, onAnswered) {
     { once: true }
   );
   card.appendChild(continueBtn);
-  bindItemShortcuts(card, () => ({ onEnter: () => triggerContinueShortcut(card) }));
+  bindItemShortcuts(card, () => ({ onEnter: () => triggerContinueShortcut(card), onSpace: () => triggerContinueShortcut(card) }));
   container.appendChild(card);
 }
 
@@ -104,6 +106,8 @@ function bindItemShortcuts(root, getHandlers) {
       if (handlers.onNumber?.(n)) ev.preventDefault();
     } else if (ev.key === "Enter" && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
       if (handlers.onEnter?.()) ev.preventDefault();
+    } else if (ev.key === " " && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
+      if (handlers.onSpace?.()) ev.preventDefault();
     }
   }
   function cleanup() {
@@ -179,13 +183,13 @@ function showVocabExplanation(card, content, correct, startTime, onAnswered) {
     ]));
   }
   card.appendChild(panel);
-  appendConfidenceAndContinue(card, correct, startTime, onAnswered);
+  appendConfidenceAndContinue(card, content, correct, startTime, onAnswered);
 }
 
 // ---------- Definitions-Matching ----------
 
 function triggerConfidenceShortcut(root, n) {
-  if (n < 1 || n > 5) return false;
+  if (n < 1 || n > 3) return false;
   const btn = root.querySelector(`.confidence-btn:nth-of-type(${n})`);
   if (!btn || btn.disabled) return false;
   btn.click();
@@ -240,7 +244,7 @@ function renderDefinition(container, content, startTime, onAnswered) {
       }
       panel.appendChild(el("p", {}, [el("strong", { text: "Erklärung: " }), document.createTextNode(content.germanExplanation)]));
       card.appendChild(panel);
-      appendConfidenceAndContinue(card, correct, startTime, onAnswered);
+      appendConfidenceAndContinue(card, content, correct, startTime, onAnswered);
     });
     optionsWrap.appendChild(btn);
     return btn;
@@ -351,12 +355,9 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
 
     const panel = el("div", { class: "explanation-panel" });
     panel.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig!" : "Nicht ganz." }));
-    options.forEach((opt) => {
-      panel.appendChild(el("p", { class: "option-explanation" }, [
-        el("strong", { text: (opt.correct ? "✓ " : "✗ ") + opt.text, attrs: { lang: "en" } }),
-        document.createTextNode(" – " + opt.explanation)
-      ]));
-    });
+    if (questionContent.germanExplanation) {
+      panel.appendChild(el("p", {}, [el("strong", { text: "Fachliche Erklärung: " }), document.createTextNode(questionContent.germanExplanation)]));
+    }
     if (questionContent.signalWordAnalysis?.length) {
       const sig = el("div", { class: "signal-words" });
       sig.appendChild(el("strong", { text: "Signalwort-Analyse:" }));
@@ -365,13 +366,21 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
       sig.appendChild(list);
       panel.appendChild(sig);
     }
-    if (questionContent.germanExplanation) {
-      panel.appendChild(el("p", {}, [el("strong", { text: "Fachliche Erklärung: " }), document.createTextNode(questionContent.germanExplanation)]));
-    }
+    const details = el("details", { class: "explanation-details" }, [
+      el("summary", { text: `Alle Antwortoptionen im Detail (${options.length})` })
+    ]);
+    options.forEach((opt) => {
+      details.appendChild(el("p", { class: "option-explanation" }, [
+        el("strong", { text: (opt.correct ? "✓ " : "✗ ") + opt.text, attrs: { lang: "en" } }),
+        document.createTextNode(" – " + opt.explanation)
+      ]));
+    });
+    panel.appendChild(details);
     card.appendChild(panel);
 
     if (opts.skipConfidence) {
       // Teilfrage einer Reading-Passage: keine eigene Sicherheitsabfrage, nur einfacher Weiter-Button.
+      const bar = el("div", { class: "session-action-bar" });
       const continueBtn = el("button", { class: "primary-btn", text: "Weiter", attrs: { type: "button" } });
       continueBtn.addEventListener(
         "click",
@@ -381,10 +390,11 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
         },
         { once: true }
       );
-      card.appendChild(continueBtn);
+      bar.appendChild(continueBtn);
+      card.appendChild(bar);
       focusContent(panel.querySelector("p"));
     } else {
-      appendConfidenceAndContinue(card, correct, startTime, onAnswered);
+      appendConfidenceAndContinue(card, questionContent, correct, startTime, onAnswered);
     }
   }
 
@@ -436,7 +446,7 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
         onNumber: (n) => triggerConfidenceShortcut(wrap, n),
         onEnter: () => triggerContinueShortcut(wrap)
       }));
-      appendConfidenceAndContinue(wrap, allCorrect, startTime, onAnswered);
+      appendConfidenceAndContinue(wrap, content, allCorrect, startTime, onAnswered);
       return;
     }
     clear(questionHost);
@@ -471,30 +481,63 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
 
 // ---------- Gemeinsame Sicherheitsabfrage + Weiter-Button ----------
 
-function appendConfidenceAndContinue(host, correct, startTime, onAnswered) {
+const CONFIDENCE_LEVELS = [
+  { key: "1", label: "Geraten", value: 1 },
+  { key: "2", label: "Unsicher", value: 3 },
+  { key: "3", label: "Sicher", value: 5 }
+];
+
+function formatSm2Preview(existingProgress, correct, confidence) {
+  const next = computeNextProgress(existingProgress || {}, { correct, confidence });
+  if (next.flag === "relearn") return "Morgen erneut lernen";
+  if (next.intervalDays === 1) {
+    return next.flag === "later" ? "Wiederholung: morgen (vorgemerkt)" : "Nächste Wiederholung: morgen";
+  }
+  return `Nächste Wiederholung: in ${next.intervalDays} Tagen`;
+}
+
+function appendConfidenceAndContinue(host, content, correct, startTime, onAnswered) {
   const responseTimeMs = performance.now() - startTime;
-  const wrap = el("div", { class: "confidence-wrap" });
-  const label = "Wie sicher warst du dir? (optional, 1 = geraten, 5 = sehr sicher)";
-  wrap.appendChild(el("p", { class: "item-hint", text: label }));
+  const existingProgress = content?.id ? state.progressByContentId.get(content.id) || emptyProgress(content, "") : {};
+  const wrap = el("div", { class: "confidence-wrap session-action-bar" });
+
+  const headerRow = el("div", { class: "confidence-header" });
+  const label = "Wie sicher warst du dir? (optional)";
+  headerRow.appendChild(el("span", { class: "confidence-label", text: label }));
+  const sm2Preview = el("span", {
+    class: "sm2-preview",
+    text: formatSm2Preview(existingProgress, correct, null),
+    attrs: { role: "status" }
+  });
+  headerRow.appendChild(sm2Preview);
+  wrap.appendChild(headerRow);
+
+  const controlsRow = el("div", { class: "confidence-controls-row" });
   const scale = el("div", { class: "confidence-scale", attrs: { role: "group", "aria-label": label } });
   let chosen = null;
 
-  const btns = [1, 2, 3, 4, 5].map((n) => {
-    const b = el("button", { class: "confidence-btn", text: String(n), attrs: { type: "button", "aria-pressed": "false" } });
+  CONFIDENCE_LEVELS.forEach(({ key, label: text, value }) => {
+    const b = el("button", {
+      class: "confidence-btn",
+      attrs: { type: "button", "aria-pressed": "false", "data-confidence": String(value) }
+    }, [
+      el("kbd", { class: "keycap", text: key, attrs: { "aria-hidden": "true" } }),
+      el("span", { text })
+    ]);
     b.addEventListener("click", () => {
-      chosen = chosen === n ? null : n;
+      chosen = chosen === value ? null : value;
       for (const button of scale.children) {
-        const pressed = Number(button.textContent) === chosen;
+        const pressed = Number(button.dataset.confidence) === chosen;
         button.classList.toggle("confidence-selected", pressed);
         button.setAttribute("aria-pressed", String(pressed));
       }
+      sm2Preview.textContent = formatSm2Preview(existingProgress, correct, chosen);
     });
     scale.appendChild(b);
-    return b;
   });
-  wrap.appendChild(scale);
+  controlsRow.appendChild(scale);
 
-  const continueBtn = el("button", { class: "primary-btn", text: "Weiter", attrs: { type: "button" } });
+  const continueBtn = el("button", { class: "primary-btn confidence-continue-btn", text: "Weiter", attrs: { type: "button" } });
   continueBtn.addEventListener(
     "click",
     () => {
@@ -503,7 +546,8 @@ function appendConfidenceAndContinue(host, correct, startTime, onAnswered) {
     },
     { once: true }
   );
-  wrap.appendChild(continueBtn);
+  controlsRow.appendChild(continueBtn);
+  wrap.appendChild(controlsRow);
   host.appendChild(wrap);
-  focusContent(host.querySelector(".result-correct, .result-incorrect") || wrap.querySelector("p"));
+  focusContent(host.querySelector(".result-correct, .result-incorrect") || wrap.querySelector("span"));
 }
