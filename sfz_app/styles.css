@@ -1737,7 +1737,296 @@ h1 {
   }
 }
 
+/* Fallakte (Szenariofragen) */
+
+.fallakte {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(14px, 3vw, 24px);
+  min-width: 0;
+  box-shadow: var(--card-shadow);
+}
+
+.fallakte-embedded {
+  min-width: 0;
+}
+
+.fallakte-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.25rem 0.9rem;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.fallakte-step {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fallakte-source {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.fallakte-heading {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.2rem);
+  line-height: 1.3;
+}
+
+.fallakte-question {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.05rem, 1rem + 0.4vw, 1.2rem);
+  line-height: 1.55;
+}
+
+.fall-options {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0.25rem;
+  border: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+
+.fall-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 52px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border-control);
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  cursor: pointer;
+}
+
+.fall-option:hover {
+  border-color: var(--accent);
+}
+
+.fall-option-input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  display: grid;
+  place-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  border: 2px solid var(--border-control);
+  border-radius: 50%;
+  background: var(--bg-card);
+  cursor: pointer;
+}
+
+.fall-option-checkbox {
+  border-radius: 4px;
+}
+
+.fall-option-input::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: scale(0);
+  transition: transform 120ms ease-in-out;
+}
+
+.fall-option-checkbox::before {
+  border-radius: 2px;
+}
+
+.fall-option-input:checked {
+  border-color: var(--accent);
+}
+
+.fall-option-input:checked::before {
+  transform: scale(1);
+}
+
+.fall-option-input:disabled {
+  cursor: default;
+  border-color: var(--text-muted);
+}
+
+.fall-option:has(.fall-option-input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.fall-option-correct .fall-option-input,
+.fall-option-correct .fall-option-input:disabled {
+  border-color: var(--success);
+}
+
+.fall-option-correct .fall-option-input::before {
+  background: var(--success);
+}
+
+.fall-option-wrong .fall-option-input,
+.fall-option-wrong .fall-option-input:disabled {
+  border-color: var(--error);
+}
+
+.fall-option-wrong .fall-option-input::before {
+  background: var(--error);
+}
+
+.fall-option-letter {
+  min-width: 1.1em;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.fall-option-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.fall-option:has(.fall-option-input:checked) {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.fall-option:has(.fall-option-input:checked) .fall-option-letter {
+  color: var(--accent);
+}
+
+.fall-option:has(.fall-option-input:disabled) {
+  cursor: default;
+}
+
+.fall-option:not(.fall-option-correct):not(.fall-option-wrong):has(.fall-option-input:disabled):hover {
+  border-color: var(--border-control);
+}
+
+.fall-option.fall-option-correct,
+.fall-option.fall-option-correct:hover {
+  border-color: var(--success);
+  background: var(--success-bg);
+}
+
+.fall-option.fall-option-wrong,
+.fall-option.fall-option-wrong:hover {
+  border-color: var(--error);
+  background: var(--error-bg);
+}
+
+.fall-option-tag {
+  display: inline-block;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fall-option-tag-correct {
+  color: var(--success);
+}
+
+.fall-option-tag-wrong {
+  color: var(--error);
+}
+
+.fall-error {
+  margin: 0.5rem 0 0;
+  color: var(--error);
+  font-weight: 600;
+}
+
+.fall-actions {
+  margin-top: 1rem;
+}
+
+.fall-check-btn {
+  width: 100%;
+  max-width: 340px;
+}
+
+.fall-resolution {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.fall-verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.fall-why-heading {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 1rem;
+}
+
+.fall-language-note {
+  margin: 0.75rem 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  font-size: 0.92rem;
+}
+
+.fall-signal-list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.fall-next-row {
+  margin-top: 1rem;
+}
+
+@media (max-width: 760px) {
+  .fall-check-btn {
+    max-width: none;
+  }
+
+  .fallakte-head {
+    flex-direction: column;
+  }
+}
+
 @media (forced-colors: active) {
+  .fall-option-input {
+    appearance: auto;
+    -webkit-appearance: auto;
+    background: none;
+  }
+  .fall-option-input::before {
+    content: none;
+  }
+  .fall-option:has(.fall-option-input:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .fall-option-correct {
+    outline: 2px solid Highlight;
+  }
+  .fall-option-wrong {
+    outline: 2px dashed CanvasText;
+  }
+  .fall-option-tag {
+    border-color: CanvasText;
+  }
   .progress-bar-track {
     border: 1px solid ButtonBorder;
   }

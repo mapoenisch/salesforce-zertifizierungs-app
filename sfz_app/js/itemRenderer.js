@@ -344,119 +344,191 @@ function renderDefinition(container, content, startTime, onAnswered) {
  *   dann wird hier keine eigene Sicherheitsabfrage gezeigt (das übernimmt die Passage als Ganzes),
  *   sondern nur ein einfacher "Weiter"-Button, der direkt {correct} zurückmeldet.
  */
+let fallakteCounter = 0;
+
+function optionLetter(idx) {
+  return String.fromCharCode(65 + idx);
+}
+
 function renderQuestion(container, questionContent, opts, startTime, onAnswered) {
-  const card = el("div", { class: opts.embedded ? "passage-subquestion" : "item-card" });
-  const headingText = opts.subTotal > 1 ? `Teilfrage ${opts.subIndex + 1} von ${opts.subTotal}` : "Szenario-Frage";
-  card.appendChild(el(opts.skipConfidence ? "h3" : "h2", { class: "item-title", text: headingText }));
+  fallakteCounter += 1;
+  const instanceName = `fall-q-${fallakteCounter}`;
+  const isMulti = questionContent.type === "multiple-select";
+  const card = el("div", { class: opts.embedded ? "passage-subquestion fallakte-embedded" : "fallakte" });
+
   if (!opts.embedded) {
-    const meta = renderItemMetaPills(questionContent);
-    if (meta) card.appendChild(meta);
+    const domain = domainMap().get(questionContent.examDomainId);
+    const sourceParts = [domain?.name, questionContent.cefr ? `CEFR ${questionContent.cefr}` : ""].filter(Boolean);
+    card.appendChild(el("header", { class: "fallakte-head" }, [
+      el("h2", { class: "fallakte-step", text: "Szenario-Frage" }),
+      sourceParts.length ? el("p", { class: "fallakte-source", text: sourceParts.join(" · ") }) : null
+    ]));
+  } else {
+    const headingText = opts.subTotal > 1 ? `Teilfrage ${opts.subIndex + 1} von ${opts.subTotal}` : "Szenario-Frage";
+    card.appendChild(el("h3", { class: "fallakte-heading", text: headingText }));
   }
+
   if (!opts.disclaimerAlreadyShown) {
     card.appendChild(disclaimerNote());
-    if (questionContent.scenario) card.appendChild(el("p", { class: "item-scenario", text: questionContent.scenario, attrs: { lang: "en" } }));
+    if (questionContent.scenario) {
+      card.appendChild(el("p", { class: "item-scenario", text: questionContent.scenario, attrs: { lang: "en" } }));
+    }
   }
-  card.appendChild(el("p", { class: "item-question", text: questionContent.questionText || questionContent.text, attrs: { lang: "en" } }));
+  card.appendChild(el("p", {
+    class: "fallakte-question",
+    text: questionContent.questionText || questionContent.text,
+    attrs: { lang: "en" }
+  }));
 
-  const isMulti = questionContent.type === "multiple-select";
-  if (isMulti) card.appendChild(el("p", { class: "item-hint", text: "Mehrfachauswahl möglich — wähle alle zutreffenden Antworten." }));
+  if (isMulti) {
+    card.appendChild(el("p", { class: "item-hint", text: "Mehrfachauswahl möglich — wähle alle zutreffenden Antworten." }));
+  }
 
-  const optionsWrap = el("div", { class: "item-options item-options-list" });
+  const fieldset = el("fieldset", { class: "fall-options" }, [
+    el("legend", { class: "visually-hidden", text: "Antwort auswählen" })
+  ]);
   const selected = new Set();
   let answered = false;
 
-  const options = questionContent.options;
-  const submitBtn = el("button", {
-    class: "primary-btn",
-    text: isMulti ? "Antwort abgeben" : "Prüfen",
-    attrs: { type: "button", disabled: "" }
-  });
-  submitBtn.addEventListener("click", () => submit());
+  const error = el("p", { class: "fall-error", attrs: { role: "alert" } });
+  error.hidden = true;
 
-  const optButtons = options.map((opt, idx) => {
-    const btn = el("button", {
-      class: "option-btn option-btn-wide",
-      attrs: { type: "button", lang: "en", "aria-pressed": "false" }
-    }, [el("span", { class: "option-text", text: opt.text })]);
-    addOptionKeycap(btn, idx);
-    btn.addEventListener("click", () => {
+  const options = questionContent.options;
+  const optRows = options.map((opt, idx) => {
+    const input = el("input", {
+      class: isMulti ? "fall-option-input fall-option-checkbox" : "fall-option-input",
+      attrs: {
+        type: isMulti ? "checkbox" : "radio",
+        name: instanceName,
+        value: opt.id
+      }
+    });
+    const row = el("label", {
+      class: "fall-option",
+      attrs: { "data-opt-id": opt.id }
+    }, [
+      input,
+      el("span", { class: "fall-option-letter", text: optionLetter(idx), attrs: { "aria-hidden": "true" } }),
+      el("span", { class: "fall-option-text", text: opt.text, attrs: { lang: "en" } })
+    ]);
+    input.addEventListener("change", () => {
       if (answered) return;
       if (isMulti) {
-        if (selected.has(opt.id)) selected.delete(opt.id);
-        else selected.add(opt.id);
+        if (input.checked) selected.add(opt.id);
+        else selected.delete(opt.id);
       } else {
         selected.clear();
-        selected.add(opt.id);
+        if (input.checked) selected.add(opt.id);
       }
-      for (const b of optButtons) {
-        const isSel = selected.has(b.dataset.optId);
-        b.classList.toggle("option-selected", isSel);
-        b.setAttribute("aria-pressed", String(isSel));
-      }
-      submitBtn.disabled = selected.size === 0;
+      error.hidden = true;
     });
-    optionsWrap.appendChild(btn);
-    btn.dataset.optId = opt.id;
-    return btn;
+    fieldset.appendChild(row);
+    return { input, row, opt };
   });
-  card.appendChild(optionsWrap);
-  card.appendChild(submitBtn);
+  card.appendChild(fieldset);
+  card.appendChild(error);
+
+  const submitBtn = el("button", {
+    class: "primary-btn fall-check-btn",
+    text: isMulti ? "Antwort abgeben" : "Antwort prüfen",
+    attrs: { type: "button" }
+  });
+  const actionsWrap = el("div", { class: "fall-actions" }, [submitBtn]);
+  submitBtn.addEventListener("click", () => submit());
+  card.appendChild(actionsWrap);
 
   const shortcutScope = opts.shortcutScope || card;
   bindItemShortcuts(shortcutScope, () => ({
     onNumber: (n) => {
-      if (!answered && n <= optButtons.length) { optButtons[n - 1].click(); return true; }
+      if (!answered && n <= optRows.length) {
+        const entry = optRows[n - 1];
+        if (isMulti) entry.input.checked = !entry.input.checked;
+        else entry.input.checked = true;
+        entry.input.dispatchEvent(new Event("change", { bubbles: true }));
+        return true;
+      }
       if (answered && !opts.skipConfidence) return triggerConfidenceShortcut(shortcutScope, n);
       return false;
     },
     onEnter: () => {
-      if (!answered && !submitBtn.disabled) { submitBtn.click(); return true; }
+      if (!answered) { submit(); return true; }
       return triggerContinueShortcut(shortcutScope);
     }
   }));
 
   function submit() {
     if (answered) return;
+    if (selected.size === 0) {
+      error.textContent = isMulti ? "Wähle mindestens eine Antwort." : "Wähle eine Antwort.";
+      error.hidden = false;
+      optRows[0]?.input.focus();
+      return;
+    }
     answered = true;
-    if (submitBtn) submitBtn.disabled = true;
+    error.hidden = true;
+    actionsWrap.hidden = true;
+
     const correctIds = new Set(options.filter((o) => o.correct).map((o) => o.id));
     const correct =
       correctIds.size === selected.size && [...correctIds].every((id) => selected.has(id));
 
-    [...optionsWrap.children].forEach((btn) => {
-      btn.disabled = true;
-      const opt = options.find((o) => o.id === btn.dataset.optId);
-      markOptionState(btn, opt.correct, !opt.correct && selected.has(opt.id));
-    });
-
-    const panel = el("div", { class: "explanation-panel" });
-    panel.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig!" : "Nicht ganz." }));
-    if (questionContent.germanExplanation) {
-      panel.appendChild(el("p", {}, [el("strong", { text: "Fachliche Erklärung: " }), document.createTextNode(questionContent.germanExplanation)]));
+    for (const { input, row, opt } of optRows) {
+      input.disabled = true;
+      const isChosenWrong = !opt.correct && selected.has(opt.id);
+      if (opt.correct) {
+        row.classList.add("fall-option-correct");
+        row.appendChild(el("span", { class: "fall-option-tag fall-option-tag-correct", text: "✓ Richtig" }));
+      } else if (isChosenWrong) {
+        row.classList.add("fall-option-wrong");
+        row.appendChild(el("span", { class: "fall-option-tag fall-option-tag-wrong", text: "✗ Deine Wahl" }));
+      }
     }
+
+    const correctLabels = options
+      .map((opt, idx) => (opt.correct ? `${optionLetter(idx)} · ${opt.text}` : null))
+      .filter(Boolean);
+
+    const resolution = el("div", { class: "fall-resolution" });
+    const verdict = el("p", { class: "fall-verdict", attrs: { tabindex: "-1" } }, [
+      el("span", {
+        class: `fall-option-tag ${correct ? "fall-option-tag-correct" : "fall-option-tag-wrong"}`,
+        text: correct ? "✓ Richtig" : "✗ Nicht ganz"
+      }),
+      el("span", {
+        class: "fall-verdict-answer",
+        text: ` ${correctLabels.length > 1 ? "Richtige Antworten" : "Richtige Antwort"}: ${correctLabels.join(" / ")}`
+      })
+    ]);
+    resolution.appendChild(verdict);
+
+    if (questionContent.germanExplanation) {
+      resolution.appendChild(el("h3", { class: "fall-why-heading", text: "Warum diese Antwort?" }));
+      resolution.appendChild(el("p", { text: questionContent.germanExplanation }));
+    }
+
     if (questionContent.signalWordAnalysis?.length) {
-      const sig = el("div", { class: "signal-words" });
-      sig.appendChild(el("strong", { text: "Signalwort-Analyse:" }));
-      const list = el("ul");
+      const sig = el("div", { class: "fall-language-note" });
+      sig.appendChild(el("strong", { text: "Sprachhinweis:" }));
+      const list = el("ul", { class: "fall-signal-list" });
       questionContent.signalWordAnalysis.forEach((s) => list.appendChild(el("li", { text: s })));
       sig.appendChild(list);
-      panel.appendChild(sig);
+      resolution.appendChild(sig);
     }
+
     const details = el("details", { class: "explanation-details" }, [
       el("summary", { text: `Alle Antwortoptionen im Detail (${options.length})` })
     ]);
-    options.forEach((opt) => {
+    options.forEach((opt, idx) => {
       details.appendChild(el("p", { class: "option-explanation" }, [
-        el("strong", { text: (opt.correct ? "✓ " : "✗ ") + opt.text, attrs: { lang: "en" } }),
+        el("strong", { text: `${opt.correct ? "✓ " : "✗ "}${optionLetter(idx)}. ${opt.text}`, attrs: { lang: "en" } }),
         document.createTextNode(" – " + opt.explanation)
       ]));
     });
-    panel.appendChild(details);
-    card.appendChild(panel);
+    resolution.appendChild(details);
+    card.appendChild(resolution);
 
     if (opts.skipConfidence) {
-      // Teilfrage einer Reading-Passage: keine eigene Sicherheitsabfrage, nur einfacher Weiter-Button.
-      const bar = el("div", { class: "session-action-bar" });
+      const bar = el("div", { class: "fall-next-row" });
       const continueBtn = el("button", { class: "primary-btn", text: "Weiter", attrs: { type: "button" } });
       continueBtn.addEventListener(
         "click",
@@ -468,9 +540,10 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
       );
       bar.appendChild(continueBtn);
       card.appendChild(bar);
-      focusContent(panel.querySelector("p"));
+      focusContent(verdict);
     } else {
       appendConfidenceAndContinue(card, questionContent, correct, startTime, onAnswered);
+      focusContent(verdict);
     }
   }
 
