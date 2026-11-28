@@ -1,6 +1,7 @@
 // views/quiz.js — Frage-/Prüfungsmodus: freies Üben (mit Filtern) und zeitlimitierte Mini-Prüfung.
 
 import { state, refreshLearningData, domainMap, pathCertifications } from "../state.js";
+import { EXAM_DRAFT, newSessionId, readDraft, writeDraft } from "../sessionDrafts.js";
 import { markForReview, saveAnswers } from "../learning.js";
 import { renderItem } from "../itemRenderer.js";
 import { openExamEnglishModal } from "./examEnglish.js";
@@ -8,43 +9,17 @@ import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDia
 
 const MINI_EXAM_COUNT = 10;
 const MINI_EXAM_SECONDS = 10 * 60;
-const MINI_EXAM_KEY = "sfz_mini_exam_v1";
 
 function optionLetter(idx) {
   return String.fromCharCode(65 + idx);
 }
 let activeExam;
 
-function saveMiniExam(payload) {
-  try {
-    localStorage.setItem(MINI_EXAM_KEY, JSON.stringify(payload));
-  } catch {
-    // Speicherlimit ignorieren
-  }
-}
-
-function clearMiniExam() {
-  try {
-    localStorage.removeItem(MINI_EXAM_KEY);
-  } catch {
-    // ignorieren
-  }
-}
-
 function loadMiniExam(path) {
-  try {
-    const raw = localStorage.getItem(MINI_EXAM_KEY);
-    if (!raw) return null;
-    const saved = JSON.parse(raw);
-    if (!saved || saved.path !== path || !Number.isFinite(saved.deadline) || saved.deadline <= Date.now()) {
-      clearMiniExam();
-      return null;
-    }
-    if (!Array.isArray(saved.examKeys) || !saved.examKeys.length) return null;
-    return saved;
-  } catch {
-    return null;
-  }
+  const saved = readDraft(EXAM_DRAFT);
+  if (saved?.path !== path || !Number.isFinite(saved.deadline) ||
+      !Array.isArray(saved.examKeys) || !saved.examKeys.length) return null;
+  return saved;
 }
 
 export function hasActiveExam() {
@@ -78,6 +53,7 @@ export async function render(container, ctx) {
   container.appendChild(setup);
 
   await refreshLearningData();
+  if (ctx.signal.aborted) return;
   const activePath = state.settings.certificationPath;
   const certifications = pathCertifications(activePath);
   const queryParams = new URLSearchParams(location.hash.split("?")[1] || "");
@@ -198,8 +174,11 @@ export async function render(container, ctx) {
   const runHost = el("div");
   container.appendChild(runHost);
 
-  const savedExam = loadMiniExam(state.settings.certificationPath);
-  if (savedExam) {
+  const savedExam = loadMiniExam(activePath);
+  const pauseToSetup = () => ctx.navigate("#/quiz");
+  const expired = savedExam && (savedExam.submitted || savedExam.deadline <= Date.now());
+  if (savedExam && !expired) {
+    examBtn.disabled = true;
     const remainingSec = Math.max(1, Math.ceil((savedExam.deadline - Date.now()) / 1000));
     const resumeBanner = el("div", { class: "card studio-celebration-card" }, [
       el("h2", { text: "Laufende Mini-Prüfung gefunden" }),
@@ -213,9 +192,15 @@ export async function render(container, ctx) {
           attrs: { type: "button" },
           on: {
             click: () => {
+              const latest = loadMiniExam(activePath);
               resumeBanner.remove();
+              examBtn.disabled = false;
+              if (!latest || latest.deadline !== savedExam.deadline || latest.sessionId !== savedExam.sessionId) {
+                showSetup("Dieser Prüfungsentwurf ist nicht mehr verfügbar.");
+                return;
+              }
               setup.hidden = true;
-              startMiniExam(runHost, [], showSetup, savedExam);
+              startMiniExam(runHost, [], showSetup, pauseToSetup, latest);
             }
           }
         }),
@@ -225,8 +210,15 @@ export async function render(container, ctx) {
           attrs: { type: "button" },
           on: {
             click: () => {
-              clearMiniExam();
+              const latest = loadMiniExam(activePath);
+              if (latest?.deadline === savedExam.deadline && latest.sessionId === savedExam.sessionId &&
+                  !writeDraft(EXAM_DRAFT, null)) {
+                status.textContent = "Der Prüfungsentwurf konnte nicht gelöscht werden.";
+                return;
+              }
               resumeBanner.remove();
+              examBtn.disabled = false;
+              showSetup("Prüfungsentwurf verworfen.");
             }
           }
         })
@@ -262,8 +254,13 @@ export async function render(container, ctx) {
       return;
     }
     setup.hidden = true;
-    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT), showSetup);
+    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT), showSetup, pauseToSetup);
   });
+
+  if (expired) {
+    setup.hidden = true;
+    startMiniExam(runHost, [], showSetup, pauseToSetup, savedExam);
+  }
 }
 
 // ---------- Filterformular ----------
@@ -415,40 +412,18 @@ function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
   const stopBtn = el("button", { class: "secondary-btn", text: "Beenden", attrs: { type: "button" } });
   const laterBtn = el("button", {
     class: "secondary-btn",
+    text: "Später wiederholen markieren",
     attrs: { type: "button", "aria-pressed": "false" }
-  }, [
-    el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
-    document.createTextNode(" Später wiederholen markieren")
-  ]);
+  });
   toolbar.appendChild(laterBtn);
   toolbar.appendChild(stopBtn);
 
   const heading = el("h1", { text: title });
   host.append(heading, chrome.statusBar, chrome.sessionTrack, itemHost, toolbar, status);
 
-  function onFreeKeydown(ev) {
-    if (!host.isConnected) {
-      document.removeEventListener("keydown", onFreeKeydown);
-      return;
-    }
-    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
-    if (document.querySelector(".modal-overlay")) return;
-    const tag = document.activeElement?.tagName;
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
-    if ((ev.key === "m" || ev.key === "M") && !laterBtn.disabled) {
-      ev.preventDefault();
-      laterBtn.click();
-    }
-  }
-  document.addEventListener("keydown", onFreeKeydown);
-
-  stopBtn.addEventListener("click", () => {
-    document.removeEventListener("keydown", onFreeKeydown);
-    showFreeResult();
-  });
+  stopBtn.addEventListener("click", showFreeResult);
 
   function showFreeResult() {
-    document.removeEventListener("keydown", onFreeKeydown);
     clear(host);
     const resultHeading = el("h1", { text: "Übung beendet" });
     const pct = stats.total ? Math.round((stats.correct / stats.total) * 100) : 0;
@@ -477,10 +452,7 @@ function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
     const current = pool[index];
     status.textContent = "";
     status.setAttribute("role", "status");
-    laterBtn.replaceChildren(
-      el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
-      document.createTextNode(" Später wiederholen markieren")
-    );
+    laterBtn.textContent = "Später wiederholen markieren";
     laterBtn.setAttribute("aria-pressed", "false");
     laterBtn.onclick = async () => {
       laterBtn.disabled = true;
@@ -567,7 +539,24 @@ export function expandExamItems(pool) {
   return expanded;
 }
 
-function startMiniExam(runHost, pool, showSetup, savedExam = null) {
+/** Behält Lernstand-ID und Szenario einer Passage, übt aber nur die betroffenen Teilfragen. */
+export function reviewPracticeItems(entries) {
+  const items = new Map();
+  for (const { item, q } of entries) {
+    const id = item.content.id;
+    if (item.contentType !== "readingPassage") {
+      items.set(id, item);
+      continue;
+    }
+    if (!items.has(id)) {
+      items.set(id, { ...item, content: { ...item.content, questions: [] } });
+    }
+    items.get(id).content.questions.push(q);
+  }
+  return [...items.values()];
+}
+
+function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null) {
   const host = el("section", { class: "exam-run" });
   runHost.replaceChildren(host);
   let examQuestions;
@@ -576,19 +565,30 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
       allQuizItems().filter((item) => item.contentType === "question" || item.contentType === "readingPassage")
     );
     const byKey = new Map(allExpanded.map((entry) => [entry.key, entry]));
-    examQuestions = savedExam.examKeys.map((k) => byKey.get(k)).filter(Boolean);
+    examQuestions = savedExam.examKeys.map((k) => byKey.get(k));
   } else {
     examQuestions = expandExamItems(pool);
   }
-  if (!examQuestions.length) {
-    clearMiniExam();
+  if (!examQuestions.length || examQuestions.some((entry) => !entry)) {
+    writeDraft(EXAM_DRAFT, null);
     showSetup("Die gespeicherte Mini-Prüfung konnte nicht wiederhergestellt werden.");
     return;
   }
-  const answers = new Map(
-    (savedExam?.answers || []).map(([k, ids]) => [k, new Set(ids)])
+  const optionsByKey = new Map(examQuestions.map(({ key, q }) => [key, new Set(q.options.map((option) => option.id))]));
+  const answers = new Map();
+  for (const entry of Array.isArray(savedExam?.answers) ? savedExam.answers : []) {
+    if (!Array.isArray(entry)) continue;
+    const [key, ids] = entry;
+    if (!optionsByKey.has(key) || !Array.isArray(ids)) continue;
+    const selected = ids.filter((id) => optionsByKey.get(key).has(id));
+    if (selected.length) answers.set(key, new Set(selected));
+  }
+  const timeByKey = new Map(
+    (Array.isArray(savedExam?.timeByKey) ? savedExam.timeByKey : [])
+      .filter((entry) => Array.isArray(entry) && optionsByKey.has(entry[0]) && Number.isFinite(entry[1]) && entry[1] >= 0)
   );
-  const timeByKey = new Map(savedExam?.timeByKey || []);
+  const sessionId = savedExam?.sessionId ?? newSessionId();
+  let initialized = false;
   const deadline = savedExam ? savedExam.deadline : Date.now() + MINI_EXAM_SECONDS * 1000;
   let current = savedExam && Number.isInteger(savedExam.current)
     ? Math.max(0, Math.min(examQuestions.length - 1, savedExam.current))
@@ -599,15 +599,32 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
   let pendingConfirmation;
   let lastTimerText = "";
 
-  function persistExamState() {
-    saveMiniExam({
+  const draftStatus = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
+
+  function isOutdated() {
+    if (!initialized) return false;
+    const latest = readDraft(EXAM_DRAFT);
+    return latest?.sessionId !== sessionId || Boolean(latest.submitted);
+  }
+
+  function persistExamState(submitted = null) {
+    if (isOutdated()) {
+      draftStatus.textContent = "Der Prüfungsentwurf ist in diesem Tab nicht mehr aktuell.";
+      return false;
+    }
+    const stored = writeDraft(EXAM_DRAFT, {
       path: state.settings.certificationPath,
+      sessionId,
+      submitted,
       deadline,
       current,
       examKeys: examQuestions.map((entry) => entry.key),
       answers: [...answers.entries()].map(([k, set]) => [k, [...set]]),
       timeByKey: [...timeByKey.entries()]
     });
+    initialized ||= stored;
+    draftStatus.textContent = stored ? "" : "Der Prüfungsentwurf konnte nicht gespeichert werden.";
+    return stored;
   }
 
   const title = el("h1", { text: "Mini-Prüfung" });
@@ -626,7 +643,8 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
   const actions = el("div", { class: "exam-actions" });
   const submitBtn = el("button", { class: "primary-btn", text: "Abgeben", attrs: { type: "button" } });
   const cancelBtn = el("button", { class: "secondary-btn", text: "Prüfung abbrechen", attrs: { type: "button" } });
-  actions.append(submitBtn, cancelBtn);
+  const pauseBtn = el("button", { class: "secondary-btn", text: "Prüfung unterbrechen", attrs: { type: "button" } });
+  actions.append(submitBtn, pauseBtn, cancelBtn);
 
   const jump = el("nav", { class: "exam-jump", attrs: { "aria-label": "Fragenübersicht" } });
   const jumpList = el("div", { class: "exam-jump-list" });
@@ -638,15 +656,13 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
     return button;
   });
   const navigation = el("div", { class: "quiz-nav" }, [prev, next]);
-  host.append(title, stats, jump, qHost, navigation, actions);
+  host.append(title, stats, jump, qHost, navigation, actions, draftStatus);
 
   function onExamKeydown(ev) {
     if (activeExam !== attempt || !host.isConnected || pendingConfirmation) return;
-    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
-    const tag = document.activeElement?.tagName;
-    const onOptionInput = document.activeElement?.matches?.(".fall-option-input");
-    if ((tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") && !onOptionInput) return;
-    if (/^[1-9]$/.test(ev.key)) {
+    if (ev.defaultPrevented || ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    const onOptionInput = ev.target.matches(".fall-option-input");
+    if (/^[1-9]$/.test(ev.key) && qHost.contains(ev.target)) {
       const input = qHost.querySelectorAll(".fall-option-input")[Number(ev.key) - 1];
       if (input && !input.disabled) {
         ev.preventDefault();
@@ -663,19 +679,19 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
 
   const attempt = { stop, confirmAbandon };
   activeExam = attempt;
-  window.addEventListener("beforeunload", warnBeforeUnload);
-  document.addEventListener("keydown", onExamKeydown);
+  window.addEventListener("pagehide", saveBeforeLeaving);
+  host.addEventListener("keydown", onExamKeydown);
 
-  function warnBeforeUnload(event) {
-    event.preventDefault();
-    event.returnValue = true;
+  function saveBeforeLeaving() {
+    recordElapsed();
+    return persistExamState();
   }
 
   function stop() {
     clearInterval(timerHandle);
     pendingConfirmation?.abort();
-    window.removeEventListener("beforeunload", warnBeforeUnload);
-    document.removeEventListener("keydown", onExamKeydown);
+    window.removeEventListener("pagehide", saveBeforeLeaving);
+    host.removeEventListener("keydown", onExamKeydown);
     if (activeExam === attempt) activeExam = null;
   }
 
@@ -697,8 +713,11 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
     const confirmed = await ask("Die Prüfung läuft noch. Wenn du sie verlässt, wird dieser Versuch verworfen.", {
       cancelText: "Weiterprüfen", confirmText: "Versuch verwerfen", danger: true
     });
-    if (confirmed) clearMiniExam();
-    return confirmed;
+    if (!confirmed) return false;
+    if (isOutdated()) return true;
+    if (writeDraft(EXAM_DRAFT, null)) return true;
+    draftStatus.textContent = "Der Prüfungsentwurf konnte nicht gelöscht werden.";
+    return false;
   }
 
   function updateTimer() {
@@ -796,8 +815,13 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
 
   async function submit(expired = false) {
     if (activeExam !== attempt || !host.isConnected) return;
-    recordElapsed();
-    clearMiniExam();
+    if (isOutdated()) {
+      stop();
+      pauseToSetup();
+      return;
+    }
+    if (!savedExam?.submitted && !(savedExam?.deadline <= Date.now() && !initialized)) recordElapsed();
+    const stored = persistExamState(expired ? "expired" : "manual");
     stop();
     const calculating = el("p", { attrs: { role: "status" }, text: "Mini-Prüfung wird ausgewertet…" });
     host.replaceChildren(calculating);
@@ -831,11 +855,12 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
           item,
           result: { correct, responseTimeMs },
           mode: "exam"
-        })));
+        })), `exam:${sessionId}`);
       }
     } catch {
       saveError = true;
     }
+    if (!saveError && readDraft(EXAM_DRAFT)?.sessionId === sessionId) writeDraft(EXAM_DRAFT, null);
     if (!host.isConnected) return;
 
     const pct = graded.length ? Math.round((correctCount / graded.length) * 100) : 0;
@@ -896,14 +921,14 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
         class: "primary-btn",
         text: wrong.length ? "Fehler gezielt üben" : "Offene Fragen üben",
         attrs: { type: "button" },
-        on: { click: () => startFreePractice(runHost, [...wrong, ...open].map(({ item }) => item), showSetup, "Gezielte Wiederholung") }
+        on: { click: () => startFreePractice(runHost, reviewPracticeItems(wrong.length ? wrong : open), showSetup, wrong.length ? "Gezielte Wiederholung" : "Offene Fragen") }
       }));
       if (wrong.length && open.length) {
         resultActions.appendChild(el("button", {
           class: "secondary-btn",
           text: "Offene Fragen üben",
           attrs: { type: "button" },
-          on: { click: () => startFreePractice(runHost, open.map(({ item }) => item), showSetup, "Offene Fragen") }
+          on: { click: () => startFreePractice(runHost, reviewPracticeItems(open), showSetup, "Offene Fragen") }
         }));
       }
     }
@@ -911,7 +936,11 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
 
     host.replaceChildren(resultTitle, scoreCard, observationCard);
     if (expired) host.appendChild(el("p", { class: "item-hint", text: "Die Zeit ist abgelaufen. Deine bisherigen Antworten wurden ausgewertet." }));
-    if (saveError) host.appendChild(el("p", { attrs: { role: "alert" }, text: "Dein Ergebnis ist sichtbar. Der Lernstand konnte nicht gespeichert werden." }));
+    if (saveError) {
+      host.appendChild(el("p", { attrs: { role: "alert" }, text: stored
+        ? "Dein Ergebnis ist sichtbar. Öffne die Prüfungsansicht erneut, um das Speichern zu wiederholen."
+        : "Dein Ergebnis ist sichtbar. Der Lernstand konnte nicht gespeichert werden." }));
+    }
     host.appendChild(resultActions);
 
     // 4) Detailübersicht
@@ -931,12 +960,25 @@ function startMiniExam(runHost, pool, showSetup, savedExam = null) {
     }))) return;
     submit(Date.now() >= deadline);
   });
+  pauseBtn.addEventListener("click", () => {
+    if (Date.now() >= deadline) {
+      submit(true);
+      return;
+    }
+    if (!saveBeforeLeaving()) return;
+    stop();
+    pauseToSetup();
+  });
   cancelBtn.addEventListener("click", async () => {
     if (!(await confirmAbandon())) return;
     stop();
     showSetup("Mini-Prüfung abgebrochen.");
   });
 
+  if (savedExam?.submitted || deadline <= Date.now()) {
+    submit(savedExam?.submitted !== "manual");
+    return;
+  }
   goTo(current, false);
   host.insertBefore(disclaimerNote(), qHost);
   timerHandle = setInterval(updateTimer, 250);

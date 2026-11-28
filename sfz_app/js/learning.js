@@ -22,7 +22,7 @@ export function dueForPath(certifications, today = todayISO()) {
 }
 
 /** Speichert Antworten als gemeinsamen Fortschritts- und Aktivitätsstand. */
-export async function saveAnswers(answers) {
+export async function saveAnswers(answers, submissionId) {
   const now = new Date();
   await updateLearningData(answers.map(({ item, result, mode }) => ({
     contentId: item.content.id,
@@ -47,7 +47,7 @@ export async function saveAnswers(answers) {
         }
       };
     }
-  })));
+  })), submissionId);
   await refreshLearningData();
 }
 

@@ -22,18 +22,41 @@ function renderItemMetaPills(content, opts = {}) {
  * @param {{content:object, contentType:string}} item
  * @param {{onAnswered: (result:{correct:boolean, confidence:number, responseTimeMs:number}) => void}} handlers
  */
-export function renderItem(container, item, { onAnswered }) {
+export function renderItem(container, item, { onAnswered, draft: saved = {}, onDraftChange = () => {} }) {
   clear(container);
   const startTime = performance.now();
   const { content, contentType } = item;
+  const draft = itemDraft(saved, onDraftChange);
+  const fastTrack = item.introMode && draft.data.fastTracked;
+  const finish = fastTrack ? (result) => onAnswered({ ...result, fastTracked: true }) : onAnswered;
 
-  if (contentType === "vocabulary" && item.introMode) renderVocabularyIntro(container, content, startTime, onAnswered);
-  else if (contentType === "vocabulary") renderVocabulary(container, content, startTime, onAnswered);
-  else if (contentType === "definition") renderDefinition(container, content, startTime, onAnswered);
-  else if (contentType === "question") renderQuestion(container, content, {}, startTime, onAnswered);
-  else if (contentType === "readingPassage") renderReadingPassage(container, content, startTime, onAnswered);
+  if (contentType === "vocabulary" && item.introMode && !fastTrack) {
+    renderVocabularyIntro(container, content, startTime, onAnswered, draft);
+  } else if (contentType === "vocabulary") renderVocabulary(container, content, startTime, finish, draft);
+  else if (contentType === "definition") renderDefinition(container, content, startTime, onAnswered, draft);
+  else if (contentType === "question") renderQuestion(container, content, {}, startTime, onAnswered, draft);
+  else if (contentType === "readingPassage") renderReadingPassage(container, content, startTime, onAnswered, draft);
   else container.appendChild(el("p", { text: "Unbekannter Inhaltstyp." }));
-  focusContent(container.querySelector("h2"));
+  if (!container.contains(document.activeElement)) focusContent(container.querySelector("h2"));
+}
+
+function itemDraft(saved, onChange) {
+  const data = { ...saved };
+  return {
+    data,
+    update(patch) {
+      Object.assign(data, patch);
+      onChange(data);
+    }
+  };
+}
+
+function restoreOptionOrder(options, saved) {
+  if (Array.isArray(saved) && saved.length === options.length &&
+      new Set(saved).size === options.length && saved.every((option) => options.includes(option))) {
+    return saved;
+  }
+  return shuffle(options);
 }
 
 // ---------- Neue Vokabel kennenlernen (Karteikarte, keine Abfrage) ----------
@@ -42,7 +65,7 @@ export function renderItem(container, item, { onAnswered }) {
 // Die eigentliche, aktiv abgefragte Vokabel-im-Kontext-Übung (renderVocabulary) folgt erst
 // beim nächsten fälligen SM-2-Kontakt.
 
-function renderVocabularyIntro(container, content, startTime, onAnswered) {
+function renderVocabularyIntro(container, content, startTime, onAnswered, draft) {
   const card = el("div", { class: "item-card vocab-intro-card" });
   card.appendChild(el("h2", { class: "vocab-intro-term", text: content.term, attrs: { lang: "en" } }));
   const meta = renderItemMetaPills(content, { isIntro: true });
@@ -79,8 +102,9 @@ function renderVocabularyIntro(container, content, startTime, onAnswered) {
     "click",
     () => {
       clear(container);
+      draft.update({ fastTracked: true });
       renderVocabulary(container, content, performance.now(), (result) =>
-        onAnswered({ ...result, fastTracked: true }));
+        onAnswered({ ...result, fastTracked: true }), draft);
       focusContent(container.querySelector("h2"));
     },
     { once: true }
@@ -102,56 +126,38 @@ function markOptionState(btn, isCorrect, isChosenWrong) {
 
 // ---------- Vokabel im Kontext ----------
 
-let activeShortcutCleanup = null;
-
 function bindItemShortcuts(root, getHandlers) {
-  if (activeShortcutCleanup) activeShortcutCleanup();
-  function onKeydown(ev) {
-    if (!root.isConnected) {
-      cleanup();
-      return;
-    }
-    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
-    const tag = document.activeElement?.tagName;
-    const onOptionInput = document.activeElement?.matches?.(".fall-option-input");
-    if ((tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") && !onOptionInput) return;
+  root.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey ||
+        document.querySelector(".modal-overlay")) return;
+    const target = event.target;
+    const onOptionInput = target.matches(".fall-option-input");
+    if (target.matches("input, textarea, select, [contenteditable]") && !onOptionInput) return;
 
     const handlers = getHandlers();
-    const isSelectionBtn = document.activeElement?.matches?.(".option-btn, .confidence-btn, .language-slip-btn");
-    if (/^[1-9]$/.test(ev.key)) {
-      const n = Number(ev.key);
-      if (handlers.onNumber?.(n)) ev.preventDefault();
-    } else if ((ev.key === "d" || ev.key === "D") && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
-      const toggle = root.querySelector(".translation-toggle");
-      if (toggle && !toggle.disabled) {
-        ev.preventDefault();
-        toggle.click();
+    const nativeAction = target.closest("button, a, summary, input");
+    if (/^[1-9]$/.test(event.key)) {
+      if (handlers.onNumber?.(Number(event.key))) event.preventDefault();
+    } else if (/^[ds]$/i.test(event.key) && !nativeAction) {
+      const selector = event.key.toLowerCase() === "d" ? ".translation-toggle" : ".language-slip-btn";
+      const button = root.querySelector(selector);
+      if (button && !button.disabled) {
+        event.preventDefault();
+        button.click();
       }
-    } else if ((ev.key === "s" || ev.key === "S") && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") {
-      const slip = root.querySelector(".language-slip-btn");
-      if (slip && !slip.disabled) {
-        ev.preventDefault();
-        slip.click();
-      }
-    } else if (ev.key === "Enter" && ((tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY") || isSelectionBtn)) {
-      if (handlers.onEnter?.()) ev.preventDefault();
-    } else if (ev.key === " " && tag !== "BUTTON" && tag !== "A" && tag !== "SUMMARY" && !onOptionInput) {
-      if (handlers.onSpace?.()) ev.preventDefault();
+    } else if (!nativeAction && event.key === "Enter") {
+      if (handlers.onEnter?.()) event.preventDefault();
+    } else if (!nativeAction && event.key === " ") {
+      if (handlers.onSpace?.()) event.preventDefault();
     }
-  }
-  function cleanup() {
-    document.removeEventListener("keydown", onKeydown);
-    if (activeShortcutCleanup === cleanup) activeShortcutCleanup = null;
-  }
-  document.addEventListener("keydown", onKeydown);
-  activeShortcutCleanup = cleanup;
+  });
 }
 
 export function addOptionKeycap(btn, idx) {
   if (idx < 9) btn.prepend(el("kbd", { class: "keycap", text: String(idx + 1), attrs: { "aria-hidden": "true" } }));
 }
 
-function renderVocabulary(container, content, startTime, onAnswered) {
+function renderVocabulary(container, content, startTime, onAnswered, draft) {
   const card = el("div", { class: "item-card" });
   card.appendChild(el("h2", { class: "item-title", text: "Vokabel im Kontext" }));
   const meta = renderItemMetaPills(content);
@@ -169,7 +175,18 @@ function renderVocabulary(container, content, startTime, onAnswered) {
     attrs: { type: "button", disabled: "" }
   });
 
-  const optButtons = shuffle(content.options).map((opt, idx) => {
+  const options = restoreOptionOrder(content.options, draft.data.optionOrder);
+  function select(btn, opt) {
+    chosenOption = opt;
+    chosenBtn = btn;
+    for (const option of optButtons) {
+      const selected = option === btn;
+      option.classList.toggle("option-selected", selected);
+      option.setAttribute("aria-pressed", String(selected));
+    }
+    submitBtn.disabled = false;
+  }
+  const optButtons = options.map((opt, idx) => {
     const btn = el("button", { class: "option-btn", attrs: { type: "button", lang: "en", "aria-pressed": "false" } }, [
       el("span", { class: "option-text", text: opt })
     ]);
@@ -177,14 +194,8 @@ function renderVocabulary(container, content, startTime, onAnswered) {
     btn.dataset.option = opt;
     btn.addEventListener("click", () => {
       if (answered) return;
-      chosenOption = opt;
-      chosenBtn = btn;
-      for (const b of optButtons) {
-        const isSel = b === btn;
-        b.classList.toggle("option-selected", isSel);
-        b.setAttribute("aria-pressed", String(isSel));
-      }
-      submitBtn.disabled = false;
+      select(btn, opt);
+      draft.update({ selected: opt, optionOrder: options });
     });
     optionsWrap.appendChild(btn);
     return btn;
@@ -200,7 +211,7 @@ function renderVocabulary(container, content, startTime, onAnswered) {
       b.disabled = true;
       markOptionState(b, b.dataset.option === content.correctOption, !correct && b === chosenBtn);
     });
-    showVocabExplanation(card, content, correct, startTime, onAnswered);
+    showVocabExplanation(card, content, correct, startTime, onAnswered, draft);
   });
 
   bindItemShortcuts(card, () => ({
@@ -218,9 +229,14 @@ function renderVocabulary(container, content, startTime, onAnswered) {
   card.appendChild(optionsWrap);
   card.appendChild(submitBtn);
   container.appendChild(card);
+  const savedButton = optButtons.find((btn) => btn.dataset.option === draft.data.selected);
+  if (savedButton) {
+    select(savedButton, draft.data.selected);
+    if (draft.data.checked) submitBtn.click();
+  }
 }
 
-function showVocabExplanation(card, content, correct, startTime, onAnswered) {
+function showVocabExplanation(card, content, correct, startTime, onAnswered, draft) {
   const panel = el("div", { class: "explanation-panel" });
   panel.appendChild(el("p", { class: correct ? "result-correct" : "result-incorrect", text: correct ? "Richtig!" : "Nicht ganz." }));
   if (!correct) {
@@ -240,7 +256,7 @@ function showVocabExplanation(card, content, correct, startTime, onAnswered) {
   }
   card.appendChild(panel);
   appendConfidenceAndContinue(card, content, correct, startTime, onAnswered, {
-    showConfidence: state.progressByContentId.has(content.id)
+    draft, showConfidence: state.progressByContentId.has(content.id)
   });
 }
 
@@ -261,7 +277,7 @@ function triggerContinueShortcut(root) {
   return true;
 }
 
-function renderDefinition(container, content, startTime, onAnswered) {
+function renderDefinition(container, content, startTime, onAnswered, draft) {
   const card = el("div", { class: "item-card" });
   card.appendChild(el("h2", { class: "item-title", text: "Definitions-Matching" }));
   const meta = renderItemMetaPills(content);
@@ -273,7 +289,7 @@ function renderDefinition(container, content, startTime, onAnswered) {
     document.createTextNode(".")
   ]));
 
-  const allDefs = shuffle([content.definition, ...content.distractorDefinitions]);
+  const allDefs = restoreOptionOrder([content.definition, ...content.distractorDefinitions], draft.data.optionOrder);
   const optionsWrap = el("div", { class: "item-options item-options-list" });
   let answered = false;
   let chosenDef = null;
@@ -285,6 +301,16 @@ function renderDefinition(container, content, startTime, onAnswered) {
     attrs: { type: "button", disabled: "" }
   });
 
+  function select(btn, definition) {
+    chosenDef = definition;
+    chosenBtn = btn;
+    for (const option of optButtons) {
+      const selected = option === btn;
+      option.classList.toggle("option-selected", selected);
+      option.setAttribute("aria-pressed", String(selected));
+    }
+    submitBtn.disabled = false;
+  }
   const optButtons = allDefs.map((defText, idx) => {
     const btn = el("button", { class: "option-btn option-btn-wide", attrs: { type: "button", lang: "en", "aria-pressed": "false" } }, [
       el("span", { class: "option-text", text: defText })
@@ -293,14 +319,8 @@ function renderDefinition(container, content, startTime, onAnswered) {
     btn.dataset.option = defText;
     btn.addEventListener("click", () => {
       if (answered) return;
-      chosenDef = defText;
-      chosenBtn = btn;
-      for (const b of optButtons) {
-        const isSel = b === btn;
-        b.classList.toggle("option-selected", isSel);
-        b.setAttribute("aria-pressed", String(isSel));
-      }
-      submitBtn.disabled = false;
+      select(btn, defText);
+      draft.update({ selected: defText, optionOrder: allDefs });
     });
     optionsWrap.appendChild(btn);
     return btn;
@@ -328,7 +348,7 @@ function renderDefinition(container, content, startTime, onAnswered) {
     panel.appendChild(el("p", {}, [el("strong", { text: "Erklärung: " }), document.createTextNode(content.germanExplanation)]));
     card.appendChild(panel);
     appendConfidenceAndContinue(card, content, correct, startTime, onAnswered, {
-      showConfidence: state.progressByContentId.has(content.id)
+      draft, showConfidence: state.progressByContentId.has(content.id)
     });
   });
 
@@ -347,6 +367,11 @@ function renderDefinition(container, content, startTime, onAnswered) {
   card.appendChild(optionsWrap);
   card.appendChild(submitBtn);
   container.appendChild(card);
+  const savedButton = optButtons.find((btn) => btn.dataset.option === draft.data.selected);
+  if (savedButton) {
+    select(savedButton, draft.data.selected);
+    if (draft.data.checked) submitBtn.click();
+  }
 }
 
 // ---------- Szenario-Frage (auch als Baustein für Reading-Passagen) ----------
@@ -424,7 +449,7 @@ function renderInteractiveScenario(parent, text) {
   parent.append(scenarioEl, bar);
 }
 
-function renderQuestion(container, questionContent, opts, startTime, onAnswered) {
+function renderQuestion(container, questionContent, opts, startTime, onAnswered, draft) {
   fallakteCounter += 1;
   const instanceName = `fall-q-${fallakteCounter}`;
   const isMulti = questionContent.type === "multiple-select";
@@ -486,13 +511,14 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
   const fieldset = el("fieldset", { class: "fall-options" }, [
     el("legend", { class: "visually-hidden", text: "Antwort auswählen" })
   ]);
-  const selected = new Set();
+  const options = questionContent.options;
+  const savedSelection = Array.isArray(draft.data.selected) ? draft.data.selected : [];
+  const selected = new Set(options.filter((option) => savedSelection.includes(option.id)).map((option) => option.id));
   let answered = false;
 
   const error = el("p", { class: "fall-error", attrs: { role: "alert" } });
   error.hidden = true;
 
-  const options = questionContent.options;
   const optRows = options.map((opt, idx) => {
     const input = el("input", {
       class: isMulti ? "fall-option-input fall-option-checkbox" : "fall-option-input",
@@ -510,6 +536,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
       el("span", { class: "fall-option-letter", text: optionLetter(idx), attrs: { "aria-hidden": "true" } }),
       el("span", { class: "fall-option-text", text: opt.text, attrs: { lang: "en" } })
     ]);
+    input.checked = selected.has(opt.id);
     input.addEventListener("change", () => {
       if (answered) return;
       if (isMulti) {
@@ -521,6 +548,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
       }
       submitBtn.disabled = selected.size === 0;
       error.hidden = true;
+      draft.update({ selected: [...selected] });
     });
     fieldset.appendChild(row);
     return { input, row, opt };
@@ -533,18 +561,17 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
     text: isMulti ? "Antwort abgeben" : "Antwort prüfen",
     attrs: { type: "button", disabled: "" }
   });
+  submitBtn.disabled = selected.size === 0;
   const actionsWrap = el("div", { class: "fall-actions" }, [submitBtn]);
   submitBtn.addEventListener("click", () => submit());
   card.appendChild(actionsWrap);
 
-  const shortcutScope = opts.shortcutScope || card;
+  const shortcutScope = card;
   bindItemShortcuts(shortcutScope, () => ({
     onNumber: (n) => {
       if (!answered && n <= optRows.length) {
         const entry = optRows[n - 1];
-        if (isMulti) entry.input.checked = !entry.input.checked;
-        else entry.input.checked = true;
-        entry.input.dispatchEvent(new Event("change", { bubbles: true }));
+        entry.input.click();
         return true;
       }
       if (answered && !opts.skipConfidence) return triggerConfidenceShortcut(shortcutScope, n);
@@ -628,6 +655,7 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
     card.appendChild(resolution);
 
     if (opts.skipConfidence) {
+      draft.update({ checked: true });
       const bar = el("div", { class: "fall-next-row" });
       const continueBtn = el("button", { class: "primary-btn", text: "Weiter", attrs: { type: "button" } });
       continueBtn.addEventListener(
@@ -642,17 +670,18 @@ function renderQuestion(container, questionContent, opts, startTime, onAnswered)
       card.appendChild(bar);
       focusContent(verdict);
     } else {
-      appendConfidenceAndContinue(card, questionContent, correct, startTime, onAnswered);
+      appendConfidenceAndContinue(card, questionContent, correct, startTime, onAnswered, { draft });
       focusContent(verdict);
     }
   }
 
   container.appendChild(card);
+  if (draft.data.checked && selected.size) submit();
 }
 
 // ---------- Reading-Passage (Szenario + eine oder mehrere Fragen nacheinander) ----------
 
-function renderReadingPassage(container, content, startTime, onAnswered) {
+function renderReadingPassage(container, content, startTime, onAnswered, draft) {
   const wrap = el("div", { class: "item-card" });
   wrap.appendChild(el("h2", { class: "item-title", text: "Szenario lesen und beantworten" }));
   const meta = renderItemMetaPills(content);
@@ -664,8 +693,20 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
   wrap.appendChild(recapList);
 
   const questions = content.questions || [];
-  let index = 0;
-  let allCorrect = true;
+  const results = Array.isArray(draft.data.results)
+    ? draft.data.results.slice(0, questions.length).filter((result) => typeof result === "boolean")
+    : [];
+  let index = results.length;
+
+  function appendRecap(correct, questionIndex) {
+    const q = questions[questionIndex];
+    recapList.hidden = false;
+    recapList.appendChild(el("li", { class: correct ? "recap-correct" : "recap-incorrect" }, [
+      el("strong", { text: `Teilfrage ${questionIndex + 1}: ${correct ? "✓ Richtig" : "✗ Nicht ganz"}` }),
+      document.createTextNode(` — ${q.questionText || q.text}`)
+    ]));
+  }
+  results.forEach(appendRecap);
 
   const questionHost = el("div", { class: "passage-question-host" });
   wrap.appendChild(questionHost);
@@ -673,6 +714,7 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
 
   function next() {
     if (index >= questions.length) {
+      const allCorrect = results.every(Boolean);
       clear(questionHost);
       const panel = el("div", { class: "explanation-panel" });
       panel.appendChild(el("p", {
@@ -695,7 +737,7 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
         onNumber: (n) => triggerConfidenceShortcut(wrap, n),
         onEnter: () => triggerContinueShortcut(wrap)
       }));
-      appendConfidenceAndContinue(wrap, content, allCorrect, startTime, onAnswered);
+      appendConfidenceAndContinue(wrap, content, allCorrect, startTime, onAnswered, { draft });
       return;
     }
     clear(questionHost);
@@ -705,19 +747,15 @@ function renderReadingPassage(container, content, startTime, onAnswered) {
       skipConfidence: true,
       embedded: true,
       subIndex: index,
-      subTotal: questions.length,
-      shortcutScope: wrap
+      subTotal: questions.length
     }, startTime, (result) => {
-      if (!result.correct) allCorrect = false;
-      recapList.hidden = false;
-      recapList.appendChild(el("li", { class: result.correct ? "recap-correct" : "recap-incorrect" }, [
-        el("strong", { text: `Teilfrage ${index + 1}: ${result.correct ? "✓ Richtig" : "✗ Nicht ganz"}` }),
-        document.createTextNode(` — ${q.questionText || q.text}`)
-      ]));
+      results.push(result.correct);
+      appendRecap(result.correct, index);
       index += 1;
+      draft.update({ results, question: null });
       next();
       if (index < questions.length) focusContent(questionHost.querySelector("h3"));
-    });
+    }, itemDraft(draft.data.question || {}, (question) => draft.update({ question })));
   }
 
   next();
@@ -750,13 +788,14 @@ function formatSm2Preview(existingProgress, correct, confidence, languageSlip = 
   return `Nächste Wiederholung: in ${next.intervalDays} Tagen`;
 }
 
-function appendConfidenceAndContinue(host, content, correct, startTime, onAnswered, { showConfidence = true } = {}) {
-  const responseTimeMs = performance.now() - startTime;
+function appendConfidenceAndContinue(host, content, correct, startTime, onAnswered, { draft, showConfidence = true }) {
+  const responseTimeMs = draft.data.responseTimeMs ?? performance.now() - startTime;
+  if (!draft.data.checked) draft.update({ checked: true, responseTimeMs });
   const existingProgress = content?.id ? state.progressByContentId.get(content.id) || emptyProgress(content, "") : {};
   const wrap = el("div", { class: "confidence-wrap session-action-bar" });
 
-  let chosen = null;
-  let languageSlip = false;
+  let chosen = showConfidence ? draft.data.confidence ?? null : null;
+  let languageSlip = !correct && draft.data.languageSlip === true;
 
   const headerRow = el("div", { class: "confidence-header" });
   const label = "Wie sicher warst du dir? (optional)";
@@ -765,7 +804,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
   }
   const sm2Preview = el("span", {
     class: "sm2-preview",
-    text: formatSm2Preview(existingProgress, correct, null, false)
+    text: formatSm2Preview(existingProgress, correct, chosen, languageSlip)
   });
   headerRow.appendChild(sm2Preview);
   wrap.appendChild(headerRow);
@@ -773,8 +812,8 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
   if (!correct) {
     const slipWrap = el("div", { class: "language-slip-wrap" });
     const slipBtn = el("button", {
-      class: "secondary-btn language-slip-btn",
-      attrs: { type: "button", "aria-pressed": "false", "aria-describedby": "language-slip-hint" }
+      class: `secondary-btn language-slip-btn${languageSlip ? " confidence-selected" : ""}`,
+      attrs: { type: "button", "aria-pressed": String(languageSlip), "aria-describedby": "language-slip-hint" }
     }, [
       el("kbd", { class: "keycap", text: "S", attrs: { "aria-hidden": "true" } }),
       document.createTextNode(" Sprachfehler, nicht Fachfehler")
@@ -786,6 +825,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
     });
     slipBtn.addEventListener("click", () => {
       languageSlip = !languageSlip;
+      draft.update({ languageSlip });
       slipBtn.classList.toggle("confidence-selected", languageSlip);
       slipBtn.setAttribute("aria-pressed", String(languageSlip));
       sm2Preview.setAttribute("aria-live", "polite");
@@ -801,10 +841,10 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
 
     CONFIDENCE_LEVELS.forEach(({ key, label: text, value }) => {
       const b = el("button", {
-        class: "confidence-btn",
+        class: `confidence-btn${chosen === value ? " confidence-selected" : ""}`,
         attrs: {
           type: "button",
-          "aria-pressed": "false",
+          "aria-pressed": String(chosen === value),
           "data-confidence": String(value),
           "aria-label": `${text} – Sicherheit ${key} von 3`
         }
@@ -814,6 +854,7 @@ function appendConfidenceAndContinue(host, content, correct, startTime, onAnswer
       ]);
       b.addEventListener("click", () => {
         chosen = chosen === value ? null : value;
+        draft.update({ confidence: chosen });
         for (const button of scale.children) {
           const pressed = Number(button.dataset.confidence) === chosen;
           button.classList.toggle("confidence-selected", pressed);

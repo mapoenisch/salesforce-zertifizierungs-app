@@ -112,7 +112,10 @@ export async function render(container, ctx) {
   // Export/Import
   const dataCard = el("div", { class: "card" });
   dataCard.appendChild(el("h2", { text: "Sicherung" }));
-  dataCard.appendChild(el("p", { class: "item-hint", text: "Sichert deinen Lernstand als JSON-Datei. Ein Import ersetzt den bisherigen Lernstand dieses Trainers." }));
+  dataCard.appendChild(el("p", {
+    class: "item-hint",
+    text: "Sichert Lernstand und Einstellungen als JSON-Datei. Beim Einspielen eines Lernstands werden bestehende Sitzungsentwürfe verworfen. Eine Sicherung ohne Lernaktivität stellt nur Einstellungen wieder her."
+  }));
 
   const exportBtn = el("button", { class: "primary-btn", text: "Lernstand exportieren", attrs: { type: "button" } });
   const status = el("p", { attrs: { role: "status" } });
@@ -127,37 +130,56 @@ export async function render(container, ctx) {
 
   const importBtn = el("button", { class: "secondary-btn", text: "Lernstand importieren…", attrs: { type: "button" } });
   const importInput = el("input", { attrs: { type: "file", accept: ".json,application/json", hidden: "" } });
-  importBtn.addEventListener("click", () => importInput.click());
+  let dataOperationPending = false;
+  importBtn.addEventListener("click", () => {
+    if (!dataOperationPending) importInput.click();
+  });
   importInput.addEventListener("change", async () => {
     const file = importInput.files[0];
     importInput.value = "";
-    if (!file || importBtn.disabled) return;
-    importBtn.disabled = true;
+    if (!file || dataOperationPending) return;
+    dataOperationPending = true;
+    importBtn.setAttribute("aria-disabled", "true");
     status.textContent = "";
     try {
       const backup = await readBackup(file);
       if (ctx.signal.aborted) return;
-      importBtn.disabled = false;
+      importBtn.removeAttribute("aria-disabled");
       importBtn.focus();
       const confirmed = await confirmDialog(
-        `Die Sicherung enthält ${backup.progress.length} Fortschrittsdatensätze und ` +
-        `${backup.activity.length} Aktivitäten. Sie ersetzt deinen bisherigen Lernstand. Möchtest du fortfahren?`,
-        { confirmText: "Lernstand ersetzen", cancelText: "Abbrechen", danger: true, signal: ctx.signal }
+        backup.settingsOnly
+          ? "Diese Sicherung enthält nur Einstellungen. Dein Lernstand und deine Sitzungsentwürfe bleiben erhalten."
+          : `Die Sicherung enthält ${backup.progress.length} Fortschrittsdatensätze und ` +
+            `${backup.activity.length} Aktivitäten. Sie ersetzt deinen Lernstand und verwirft deine Sitzungsentwürfe.`,
+        {
+          confirmText: backup.settingsOnly ? "Einstellungen übernehmen" : "Lernstand ersetzen",
+          cancelText: "Abbrechen",
+          danger: !backup.settingsOnly,
+          signal: ctx.signal
+        }
       );
       if (!confirmed || ctx.signal.aborted) return;
-      importBtn.disabled = true;
-      const settingsSaved = await restoreBackup(backup);
+      importBtn.setAttribute("aria-disabled", "true");
+      const { settingsSaved, draftsCleared } = await restoreBackup(backup);
       document.documentElement.dataset.theme = state.settings.theme;
       themeToggle.textContent = state.settings.theme === "dark" ? "Zu Light Mode wechseln" : "Zu Dark Mode wechseln";
       pathSelect.value = state.settings.certificationPath;
       minutesInput.value = state.settings.dailySessionMinutesTarget;
       startInput.value = state.settings.startDate;
-      status.textContent = settingsSaved ? "Lernstand importiert." :
-        "Lernstand importiert. Die Einstellungen konnten nicht übernommen werden.";
+      if (backup.settingsOnly) {
+        status.textContent = settingsSaved ? "Einstellungen übernommen." : "Die Einstellungen konnten nicht übernommen werden.";
+      } else {
+        status.textContent = [
+          "Lernstand importiert.",
+          !settingsSaved && "Die Einstellungen konnten nicht übernommen werden.",
+          !draftsCleared && "Die Sitzungsentwürfe konnten nicht gelöscht werden."
+        ].filter(Boolean).join(" ");
+      }
     } catch (error) {
       status.textContent = `Import fehlgeschlagen. ${error.message}`;
     } finally {
-      importBtn.disabled = false;
+      importBtn.removeAttribute("aria-disabled");
+      dataOperationPending = false;
     }
   });
   dataCard.append(importBtn, importInput, status);
@@ -169,30 +191,42 @@ export async function render(container, ctx) {
   dangerCard.appendChild(el("h2", { text: "Gefahrenzone" }));
   dangerCard.appendChild(el("p", {
     class: "item-hint",
-    text: "Setzt alle Wiederholungen, Ergebnisse und Statistiken zurück. Nützlich, wenn du die App nur angetestet hast und jetzt richtig mit deinem Lernpfad starten willst. Theme, Lernpfad-Auswahl und Tagesziel bleiben erhalten."
+    text: "Löscht Wiederholungen, Ergebnisse, Statistiken und Sitzungsentwürfe. Darstellung, Lernpfad und Tagesziel bleiben erhalten."
   }));
 
   const resetBtn = el("button", { class: "danger-btn", text: "Lernfortschritt löschen", attrs: { type: "button" } });
+  const resetStatus = el("p", { attrs: { role: "status" } });
   resetBtn.addEventListener("click", async () => {
-    const confirmed = await confirmDialog("Lernfortschritt wirklich löschen? Kann nicht rückgängig gemacht werden!", {
-      confirmText: "Fortschritt löschen",
-      cancelText: "Abbrechen",
-      danger: true,
-      signal: ctx.signal
-    });
-    if (!confirmed || ctx.signal.aborted) return;
+    if (dataOperationPending) return;
+    dataOperationPending = true;
+    resetStatus.textContent = "";
     try {
-      const settingsSaved = await resetAllProgress();
-      if (!settingsSaved) {
-        status.textContent = "Lernstand gelöscht. Das Startdatum konnte nicht gespeichert werden.";
+      const confirmed = await confirmDialog("Lernfortschritt und Sitzungsentwürfe endgültig löschen?", {
+        confirmText: "Fortschritt löschen",
+        cancelText: "Abbrechen",
+        danger: true,
+        signal: ctx.signal
+      });
+      if (!confirmed || ctx.signal.aborted) return;
+      resetBtn.setAttribute("aria-disabled", "true");
+      const { settingsSaved, draftsCleared } = await resetAllProgress();
+      if (!settingsSaved || !draftsCleared) {
+        resetStatus.textContent = [
+          "Lernstand gelöscht.",
+          !settingsSaved && "Das Startdatum konnte nicht gespeichert werden.",
+          !draftsCleared && "Die Sitzungsentwürfe konnten nicht gelöscht werden."
+        ].filter(Boolean).join(" ");
         return;
       }
       if (!ctx.signal.aborted) ctx.navigate("#/dashboard");
     } catch {
-      status.textContent = "Der Lernstand konnte nicht gelöscht werden.";
+      resetStatus.textContent = "Der Lernstand konnte nicht gelöscht werden.";
+    } finally {
+      resetBtn.removeAttribute("aria-disabled");
+      dataOperationPending = false;
     }
   });
-  dangerCard.appendChild(resetBtn);
+  dangerCard.append(resetBtn, resetStatus);
 
   container.appendChild(dangerCard);
 }

@@ -148,3 +148,25 @@ test("Mini-Prüfung fächert mehrteilige Reading-Passagen vollständig auf", () 
   assert.deepEqual(expanded.map((e) => e.key), ["rp-1#0", "rp-1#1", "q-1"]);
   assert.equal(expanded[1].q.scenario, "Scenario");
 });
+
+test("eine leere Salesforce-Sicherung mit Einstellungen ist wieder einlesbar", () => {
+  const backup = {
+    exportVersion: 1, trainer: "salesforce", learningProgress: [], activityLog: [],
+    settings: { theme: "light", certificationPath: "foundations" }
+  };
+  assert.deepEqual(validateBackup(backup, []), {
+    progress: [], activity: [], settings: backup.settings, settingsOnly: true
+  });
+});
+
+test("Prüfungswiederholung übernimmt bei Passagen nur die gewählten Teilfragen", async () => {
+  const { reviewPracticeItems } = await import("../sfz_app/js/views/quiz.js");
+  const questions = [{ questionText: "Falsch" }, { questionText: "Offen" }, { questionText: "Richtig" }];
+  const passage = { contentType: "readingPassage", content: { id: "rp-1", questions, scenario: "Kontext" } };
+  const expanded = expandExamItems([passage]);
+  const [retry] = reviewPracticeItems([expanded[0]]);
+  assert.equal(retry.content.id, "rp-1");
+  assert.equal(retry.content.scenario, "Kontext");
+  assert.deepEqual(retry.content.questions.map(({ questionText }) => questionText), ["Falsch"]);
+  assert.equal(passage.content.questions.length, 3);
+});

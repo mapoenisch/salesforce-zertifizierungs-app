@@ -6,64 +6,23 @@ import * as weeklyPlan from "../weeklyPlan.js";
 import { renderItem } from "../itemRenderer.js";
 import { openExamEnglishModal } from "./examEnglish.js";
 import { el, clear, shuffle, focusContent, createSessionChrome, todayISO } from "../utils.js";
+import { DAILY_DRAFT, newSessionId, readDailyDraft, readDraft, writeDraft } from "../sessionDrafts.js";
 
 const SESSION_LIMITS = { due: 10, vocabulary: 5, definition: 3, readingPassage: 2 };
 const ESTIMATED_MINUTES = { vocabulary: 1, definition: 2, readingPassage: 4, question: 3 };
-const DAILY_SESSION_KEY = "sfz_daily_session_v1";
-
-function saveDailySession(payload) {
-  try {
-    localStorage.setItem(DAILY_SESSION_KEY, JSON.stringify(payload));
-  } catch {
-    // Speicherlimit ignorieren; Sitzung läuft regulär im Arbeitsspeicher weiter.
-  }
-}
-
-function clearDailySession() {
-  try {
-    localStorage.removeItem(DAILY_SESSION_KEY);
-  } catch {
-    // ignorieren
-  }
-}
-
-function loadDailySession(date, path) {
-  try {
-    const raw = localStorage.getItem(DAILY_SESSION_KEY);
-    if (!raw) return null;
-    const saved = JSON.parse(raw);
-    if (!saved || saved.date !== date || saved.path !== path || !Array.isArray(saved.queueIds)) return null;
-    const byId = new Map(allLearnableContent().map((item) => [item.content.id, item]));
-    const queue = saved.queueIds
-      .map(({ id, introMode }) => {
-        const found = byId.get(id);
-        return found ? { ...found, introMode: Boolean(introMode) } : null;
-      })
-      .filter(Boolean);
-    const index = Number.isInteger(saved.index) ? saved.index : 0;
-    if (!queue.length || index >= queue.length) return null;
-    return {
-      queue,
-      index,
-      cumulative: saved.cumulative || { total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: 1 },
-      sessionStartedAt: Number.isFinite(saved.sessionStartedAt) ? saved.sessionStartedAt : Date.now()
-    };
-  } catch {
-    return null;
-  }
-}
 
 export async function render(container, ctx) {
   clear(container);
   container.appendChild(el("h1", { text: "Heutige Einheit" }));
 
   await refreshLearningData();
+  if (ctx.signal.aborted) return;
   const today = todayISO();
   const activePath = state.settings.certificationPath;
-  const resumed = loadDailySession(today, activePath);
+  const resumed = readDailyDraft(today, activePath, allLearnableContent());
   const firstQueue = resumed ? resumed.queue : buildQueue();
   if (firstQueue.length === 0) {
-    clearDailySession();
+    writeDraft(DAILY_DRAFT, null);
     container.appendChild(el("p", { text: "Für heute gibt es nichts Neues oder Fälliges. Schau später wieder vorbei, oder übe frei im Prüfungsmodus." }));
     return;
   }
@@ -80,55 +39,70 @@ export async function render(container, ctx) {
   const toolbar = el("div", { class: "quiz-toolbar session-toolbar-bottom" });
   const laterBtn = el("button", {
     class: "secondary-btn",
+    text: "Später wiederholen markieren",
     attrs: { type: "button", "aria-pressed": "false" }
-  }, [
-    el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
-    document.createTextNode(" Später wiederholen markieren")
-  ]);
+  });
   const pauseBtn = el("button", { class: "secondary-btn", text: "Pausieren", attrs: { type: "button" } });
   const stopBtn = el("button", { class: "secondary-btn", text: "Einheit beenden", attrs: { type: "button" } });
   toolbar.append(laterBtn, pauseBtn, stopBtn);
   container.appendChild(toolbar);
 
   const status = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
-  container.appendChild(status);
+  const draftStatus = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
+  container.append(status, draftStatus);
 
-  const sessionStartedAt = resumed ? resumed.sessionStartedAt : Date.now();
-  const cumulative = resumed ? resumed.cumulative : { total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: 0 };
-  pauseBtn.addEventListener("click", () => ctx.navigate("#/dashboard"));
-  stopBtn.addEventListener("click", () => {
-    clearDailySession();
-    renderSummary(container, cumulative, ctx);
-  });
+  const activeSince = performance.now();
+  const precedingMs = Number.isFinite(resumed?.elapsedMs)
+    ? resumed.elapsedMs
+    : Math.max(0, Date.now() - (resumed?.sessionStartedAt ?? Date.now()));
+  const elapsedMs = () => precedingMs + performance.now() - activeSince;
+  const cumulative = resumed?.cumulative ?? {
+    total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: resumed ? 1 : 0
+  };
+  let checkpoint;
+  window.addEventListener("pagehide", () => checkpoint?.(), { signal: ctx.signal });
 
-  function onSessionKeydown(ev) {
-    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
-    if (document.querySelector(".modal-overlay")) return;
-    const tag = document.activeElement?.tagName;
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
-    if ((ev.key === "m" || ev.key === "M") && !toolbar.hidden && !laterBtn.disabled) {
-      ev.preventDefault();
-      laterBtn.click();
-    }
-  }
-  document.addEventListener("keydown", onSessionKeydown, { signal: ctx.signal });
-
-  async function runRound(queue, startIndex = 0, isResume = false) {
-    if (!isResume) cumulative.rounds += 1;
+  async function runRound(queue, saved) {
+    if (!saved) cumulative.rounds += 1;
+    const sessionId = saved?.sessionId ?? newSessionId();
+    const queueIds = queue.map((item) => ({ id: item.content.id, introMode: Boolean(item.introMode) }));
     toolbar.hidden = false;
     chrome.setHidden(false);
-    let index = startIndex;
+    let index = saved?.index ?? 0;
+    let itemDraft = saved?.itemDraft ?? {};
+    let storedIndex = null;
+
+    function isOutdated() {
+      if (storedIndex == null) return false;
+      const latest = readDraft(DAILY_DRAFT);
+      return latest?.sessionId !== sessionId || latest.index !== storedIndex;
+    }
 
     function persistProgress() {
-      saveDailySession({
-        date: today,
-        path: activePath,
-        queueIds: queue.map((item) => ({ id: item.content.id, introMode: Boolean(item.introMode) })),
-        index,
-        cumulative,
-        sessionStartedAt
+      if (isOutdated()) {
+        draftStatus.textContent = "Der Entwurf ist in diesem Tab nicht mehr aktuell. Öffne die Lerneinheit erneut.";
+        return false;
+      }
+      const stored = writeDraft(DAILY_DRAFT, {
+        date: today, path: activePath, sessionId, queueIds, index, cumulative, elapsedMs: elapsedMs(), itemDraft
       });
+      if (stored) storedIndex = index;
+      draftStatus.textContent = stored ? "" : "Der Entwurf konnte nicht gespeichert werden. Lass die Einheit geöffnet, um weiterzulernen.";
+      return stored;
     }
+
+    checkpoint = persistProgress;
+    pauseBtn.onclick = () => {
+      if (persistProgress() || isOutdated()) ctx.navigate("#/dashboard");
+    };
+    stopBtn.onclick = () => {
+      if (!isOutdated() && !writeDraft(DAILY_DRAFT, null)) {
+        draftStatus.textContent = "Der Entwurf konnte nicht gelöscht werden.";
+        return;
+      }
+      checkpoint = null;
+      renderSummary(container, cumulative, ctx);
+    };
 
     async function step() {
       if (index >= queue.length) {
@@ -136,7 +110,7 @@ export async function render(container, ctx) {
         return;
       }
       persistProgress();
-      const elapsedMin = Math.floor((Date.now() - sessionStartedAt) / 60000);
+      const elapsedMin = Math.floor(elapsedMs() / 60000);
       chrome.update(
         `Runde ${cumulative.rounds} · ${index + 1} von ${queue.length} · ${elapsedMin}/${state.settings.dailySessionMinutesTarget} Min.`,
         ((index + 1) / queue.length) * 100
@@ -144,11 +118,9 @@ export async function render(container, ctx) {
       const current = queue[index];
       status.textContent = "";
       status.setAttribute("role", "status");
-      laterBtn.replaceChildren(
-        el("kbd", { class: "keycap", text: "M", attrs: { "aria-hidden": "true" } }),
-        document.createTextNode(" Später wiederholen markieren")
-      );
-      laterBtn.setAttribute("aria-pressed", "false");
+      const marked = state.progressByContentId.get(current.content.id)?.flag === "later";
+      laterBtn.textContent = marked ? "✓ Vorgemerkt" : "Später wiederholen markieren";
+      laterBtn.setAttribute("aria-pressed", String(marked));
       laterBtn.onclick = async () => {
         laterBtn.disabled = true;
         try {
@@ -169,14 +141,31 @@ export async function render(container, ctx) {
         }
       };
       renderItem(itemHost, current, {
+        draft: itemDraft,
+        onDraftChange(draft) {
+          itemDraft = draft;
+          persistProgress();
+        },
         onAnswered: async (result) => {
+          if (isOutdated()) {
+            showSaveError(itemHost, () => ctx.navigate("#/learn"), () => ctx.navigate("#/dashboard"),
+              "Der Entwurf ist in diesem Tab nicht mehr aktuell.");
+            return;
+          }
+          pauseBtn.disabled = true;
+          stopBtn.disabled = true;
           const isIntroOnly = Boolean(current.introMode && !result.fastTracked);
           const effectiveItem = isIntroOnly ? current : { ...current, introMode: false };
           try {
-            await saveAnswers([{ item: effectiveItem, result, mode: "daily" }]);
+            await saveAnswers([{ item: effectiveItem, result, mode: "daily" }], `daily:${sessionId}:${index}`);
           } catch {
-            showSaveError(itemHost, () => ctx.navigate("#/learn"), () => ctx.navigate("#/dashboard"));
+            if (!ctx.signal.aborted) {
+              showSaveError(itemHost, () => ctx.navigate("#/learn"), () => ctx.navigate("#/dashboard"));
+            }
             return;
+          } finally {
+            pauseBtn.disabled = false;
+            stopBtn.disabled = false;
           }
           if (isIntroOnly) {
             cumulative.introduced += 1;
@@ -187,6 +176,16 @@ export async function render(container, ctx) {
           cumulative.total += 1;
           cumulative.byType[current.contentType] = (cumulative.byType[current.contentType] || 0) + 1;
           index += 1;
+          itemDraft = {};
+          if (isOutdated()) {
+            if (!ctx.signal.aborted) await ctx.navigate("#/learn");
+            return;
+          }
+          if (ctx.signal.aborted) {
+            if (index < queue.length) persistProgress();
+            else writeDraft(DAILY_DRAFT, null);
+            return;
+          }
           await step();
           window.scrollTo(0, 0);
         }
@@ -197,7 +196,9 @@ export async function render(container, ctx) {
   }
 
   async function finishRound() {
-    clearDailySession();
+    checkpoint = null;
+    writeDraft(DAILY_DRAFT, null);
+    draftStatus.textContent = "";
     const nextQueue = buildQueue();
     clear(itemHost);
     chrome.update("", 0);
@@ -207,7 +208,7 @@ export async function render(container, ctx) {
     renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, () => runRound(nextQueue));
   }
 
-  await runRound(firstQueue, resumed ? resumed.index : 0, Boolean(resumed));
+  await runRound(firstQueue, resumed);
 }
 
 function buildQueue() {
@@ -281,9 +282,9 @@ export function selectSessionItems(dueCandidates, freshCandidates, minutesTarget
   return [...selectedDue, ...selectedFresh];
 }
 
-function showSaveError(host, restart, goHome) {
+function showSaveError(host, restart, goHome, message = "Die Antwort konnte nicht gespeichert werden.") {
   clear(host);
-  const error = el("p", { attrs: { role: "alert" }, text: "Der Lernstand konnte nicht gespeichert werden." });
+  const error = el("p", { attrs: { role: "alert" }, text: message });
   host.appendChild(error);
   focusContent(error);
   host.appendChild(el("div", { class: "quiz-actions" }, [

@@ -124,19 +124,22 @@ export async function render(container) {
 
   let currentMatches = [];
   bulkMarkBtn.addEventListener("click", async () => {
+    if (bulkMarkBtn.getAttribute("aria-disabled") === "true") return;
     const toMark = currentMatches.slice(0, PAGE_SIZE).filter((v) => state.progressByContentId.get(v.id)?.flag !== "later");
     if (toMark.length === 0) return;
-    bulkMarkBtn.disabled = true;
+    bulkMarkBtn.setAttribute("aria-disabled", "true");
     try {
       for (const v of toMark) {
         await markForReview({ content: v, contentType: "vocabulary" });
       }
+      const hadFocus = document.activeElement === bulkMarkBtn;
       renderList();
+      if (hadFocus && bulkMarkBtn.hidden) searchInput.focus();
       countStatus.textContent = `${toMark.length} Begriffe zum Wiederholen vorgemerkt.`;
     } catch {
       countStatus.textContent = "Die Auswahl konnte nicht gespeichert werden.";
     } finally {
-      bulkMarkBtn.disabled = false;
+      bulkMarkBtn.removeAttribute("aria-disabled");
     }
   });
 
@@ -268,7 +271,8 @@ function renderCard(v, domain) {
   });
   const errorMsg = el("p", { class: "glossary-error", attrs: { role: "alert", hidden: "" } });
   reviewBtn.addEventListener("click", async () => {
-    reviewBtn.disabled = true;
+    if (reviewBtn.getAttribute("aria-disabled") === "true") return;
+    reviewBtn.setAttribute("aria-disabled", "true");
     errorMsg.hidden = true;
     errorMsg.textContent = "";
     const item = { content: v, contentType: "vocabulary" };
@@ -287,7 +291,7 @@ function renderCard(v, domain) {
       errorMsg.textContent = "Status konnte nicht gespeichert werden.";
       errorMsg.hidden = false;
     } finally {
-      reviewBtn.disabled = false;
+      reviewBtn.removeAttribute("aria-disabled");
     }
   });
 

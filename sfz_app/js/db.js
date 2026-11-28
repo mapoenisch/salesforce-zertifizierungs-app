@@ -9,6 +9,7 @@ const STORE_PROGRESS = "learningProgress";
 const STORE_ACTIVITY = "activityLog";
 const STORE_MIGRATIONS = "migrations";
 const LEGACY_MIGRATION = "combined-trainer";
+const SUBMISSION_PREFIX = "submission:";
 
 let dbPromise = null;
 
@@ -63,10 +64,12 @@ export async function readLearningData() {
 }
 
 /** Aktualisiert den Stand aus dem jeweils jüngsten Datensatz und protokolliert ihn atomar. */
-export async function updateLearningData(updates) {
+export async function updateLearningData(updates, submissionId) {
   if (!updates.length) return;
   const db = await openDB();
-  const transaction = db.transaction([STORE_PROGRESS, STORE_ACTIVITY], "readwrite");
+  const stores = [STORE_PROGRESS, STORE_ACTIVITY];
+  if (submissionId) stores.push(STORE_MIGRATIONS);
+  const transaction = db.transaction(stores, "readwrite");
   const committed = commitTransaction(transaction);
   const progress = transaction.objectStore(STORE_PROGRESS);
   const activity = transaction.objectStore(STORE_ACTIVITY);
@@ -92,7 +95,19 @@ export async function updateLearningData(updates) {
     };
   }
 
-  applyNext();
+  if (submissionId) {
+    // Eine Unterbrechung zwischen Datenbank-Commit und Entwurfsbereinigung darf keine Antwort doppelt zählen.
+    const receipts = transaction.objectStore(STORE_MIGRATIONS);
+    const key = SUBMISSION_PREFIX + submissionId;
+    const receipt = receipts.get(key);
+    receipt.onsuccess = () => {
+      if (receipt.result) return;
+      receipts.put(true, key);
+      applyNext();
+    };
+  } else {
+    applyNext();
+  }
   await committed.catch((error) => { throw cause || error; });
 }
 
@@ -150,13 +165,14 @@ async function migrateLegacyData(db) {
 /** Ersetzt beide Lernstand-Speicher gemeinsam. */
 export async function replaceLearningData(progress, activity) {
   const db = await openDB();
-  const transaction = db.transaction([STORE_PROGRESS, STORE_ACTIVITY], "readwrite");
+  const transaction = db.transaction([STORE_PROGRESS, STORE_ACTIVITY, STORE_MIGRATIONS], "readwrite");
   const committed = commitTransaction(transaction);
   const progressStore = transaction.objectStore(STORE_PROGRESS);
   const activityStore = transaction.objectStore(STORE_ACTIVITY);
   try {
     progressStore.clear();
     activityStore.clear();
+    transaction.objectStore(STORE_MIGRATIONS).delete(IDBKeyRange.bound(SUBMISSION_PREFIX, SUBMISSION_PREFIX + "\uffff"));
     progress.forEach((record) => progressStore.put(record));
     activity.forEach(({ id, ...record }) => activityStore.add(record));
   } catch (error) {

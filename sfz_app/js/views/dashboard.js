@@ -3,7 +3,9 @@
 import { state, allLearnableContent, domainMap, pathCertifications, refreshLearningData } from "../state.js";
 import { dueForPath, summarizeActivity } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
-import { el, clear, progressBar, pathLabel, certLabel, termHelp } from "../utils.js";
+import { el, clear, progressBar, pathLabel, certLabel, termHelp, todayISO } from "../utils.js";
+
+import { readDailyDraft } from "../sessionDrafts.js";
 
 const PLAN_DAYS = 84;
 
@@ -11,8 +13,10 @@ export async function render(container, ctx) {
   clear(container);
 
   await refreshLearningData();
+  if (ctx.signal.aborted) return;
   const certification = state.settings.certificationPath;
   const certifications = pathCertifications(certification);
+  const resumable = Boolean(readDailyDraft(todayISO(), certification, allLearnableContent()));
   const dueCount = dueForPath(certifications).length;
 
   const weekNumber = weeklyPlan.getCurrentWeekNumber(state.settings.startDate);
@@ -39,11 +43,11 @@ export async function render(container, ctx) {
   container.appendChild(bannerRow);
 
   if (coldStart) {
-    container.appendChild(renderColdStartHero(ctx, { weekNumber, weekTarget, certification }));
+    container.appendChild(renderColdStartHero(ctx, { weekNumber, weekTarget, certification, resumable }));
     container.appendChild(renderEmptyState());
   } else {
     container.appendChild(renderHero(ctx, {
-      weekNumber, weekTarget, dueCount, pathActivity, scoredCount
+      weekNumber, weekTarget, dueCount, pathActivity, scoredCount, resumable
     }));
     container.appendChild(renderCockpit({ certifications, all, answered, dueCount }));
   }
@@ -62,7 +66,7 @@ function planDayLabel(startDate) {
   return `Tag ${Math.min(day, PLAN_DAYS)} von ${PLAN_DAYS}`;
 }
 
-function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, scoredCount }) {
+function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, scoredCount, resumable }) {
   const heroCard = el("section", { class: "card dashboard-hero-card", attrs: { "aria-label": "Tagesfokus" } });
   const dayLabel = planDayLabel(state.settings.startDate);
   const weekLine = weekTarget
@@ -76,7 +80,7 @@ function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, score
 
   const heroBtn = el("button", {
     class: "primary-btn hero-btn",
-    text: `Heutige Einheit starten${dueCount > 0 ? ` (${dueCount} fällig)` : ""}`,
+    text: resumable ? "Einheit fortsetzen" : `Heutige Einheit starten${dueCount > 0 ? ` (${dueCount} fällig)` : ""}`,
     attrs: { type: "button" }
   });
   heroBtn.addEventListener("click", () => ctx.navigate("#/learn"));
@@ -109,7 +113,7 @@ function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, score
   return heroCard;
 }
 
-function renderColdStartHero(ctx, { weekNumber, weekTarget, certification }) {
+function renderColdStartHero(ctx, { weekNumber, weekTarget, certification, resumable }) {
   const card = el("section", {
     class: "card dashboard-hero-card dashboard-hero-cold",
     attrs: { "aria-label": "Erste Einheit" }
@@ -118,15 +122,15 @@ function renderColdStartHero(ctx, { weekNumber, weekTarget, certification }) {
     ? `Woche ${weekNumber} von 12 · ${weekTarget.focus}`
     : `Woche ${weekNumber}`;
   card.appendChild(el("p", { class: "dashboard-eyebrow", text: weekLine }));
-  card.appendChild(el("h2", { text: "Starte mit einer kurzen Runde" }));
+  card.appendChild(el("h2", { text: resumable ? "Deine Einheit ist pausiert" : "Starte mit einer kurzen Runde" }));
   card.appendChild(el("p", {
     class: "dashboard-hero-lead",
-    text: "Vokabeln, Definitionen und eine Lesefrage – etwa 20 Minuten. Danach siehst du hier deinen Fortschritt."
+    text: resumable ? "Mach bei der zuletzt geöffneten Aufgabe weiter." : "Vokabeln, Definitionen und eine Lesefrage – etwa 20 Minuten. Danach siehst du hier deinen Fortschritt."
   }));
 
   const startBtn = el("button", {
     class: "primary-btn hero-btn",
-    text: "Heutige Einheit starten",
+    text: resumable ? "Einheit fortsetzen" : "Heutige Einheit starten",
     attrs: { type: "button" }
   });
   startBtn.addEventListener("click", () => ctx.navigate("#/learn"));

@@ -69,6 +69,8 @@ Danach im Browser `http://localhost:8000` öffnen. Wenn dein früherer Lernstand
 
 Der Fortschritt liegt lokal im Browser (IndexedDB), gebunden an Browser + Port. Unter **Einstellungen → Sicherung** kann der komplette Lernstand jederzeit als JSON-Datei exportiert und auf einem anderen Rechner oder nach einem Browser-Reset wieder importiert werden. Empfehlenswert: regelmäßig exportieren, besonders vor größeren System- oder Browser-Updates oder vor dem Löschen von Browserdaten ("Verlauf/Cache leeren" kann IndexedDB mit löschen).
 
+Sitzungsentwürfe liegen im aktuellen Browserprofil. Der Import eines Lernstands und das Löschen des Lernfortschritts verwerfen diese Entwürfe. Mit einer leeren Salesforce-Sicherung kannst du deine Einstellungen übernehmen und dabei den vorhandenen Lernstand behalten.
+
 ---
 
 ## 2. Ziel der App
@@ -135,7 +137,7 @@ Eine Einheit läuft in Runden ab: Nach jeder Runde kann man freiwillig weiterler
 Zwei Modi für gezieltes Üben abseits der Tageseinheit:
 
 - **Freies Üben**: beliebig viele Fragen/Übungen nacheinander, mit umfangreichen Filtern (siehe unten) und der Option, einzelne Inhalte als "später wiederholen" zu markieren.
-- **Mini-Prüfung**: Bis zu zehn Szenariofragen oder Reading-Passagen, nach Exam-Gewichten aus dem Filterpool zusammengestellt. Die Prüfung läuft zehn Minuten. Timer und Zahl der offenen Fragen stehen über der Aufgabe. Über die Fragenübersicht kannst du direkt zu einer Frage springen. Abgeben mit offenen Fragen sowie Abbrechen oder Verlassen eines laufenden Versuchs erfordern eine Bestätigung. In der Auswertung kannst du falsche oder offene Fragen gezielt weiterüben.
+- **Mini-Prüfung**: Bis zu zehn Szenariofragen oder Reading-Passagen, nach Exam-Gewichten aus dem Filterpool zusammengestellt. Die Prüfung läuft zehn Minuten. Über die Fragenübersicht kannst du direkt zu einer Frage springen. Nutze **Prüfung unterbrechen**, um später fortzusetzen. Die Frist läuft weiter. Ist sie beim Wiederöffnen abgelaufen, wertet der Trainer die gespeicherten Antworten aus. Über die Auswertung kannst du falsche oder offene Fragen gezielt weiterüben.
 
 Unterstützte Fragetypen: Single Choice und Multiple Select. Beim Lernen und freien Üben kannst du deine Antwortsicherheit von 1 bis 5 angeben. Die Übungen erklären die Lösungen und erläutern bei Szenarien relevante Signalwörter. In Mini-Prüfungen speichert der Trainer die Korrektheit tatsächlich beantworteter Fragen. Antwortsicherheit und Antwortzeit bleiben dort leer.
 

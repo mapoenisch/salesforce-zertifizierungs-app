@@ -4,6 +4,7 @@ import { readLearningData, replaceLearningData } from "./db.js";
 import { belongsToTrainer, supportedPath } from "./learningScope.js";
 import { state, allLearnableContent, saveSettings, refreshLearningData } from "./state.js";
 import { isCalendarDate, todayISO } from "./utils.js";
+import { clearSessionDrafts } from "./sessionDrafts.js";
 
 const EXPORT_VERSION = 1;
 const TRAINER = "salesforce";
@@ -58,6 +59,10 @@ export function validateBackup(payload, items) {
   const progress = validateRecords(payload.learningProgress, catalog, false, payload.trainer == null);
   const activity = validateRecords(payload.activityLog || [], catalog, true, payload.trainer == null);
   if (!progress.length && !activity.length) {
+    if (payload.trainer === TRAINER) {
+      const settings = validateSettings(payload.settings, false);
+      if (Object.keys(settings).length) return { progress, activity, settings, settingsOnly: true };
+    }
     throw new Error("Die Sicherung enthält keinen Salesforce-Lernstand. Dein vorhandener Lernstand bleibt erhalten.");
   }
   return { progress, activity, settings: validateSettings(payload.settings, payload.trainer == null) };
@@ -128,16 +133,21 @@ function validateSettings(settings, legacy) {
 }
 
 /** Aufruf erst nach der angezeigten Vorschau und Bestätigung. */
-export async function restoreBackup({ progress, activity, settings }) {
-  await replaceLearningData(progress, activity);
-  await refreshLearningData();
-  return restoreSettings(settings);
+export async function restoreBackup({ progress, activity, settings, settingsOnly }) {
+  let draftsCleared = true;
+  if (!settingsOnly) {
+    await replaceLearningData(progress, activity);
+    draftsCleared = clearSessionDrafts();
+    await refreshLearningData();
+  }
+  return { settingsSaved: restoreSettings(settings), draftsCleared };
 }
 
 export async function resetAllProgress() {
   await replaceLearningData([], []);
+  const draftsCleared = clearSessionDrafts();
   await refreshLearningData();
-  return restoreSettings({ startDate: todayISO() });
+  return { settingsSaved: restoreSettings({ startDate: todayISO() }), draftsCleared };
 }
 
 function restoreSettings(settings) {
