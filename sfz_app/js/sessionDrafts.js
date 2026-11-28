@@ -1,3 +1,5 @@
+import { isCalendarDate } from "./utils.js";
+
 // Entwürfe bleiben lokal und werden getrennt vom abgeschlossenen Lernstand gespeichert.
 export const DAILY_DRAFT = "sfz_daily_session_v1";
 export const EXAM_DRAFT = "sfz_mini_exam_v1";
@@ -32,7 +34,9 @@ export function newSessionId() {
 
 export function readDailyDraft(date, path, items) {
   const draft = readDraft(DAILY_DRAFT);
-  if (draft?.date !== date || draft.path !== path || !Array.isArray(draft.queueIds)) return null;
+  if (!draft || draft.path !== path || !Array.isArray(draft.queueIds) || !isCalendarDate(draft.date)) {
+    return null;
+  }
 
   const byId = new Map(items.map((item) => [item.content.id, item]));
   const index = draft.index ?? 0;
@@ -43,5 +47,5 @@ export function readDailyDraft(date, path, items) {
   });
   // Die Aufgabenposition ist Teil des Entwurfs. Fehlende Inhalte dürfen sie nicht verschieben.
   if (queue.some((item) => !item)) return null;
-  return { ...draft, queue, index };
+  return { ...draft, queue, index, isPreviousDay: draft.date !== date };
 }

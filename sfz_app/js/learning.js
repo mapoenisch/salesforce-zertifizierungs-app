@@ -52,8 +52,13 @@ export async function saveAnswers(answers, submissionId) {
 }
 
 export async function markForReview(item, now = new Date()) {
+  return markManyForReview([item], now);
+}
+
+export async function markManyForReview(items, now = new Date()) {
+  if (!items.length) return;
   const tomorrow = todayISO(addCalendarDays(now, 1));
-  await updateLearningData([{
+  await updateLearningData(items.map((item) => ({
     contentId: item.content.id,
     apply(existing) {
       const progress = existing || emptyProgress(item.content, item.contentType);
@@ -66,7 +71,7 @@ export async function markForReview(item, now = new Date()) {
         }
       };
     }
-  }]);
+  })));
   await refreshLearningData();
 }
 
@@ -79,6 +84,29 @@ export async function unmarkForReview(item) {
     }
   }]);
   await refreshLearningData();
+}
+
+export function computeWeakDomains(activity, domains, { minAnswers = 3, threshold = 80 } = {}) {
+  const byDomain = new Map();
+  for (const a of activity) {
+    if (!a.examDomainId || typeof a.correct !== "boolean") continue;
+    if (!byDomain.has(a.examDomainId)) byDomain.set(a.examDomainId, { correct: 0, total: 0 });
+    const entry = byDomain.get(a.examDomainId);
+    entry.total += 1;
+    if (a.correct) entry.correct += 1;
+  }
+  const practiced = [...byDomain.entries()]
+    .filter(([, v]) => v.total >= minAnswers)
+    .map(([id, v]) => ({
+      id,
+      name: domains.get(id)?.name || id,
+      accuracy: Math.round((v.correct / v.total) * 100),
+      total: v.total
+    }));
+  const weak = practiced
+    .filter((d) => d.accuracy < threshold)
+    .sort((a, b) => a.accuracy - b.accuracy);
+  return { weak, practiced };
 }
 
 export function summarizeActivity(activity, progressById) {

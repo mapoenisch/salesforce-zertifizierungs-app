@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import * as sm2 from "../sfz_app/js/sm2.js";
 import * as plan from "../sfz_app/js/weeklyPlan.js";
-import { dueItems, summarizeActivity } from "../sfz_app/js/learning.js";
+import { dueItems, summarizeActivity, computeWeakDomains } from "../sfz_app/js/learning.js";
 import { selectExamItems, expandExamItems } from "../sfz_app/js/views/quiz.js";
 import { selectSessionItems } from "../sfz_app/js/views/learn.js";
 import { validateBackup } from "../sfz_app/js/exportImport.js";
+import { DAILY_DRAFT, readDailyDraft } from "../sfz_app/js/sessionDrafts.js";
+import { formatDateDE } from "../sfz_app/js/utils.js";
 
 process.env.TZ = "Europe/Berlin";
 
@@ -169,4 +171,44 @@ test("Prüfungswiederholung übernimmt bei Passagen nur die gewählten Teilfrage
   assert.equal(retry.content.scenario, "Kontext");
   assert.deepEqual(retry.content.questions.map(({ questionText }) => questionText), ["Falsch"]);
   assert.equal(passage.content.questions.length, 3);
+});
+
+test("Tagesentwurf bleibt auch nach Tageswechsel fortsetzbar und wird entsprechend markiert", () => {
+  const store = new Map();
+  const prevStorage = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: (k) => store.delete(k)
+  };
+  try {
+    const items = [{ content: { id: "voc-1" }, contentType: "vocabulary" }];
+    store.set(DAILY_DRAFT, JSON.stringify({
+      date: "2026-11-27",
+      path: "foundations",
+      queueIds: [{ id: "voc-1", introMode: true }],
+      index: 0
+    }));
+    const sameDay = readDailyDraft("2026-11-27", "foundations", items);
+    assert.equal(sameDay.isPreviousDay, false);
+    const nextDay = readDailyDraft("2026-11-28", "foundations", items);
+    assert.equal(nextDay.isPreviousDay, true);
+    assert.equal(nextDay.queue[0].content.id, "voc-1");
+    assert.equal(readDailyDraft("2026-11-28", "administrator", items), null);
+    assert.equal(formatDateDE("2026-11-27"), "27.11.2026");
+  } finally {
+    globalThis.localStorage = prevStorage;
+  }
+});
+
+test("computeWeakDomains filtert nach Mindestanzahl und sortiert nach niedrigster Trefferquote", () => {
+  const domains = new Map([["d1", { name: "Domain 1" }], ["d2", { name: "Domain 2" }], ["d3", { name: "Domain 3" }]]);
+  const activity = [
+    { examDomainId: "d1", correct: false }, { examDomainId: "d1", correct: false }, { examDomainId: "d1", correct: true },
+    { examDomainId: "d2", correct: true }, { examDomainId: "d2", correct: true }, { examDomainId: "d2", correct: true },
+    { examDomainId: "d3", correct: false }
+  ];
+  const { weak, practiced } = computeWeakDomains(activity, domains);
+  assert.equal(practiced.length, 2);
+  assert.deepEqual(weak.map((d) => [d.id, d.accuracy]), [["d1", 33]]);
 });

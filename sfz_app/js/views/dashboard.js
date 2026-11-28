@@ -1,11 +1,11 @@
 // views/dashboard.js — Startseite mit Tagesaktion, Wochen-Soll/Ist, Fortschritt und Schwachpunkten.
 
 import { state, allLearnableContent, domainMap, pathCertifications, refreshLearningData } from "../state.js";
-import { dueForPath, summarizeActivity } from "../learning.js";
+import { dueForPath, summarizeActivity, computeWeakDomains } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
-import { el, clear, progressBar, pathLabel, certLabel, termHelp, todayISO } from "../utils.js";
+import { el, clear, progressBar, pathLabel, certLabel, termHelp, todayISO, formatDateDE } from "../utils.js";
 
-import { readDailyDraft } from "../sessionDrafts.js";
+import { DAILY_DRAFT, readDailyDraft, writeDraft } from "../sessionDrafts.js";
 
 const PLAN_DAYS = 84;
 
@@ -16,7 +16,7 @@ export async function render(container, ctx) {
   if (ctx.signal.aborted) return;
   const certification = state.settings.certificationPath;
   const certifications = pathCertifications(certification);
-  const resumable = Boolean(readDailyDraft(todayISO(), certification, allLearnableContent()));
+  const dailyDraft = readDailyDraft(todayISO(), certification, allLearnableContent());
   const dueCount = dueForPath(certifications).length;
 
   const weekNumber = weeklyPlan.getCurrentWeekNumber(state.settings.startDate);
@@ -43,11 +43,11 @@ export async function render(container, ctx) {
   container.appendChild(bannerRow);
 
   if (coldStart) {
-    container.appendChild(renderColdStartHero(ctx, { weekNumber, weekTarget, certification, resumable }));
+    container.appendChild(renderColdStartHero(ctx, { weekNumber, weekTarget, certification, dailyDraft }));
     container.appendChild(renderEmptyState());
   } else {
     container.appendChild(renderHero(ctx, {
-      weekNumber, weekTarget, dueCount, pathActivity, scoredCount, resumable
+      weekNumber, weekTarget, dueCount, pathActivity, scoredCount, dailyDraft
     }));
     container.appendChild(renderCockpit({ certifications, all, answered, dueCount }));
   }
@@ -66,7 +66,47 @@ function planDayLabel(startDate) {
   return `Tag ${Math.min(day, PLAN_DAYS)} von ${PLAN_DAYS}`;
 }
 
-function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, scoredCount, resumable }) {
+function appendDraftResumeControls(card, ctx, dailyDraft, defaultLabel) {
+  const resumable = Boolean(dailyDraft);
+  const heroBtn = el("button", {
+    class: "primary-btn hero-btn",
+    text: resumable ? "Einheit fortsetzen" : defaultLabel,
+    attrs: { type: "button" }
+  });
+  heroBtn.addEventListener("click", () => ctx.navigate("#/learn"));
+
+  if (!dailyDraft) {
+    card.appendChild(heroBtn);
+    return;
+  }
+
+  if (dailyDraft.isPreviousDay) {
+    const restartBtn = el("button", {
+      class: "secondary-btn",
+      text: "Für heute neu starten",
+      attrs: { type: "button" },
+      on: {
+        click: () => {
+          writeDraft(DAILY_DRAFT, null);
+          ctx.navigate("#/learn");
+        }
+      }
+    });
+    card.appendChild(el("div", { class: "dashboard-hero-actions" }, [heroBtn, restartBtn]));
+    card.appendChild(el("p", {
+      class: "item-hint dashboard-draft-hint",
+      text: `Pausierte Einheit vom ${formatDateDE(dailyDraft.date)} · Aufgabe ${dailyDraft.index + 1} von ${dailyDraft.queue.length}.`
+    }));
+  } else {
+    card.appendChild(heroBtn);
+    card.appendChild(el("p", {
+      class: "item-hint dashboard-draft-hint",
+      text: `Pausiert bei Aufgabe ${dailyDraft.index + 1} von ${dailyDraft.queue.length}.`
+    }));
+  }
+}
+
+function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, scoredCount, dailyDraft }) {
   const heroCard = el("section", { class: "card dashboard-hero-card", attrs: { "aria-label": "Tagesfokus" } });
   const dayLabel = planDayLabel(state.settings.startDate);
   const weekLine = weekTarget
@@ -78,15 +118,10 @@ function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, score
   }));
   heroCard.appendChild(el("h2", { text: "Tagesfokus" }));
 
-  const heroBtn = el("button", {
-    class: "primary-btn hero-btn",
-    text: resumable ? "Einheit fortsetzen" : `Heutige Einheit starten${dueCount > 0 ? ` (${dueCount} fällig)` : ""}`,
-    attrs: { type: "button" }
-  });
-  heroBtn.addEventListener("click", () => ctx.navigate("#/learn"));
-  heroCard.appendChild(heroBtn);
+  const defaultLabel = `Heutige Einheit starten${dueCount > 0 ? ` (${dueCount} fällig)` : ""}`;
+  appendDraftResumeControls(heroCard, ctx, dailyDraft, defaultLabel);
 
-  const { weak, hasPracticedDomains } = computeWeakDomains(pathActivity, domainMap());
+  const { weak, practiced } = computeWeakDomains(pathActivity, domainMap());
   if (weak.length > 0) {
     const topWeak = weak[0];
     const focusBtn = el("button", {
@@ -96,7 +131,7 @@ function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, score
     });
     focusBtn.addEventListener("click", () => ctx.navigate(`#/quiz?domain=${encodeURIComponent(topWeak.id)}`));
     heroCard.appendChild(focusBtn);
-  } else if (hasPracticedDomains) {
+  } else if (practiced.length > 0) {
     heroCard.appendChild(el("p", {
       class: "item-hint dashboard-unlock-hint",
       text: "Alle bisher geübten Domains liegen bei mindestens 80% Trefferquote."
@@ -113,7 +148,8 @@ function renderHero(ctx, { weekNumber, weekTarget, dueCount, pathActivity, score
   return heroCard;
 }
 
-function renderColdStartHero(ctx, { weekNumber, weekTarget, certification, resumable }) {
+function renderColdStartHero(ctx, { weekNumber, weekTarget, certification, dailyDraft }) {
+  const resumable = Boolean(dailyDraft);
   const card = el("section", {
     class: "card dashboard-hero-card dashboard-hero-cold",
     attrs: { "aria-label": "Erste Einheit" }
@@ -128,17 +164,11 @@ function renderColdStartHero(ctx, { weekNumber, weekTarget, certification, resum
     text: resumable ? "Mach bei der zuletzt geöffneten Aufgabe weiter." : "Vokabeln, Definitionen und eine Lesefrage – etwa 20 Minuten. Danach siehst du hier deinen Fortschritt."
   }));
 
-  const startBtn = el("button", {
-    class: "primary-btn hero-btn",
-    text: resumable ? "Einheit fortsetzen" : "Heutige Einheit starten",
-    attrs: { type: "button" }
-  });
-  startBtn.addEventListener("click", () => ctx.navigate("#/learn"));
-  card.appendChild(startBtn);
+  appendDraftResumeControls(card, ctx, dailyDraft, "Heutige Einheit starten");
 
   card.appendChild(el("p", {
     class: "item-hint",
-    text: `Pfad: ${certLabel(certification)} · Du kannst den Pfad in den Einstellungen wechseln.`
+    text: `Pfad: ${pathLabel(certification)} · Du kannst den Pfad in den Einstellungen wechseln.`
   }));
   return card;
 }
@@ -230,28 +260,4 @@ function footerLinks(ctx) {
       }
     })
   ]);
-}
-
-function computeWeakDomains(activity, domains) {
-  const byDomain = new Map();
-  for (const a of activity) {
-    if (!a.examDomainId) continue;
-    if (typeof a.correct !== "boolean") continue; // reines Kennenlernen einer Vokabel zählt nicht als Trefferquote
-    if (!byDomain.has(a.examDomainId)) byDomain.set(a.examDomainId, { correct: 0, total: 0 });
-    const entry = byDomain.get(a.examDomainId);
-    entry.total += 1;
-    if (a.correct) entry.correct += 1;
-  }
-  const practiced = [...byDomain.entries()]
-    .filter(([, v]) => v.total >= 3)
-    .map(([domainId, v]) => ({
-      id: domainId,
-      name: domains.get(domainId)?.name || domainId,
-      accuracy: Math.round((v.correct / v.total) * 100),
-      total: v.total
-    }));
-  const weak = practiced
-    .filter((d) => d.accuracy < 80)
-    .sort((a, b) => a.accuracy - b.accuracy);
-  return { weak, hasPracticedDomains: practiced.length > 0 };
 }

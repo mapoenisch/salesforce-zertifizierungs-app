@@ -1,11 +1,11 @@
 // views/learn.js — Tägliche Lerneinheit: fällige Wiederholungen, neue Vokabeln, Matching, Reading, Abschluss.
 
 import { state, allLearnableContent, domainWeightMap, pathCertifications, refreshLearningData } from "../state.js";
-import { dueForPath, markForReview, saveAnswers } from "../learning.js";
+import { dueForPath, markForReview, unmarkForReview, saveAnswers } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { renderItem } from "../itemRenderer.js";
 import { openExamEnglishModal } from "./examEnglish.js";
-import { el, clear, shuffle, focusContent, createSessionChrome, todayISO } from "../utils.js";
+import { el, clear, shuffle, focusContent, createSessionChrome, todayISO, formatDateDE } from "../utils.js";
 import { DAILY_DRAFT, newSessionId, readDailyDraft, readDraft, writeDraft } from "../sessionDrafts.js";
 
 const SESSION_LIMITS = { due: 10, vocabulary: 5, definition: 3, readingPassage: 2 };
@@ -30,6 +30,27 @@ export async function render(container, ctx) {
   const chrome = createSessionChrome({
     onOpenRef: (btn) => openExamEnglishModal(btn, "Zurück zur Lerneinheit")
   });
+  let previousDayBanner = null;
+  if (resumed?.isPreviousDay) {
+    const freshBtn = el("button", {
+      class: "secondary-btn session-ref-btn",
+      text: "Für heute neu starten",
+      attrs: { type: "button" }
+    });
+    freshBtn.addEventListener("click", () => {
+      checkpoint = null;
+      writeDraft(DAILY_DRAFT, null);
+      render(container, ctx);
+    });
+    previousDayBanner = el("div", { class: "card resume-previous-banner" }, [
+      el("p", {
+        class: "resume-previous-text",
+        text: `Pausierte Einheit vom ${formatDateDE(resumed.date)} fortgesetzt.`
+      }),
+      freshBtn
+    ]);
+    container.appendChild(previousDayBanner);
+  }
   container.appendChild(chrome.statusBar);
   container.appendChild(chrome.sessionTrack);
 
@@ -59,8 +80,10 @@ export async function render(container, ctx) {
   const cumulative = resumed?.cumulative ?? {
     total: 0, scored: 0, correct: 0, introduced: 0, byType: {}, rounds: resumed ? 1 : 0
   };
+  const ownerId = newSessionId();
   let checkpoint;
   window.addEventListener("pagehide", () => checkpoint?.(), { signal: ctx.signal });
+  ctx.signal.addEventListener("abort", () => checkpoint?.(), { once: true });
 
   async function runRound(queue, saved) {
     if (!saved) cumulative.rounds += 1;
@@ -70,30 +93,68 @@ export async function render(container, ctx) {
     chrome.setHidden(false);
     let index = saved?.index ?? 0;
     let itemDraft = saved?.itemDraft ?? {};
-    let storedIndex = null;
+    let lastStoredRevision = saved?.revision ?? 0;
+    let initialized = false;
+    let superseded = false;
 
     function isOutdated() {
-      if (storedIndex == null) return false;
       const latest = readDraft(DAILY_DRAFT);
-      return latest?.sessionId !== sessionId || latest.index !== storedIndex;
-    }
-
-    function persistProgress() {
-      if (isOutdated()) {
-        draftStatus.textContent = "Der Entwurf ist in diesem Tab nicht mehr aktuell. Öffne die Lerneinheit erneut.";
+      if (!initialized) {
+        if (saved) {
+          // Erst die gespeicherte Version vergleichen. Die neue ID gilt ab dem ersten Schreiben.
+          return !latest || latest.sessionId !== saved.sessionId || (latest.revision ?? 0) !== lastStoredRevision;
+        }
         return false;
       }
+      return !latest || latest.sessionId !== sessionId || latest.ownerId !== ownerId ||
+        (latest.revision ?? 0) !== lastStoredRevision;
+    }
+
+    function markSuperseded(message = "Diese Lerneinheit wird bereits in einem anderen Tab fortgesetzt oder wurde beendet.") {
+      if (superseded) return;
+      superseded = true;
+      checkpoint = null;
+      toolbar.hidden = true;
+      previousDayBanner?.remove();
+      showSaveError(itemHost, () => ctx.navigate("#/learn"), () => ctx.navigate("#/dashboard"), message);
+    }
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === DAILY_DRAFT && !superseded && isOutdated()) {
+        markSuperseded();
+      }
+    }, { signal: ctx.signal });
+
+    function persistProgress() {
+      if (superseded || isOutdated()) {
+        markSuperseded("Der Entwurf ist in diesem Tab nicht mehr aktuell. Lade die Lerneinheit neu.");
+        return false;
+      }
+      const nextRevision = lastStoredRevision + 1;
       const stored = writeDraft(DAILY_DRAFT, {
-        date: today, path: activePath, sessionId, queueIds, index, cumulative, elapsedMs: elapsedMs(), itemDraft
+        date: today,
+        startedDate: saved?.startedDate || saved?.date || today,
+        path: activePath,
+        sessionId,
+        ownerId,
+        revision: nextRevision,
+        queueIds,
+        index,
+        cumulative,
+        elapsedMs: elapsedMs(),
+        itemDraft
       });
-      if (stored) storedIndex = index;
+      if (stored) {
+        lastStoredRevision = nextRevision;
+        initialized = true;
+      }
       draftStatus.textContent = stored ? "" : "Der Entwurf konnte nicht gespeichert werden. Lass die Einheit geöffnet, um weiterzulernen.";
       return stored;
     }
 
     checkpoint = persistProgress;
     pauseBtn.onclick = () => {
-      if (persistProgress() || isOutdated()) ctx.navigate("#/dashboard");
+      if (persistProgress() || superseded) ctx.navigate("#/dashboard");
     };
     stopBtn.onclick = () => {
       if (!isOutdated() && !writeDraft(DAILY_DRAFT, null)) {
@@ -109,7 +170,7 @@ export async function render(container, ctx) {
         await finishRound();
         return;
       }
-      persistProgress();
+      if (!persistProgress() && superseded) return;
       const elapsedMin = Math.floor(elapsedMs() / 60000);
       chrome.update(
         `Runde ${cumulative.rounds} · ${index + 1} von ${queue.length} · ${elapsedMin}/${state.settings.dailySessionMinutesTarget} Min.`,
@@ -118,18 +179,22 @@ export async function render(container, ctx) {
       const current = queue[index];
       status.textContent = "";
       status.setAttribute("role", "status");
-      const marked = state.progressByContentId.get(current.content.id)?.flag === "later";
-      laterBtn.textContent = marked ? "✓ Vorgemerkt" : "Später wiederholen markieren";
-      laterBtn.setAttribute("aria-pressed", String(marked));
+      const updateLaterButton = (marked) => {
+        laterBtn.textContent = marked ? "✓ Vorgemerkt" : "Später wiederholen markieren";
+        laterBtn.setAttribute("aria-pressed", String(marked));
+      };
+      updateLaterButton(state.progressByContentId.get(current.content.id)?.flag === "later");
       laterBtn.onclick = async () => {
         laterBtn.disabled = true;
         try {
-          await markForReview(current);
+          const currentlyMarked = state.progressByContentId.get(current.content.id)?.flag === "later";
+          if (currentlyMarked) await unmarkForReview(current);
+          else await markForReview(current);
           if (queue[index] === current) {
-            laterBtn.textContent = "✓ Vorgemerkt";
-            laterBtn.setAttribute("aria-pressed", "true");
+            const markedNow = state.progressByContentId.get(current.content.id)?.flag === "later";
+            updateLaterButton(markedNow);
             status.setAttribute("role", "status");
-            status.textContent = "Für die Lerneinheit vorgemerkt.";
+            status.textContent = markedNow ? "Für die Lerneinheit vorgemerkt." : "Vormerkung entfernt.";
           }
         } catch {
           if (queue[index] === current) {
@@ -147,9 +212,8 @@ export async function render(container, ctx) {
           persistProgress();
         },
         onAnswered: async (result) => {
-          if (isOutdated()) {
-            showSaveError(itemHost, () => ctx.navigate("#/learn"), () => ctx.navigate("#/dashboard"),
-              "Der Entwurf ist in diesem Tab nicht mehr aktuell.");
+          if (superseded || isOutdated()) {
+            markSuperseded("Der Entwurf ist in diesem Tab nicht mehr aktuell.");
             return;
           }
           pauseBtn.disabled = true;
@@ -178,7 +242,7 @@ export async function render(container, ctx) {
           index += 1;
           itemDraft = {};
           if (isOutdated()) {
-            if (!ctx.signal.aborted) await ctx.navigate("#/learn");
+            if (!ctx.signal.aborted) markSuperseded("Der Entwurf wurde in einem anderen Tab geändert.");
             return;
           }
           if (ctx.signal.aborted) {
@@ -196,8 +260,10 @@ export async function render(container, ctx) {
   }
 
   async function finishRound() {
+    const canClear = !readDraft(DAILY_DRAFT) || readDraft(DAILY_DRAFT)?.ownerId === ownerId;
     checkpoint = null;
-    writeDraft(DAILY_DRAFT, null);
+    if (canClear) writeDraft(DAILY_DRAFT, null);
+    previousDayBanner?.remove();
     draftStatus.textContent = "";
     const nextQueue = buildQueue();
     clear(itemHost);
@@ -219,8 +285,12 @@ function buildQueue() {
   const target = weeklyPlan.getWeekTarget(state.content.weeklyPlan, weekNumber, path);
   const phaseCertifications = target ? [target.phase] : certifications;
   const focusDomains = target?.focusDomains || [];
-  const fresh = allLearnableContent().filter(({ content }) =>
+  let fresh = allLearnableContent().filter(({ content }) =>
     phaseCertifications.includes(content.certification) && !state.progressByContentId.has(content.id));
+  if (fresh.length === 0 && phaseCertifications.length < certifications.length) {
+    fresh = allLearnableContent().filter(({ content }) =>
+      certifications.includes(content.certification) && !state.progressByContentId.has(content.id));
+  }
   fresh.sort((a, b) => {
     const aFocused = focusDomains.includes(a.content.examDomainId);
     const bFocused = focusDomains.includes(b.content.examDomainId);
@@ -315,7 +385,7 @@ function renderRoundEnd(container, itemHost, cumulative, nextQueue, ctx, onConti
       text: `${cumulative.correct} / ${cumulative.scored}`,
       attrs: { "aria-label": `${cumulative.correct} von ${cumulative.scored} richtig` }
     }),
-    el("p", { text: `Trefferquote bisher heute: ${pct}%` }),
+    el("p", { text: `Trefferquote in dieser Einheit: ${pct}%` }),
     el("p", { class: "item-hint", text: `Noch ${nextQueue.length} weitere fällige oder neue Inhalte verfügbar, falls du heute noch Zeit hast.` })
   ]);
   itemHost.appendChild(card);

@@ -1,14 +1,16 @@
 // views/glossary.js — Durchsuchbares Glossar aller Vokabeln mit Filtern und persönlichem Wiederholungsstatus.
 
-import { state, domainMap, pathCertifications } from "../state.js";
-import { markForReview, unmarkForReview } from "../learning.js";
+import { state, domainMap, pathCertifications, refreshLearningData } from "../state.js";
+import { markForReview, markManyForReview, unmarkForReview } from "../learning.js";
 import { openExamEnglishModal } from "./examEnglish.js";
-import { el, clear, certLabel, termHelp } from "../utils.js";
+import { el, clear, certLabel } from "../utils.js";
 
 const PAGE_SIZE = 40;
 
-export async function render(container) {
+export async function render(container, ctx) {
   clear(container);
+  await refreshLearningData();
+  if (ctx?.signal?.aborted) return;
   const refBtn = el("button", {
     class: "secondary-btn compact-link-btn",
     text: "Leitfaden: Prüfungsenglisch",
@@ -37,6 +39,7 @@ export async function render(container) {
   const formCard = el("div", { class: "card glossary-filter-card" });
   const searchInput = el("input", { attrs: { type: "search", placeholder: "Begriff oder Erklärung suchen…" } });
   let searchTimer = null;
+  ctx?.signal?.addEventListener("abort", () => clearTimeout(searchTimer), { once: true });
   searchInput.addEventListener("input", () => {
     filters.search = searchInput.value.toLowerCase();
     clearTimeout(searchTimer);
@@ -123,19 +126,18 @@ export async function render(container) {
   container.appendChild(listHost);
 
   let currentMatches = [];
+  let visibleCount = PAGE_SIZE;
   bulkMarkBtn.addEventListener("click", async () => {
     if (bulkMarkBtn.getAttribute("aria-disabled") === "true") return;
-    const toMark = currentMatches.slice(0, PAGE_SIZE).filter((v) => state.progressByContentId.get(v.id)?.flag !== "later");
+    const toMark = currentMatches.slice(0, visibleCount).filter((v) => state.progressByContentId.get(v.id)?.flag !== "later");
     if (toMark.length === 0) return;
     bulkMarkBtn.setAttribute("aria-disabled", "true");
     try {
-      for (const v of toMark) {
-        await markForReview({ content: v, contentType: "vocabulary" });
-      }
+      await markManyForReview(toMark.map((v) => ({ content: v, contentType: "vocabulary" })));
       const hadFocus = document.activeElement === bulkMarkBtn;
       renderList();
       if (hadFocus && bulkMarkBtn.hidden) searchInput.focus();
-      countStatus.textContent = `${toMark.length} Begriffe zum Wiederholen vorgemerkt.`;
+      countStatus.textContent = `${toMark.length} ${toMark.length === 1 ? "Begriff" : "Begriffe"} zum Wiederholen vorgemerkt.`;
     } catch {
       countStatus.textContent = "Die Auswahl konnte nicht gespeichert werden.";
     } finally {
@@ -163,10 +165,10 @@ export async function render(container) {
       .map(({ v }) => v);
 
     currentMatches = matches;
-    const unmarkedVisible = matches.slice(0, PAGE_SIZE).some((v) => state.progressByContentId.get(v.id)?.flag !== "later");
-    bulkMarkBtn.hidden = matches.length === 0 || !unmarkedVisible;
+    visibleCount = 0;
 
     if (matches.length === 0) {
+      bulkMarkBtn.hidden = true;
       countStatus.textContent = "0 Treffer";
       const emptyReset = el("button", { class: "secondary-btn", text: "Filter zurücksetzen", attrs: { type: "button" } });
       emptyReset.addEventListener("click", () => { resetFilters(); searchInput.focus(); });
@@ -184,6 +186,9 @@ export async function render(container) {
       nextSlice.forEach((v) => frag.appendChild(renderCard(v, domainsById.get(v.examDomainId))));
       listHost.appendChild(frag);
       rendered += nextSlice.length;
+      visibleCount = rendered;
+      const unmarkedVisible = matches.slice(0, rendered).some((v) => state.progressByContentId.get(v.id)?.flag !== "later");
+      bulkMarkBtn.hidden = !unmarkedVisible;
       countStatus.textContent = rendered < matches.length
         ? `${rendered} von ${matches.length} Begriffen angezeigt`
         : `${matches.length} ${matches.length === 1 ? "Begriff" : "Begriffe"}`;

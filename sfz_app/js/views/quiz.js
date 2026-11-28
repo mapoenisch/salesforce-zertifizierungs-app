@@ -2,7 +2,7 @@
 
 import { state, refreshLearningData, domainMap, pathCertifications } from "../state.js";
 import { EXAM_DRAFT, newSessionId, readDraft, writeDraft } from "../sessionDrafts.js";
-import { markForReview, saveAnswers } from "../learning.js";
+import { markForReview, unmarkForReview, saveAnswers } from "../learning.js";
 import { renderItem } from "../itemRenderer.js";
 import { openExamEnglishModal } from "./examEnglish.js";
 import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDialog, createSessionChrome } from "../utils.js";
@@ -200,7 +200,7 @@ export async function render(container, ctx) {
                 return;
               }
               setup.hidden = true;
-              startMiniExam(runHost, [], showSetup, pauseToSetup, latest);
+              startMiniExam(runHost, [], showSetup, pauseToSetup, latest, ctx.navigate);
             }
           }
         }),
@@ -254,12 +254,12 @@ export async function render(container, ctx) {
       return;
     }
     setup.hidden = true;
-    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT), showSetup, pauseToSetup);
+    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT), showSetup, pauseToSetup, null, ctx.navigate);
   });
 
   if (expired) {
     setup.hidden = true;
-    startMiniExam(runHost, [], showSetup, pauseToSetup, savedExam);
+    startMiniExam(runHost, [], showSetup, pauseToSetup, savedExam, ctx.navigate);
   }
 }
 
@@ -452,17 +452,22 @@ function startFreePractice(runHost, pool, showSetup, title = "Gezielt üben") {
     const current = pool[index];
     status.textContent = "";
     status.setAttribute("role", "status");
-    laterBtn.textContent = "Später wiederholen markieren";
-    laterBtn.setAttribute("aria-pressed", "false");
+    const updateLaterButton = (marked) => {
+      laterBtn.textContent = marked ? "✓ Vorgemerkt" : "Später wiederholen markieren";
+      laterBtn.setAttribute("aria-pressed", String(marked));
+    };
+    updateLaterButton(state.progressByContentId.get(current.content.id)?.flag === "later");
     laterBtn.onclick = async () => {
       laterBtn.disabled = true;
       try {
-        await markForReview(current);
+        const currentlyMarked = state.progressByContentId.get(current.content.id)?.flag === "later";
+        if (currentlyMarked) await unmarkForReview(current);
+        else await markForReview(current);
         if (pool[index] === current) {
-          laterBtn.textContent = "✓ Vorgemerkt";
-          laterBtn.setAttribute("aria-pressed", "true");
+          const markedNow = state.progressByContentId.get(current.content.id)?.flag === "later";
+          updateLaterButton(markedNow);
           status.setAttribute("role", "status");
-          status.textContent = "Für die Lerneinheit vorgemerkt.";
+          status.textContent = markedNow ? "Für die Lerneinheit vorgemerkt." : "Vormerkung entfernt.";
         }
       } catch {
         if (pool[index] === current) {
@@ -556,7 +561,7 @@ export function reviewPracticeItems(entries) {
   return [...items.values()];
 }
 
-function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null) {
+function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null, navigate = (hash) => { location.hash = hash; }) {
   const host = el("section", { class: "exam-run" });
   runHost.replaceChildren(host);
   let examQuestions;
@@ -588,7 +593,10 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
       .filter((entry) => Array.isArray(entry) && optionsByKey.has(entry[0]) && Number.isFinite(entry[1]) && entry[1] >= 0)
   );
   const sessionId = savedExam?.sessionId ?? newSessionId();
+  const ownerId = newSessionId();
+  let lastStoredRevision = savedExam?.revision ?? 0;
   let initialized = false;
+  let superseded = false;
   const deadline = savedExam ? savedExam.deadline : Date.now() + MINI_EXAM_SECONDS * 1000;
   let current = savedExam && Number.isInteger(savedExam.current)
     ? Math.max(0, Math.min(examQuestions.length - 1, savedExam.current))
@@ -602,19 +610,48 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
   const draftStatus = el("p", { class: "quiz-setup-status", attrs: { role: "status" } });
 
   function isOutdated() {
-    if (!initialized) return false;
     const latest = readDraft(EXAM_DRAFT);
-    return latest?.sessionId !== sessionId || Boolean(latest.submitted);
+    if (!initialized) {
+      if (!savedExam) return false;
+      // Ältere Entwürfe erhalten ihre ID erst beim ersten Schreiben durch diesen Tab.
+      return !latest || latest.sessionId !== savedExam.sessionId ||
+        Boolean(latest.submitted) !== Boolean(savedExam.submitted) ||
+        (latest.revision ?? 0) !== lastStoredRevision;
+    }
+    return !latest || latest.sessionId !== sessionId || Boolean(latest.submitted) ||
+      latest.ownerId !== ownerId || (latest.revision ?? 0) !== lastStoredRevision;
+  }
+
+  function handleSuperseded() {
+    if (superseded) return;
+    superseded = true;
+    stop();
+    if (!host.isConnected) return;
+    const msg = el("p", {
+      attrs: { role: "alert" },
+      text: "Diese Mini-Prüfung wird bereits in einem anderen Tab fortgesetzt oder wurde abgegeben. Dieser Tab wurde angehalten, damit keine Antworten verloren gehen."
+    });
+    const reloadBtn = el("button", {
+      class: "primary-btn",
+      text: "Aktuellen Stand öffnen",
+      attrs: { type: "button" },
+      on: { click: () => pauseToSetup() }
+    });
+    host.replaceChildren(el("h1", { text: "Mini-Prüfung" }), msg, reloadBtn);
+    focusContent(msg, { page: true });
   }
 
   function persistExamState(submitted = null) {
-    if (isOutdated()) {
+    if (superseded || isOutdated()) {
       draftStatus.textContent = "Der Prüfungsentwurf ist in diesem Tab nicht mehr aktuell.";
       return false;
     }
+    const nextRevision = lastStoredRevision + 1;
     const stored = writeDraft(EXAM_DRAFT, {
       path: state.settings.certificationPath,
       sessionId,
+      ownerId,
+      revision: nextRevision,
       submitted,
       deadline,
       current,
@@ -622,7 +659,10 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
       answers: [...answers.entries()].map(([k, set]) => [k, [...set]]),
       timeByKey: [...timeByKey.entries()]
     });
-    initialized ||= stored;
+    if (stored) {
+      lastStoredRevision = nextRevision;
+      initialized = true;
+    }
     draftStatus.textContent = stored ? "" : "Der Prüfungsentwurf konnte nicht gespeichert werden.";
     return stored;
   }
@@ -659,7 +699,7 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
   host.append(title, stats, jump, qHost, navigation, actions, draftStatus);
 
   function onExamKeydown(ev) {
-    if (activeExam !== attempt || !host.isConnected || pendingConfirmation) return;
+    if (activeExam !== attempt || !host.isConnected || pendingConfirmation || document.querySelector(".modal-overlay")) return;
     if (ev.defaultPrevented || ev.metaKey || ev.ctrlKey || ev.altKey) return;
     const onOptionInput = ev.target.matches(".fall-option-input");
     if (/^[1-9]$/.test(ev.key) && qHost.contains(ev.target)) {
@@ -677,12 +717,20 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
     }
   }
 
+  function onStorageChange(ev) {
+    if (ev.key === EXAM_DRAFT && activeExam === attempt && isOutdated()) {
+      handleSuperseded();
+    }
+  }
+
   const attempt = { stop, confirmAbandon };
   activeExam = attempt;
   window.addEventListener("pagehide", saveBeforeLeaving);
+  window.addEventListener("storage", onStorageChange);
   host.addEventListener("keydown", onExamKeydown);
 
   function saveBeforeLeaving() {
+    if (superseded || isOutdated()) return false;
     recordElapsed();
     return persistExamState();
   }
@@ -691,6 +739,7 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
     clearInterval(timerHandle);
     pendingConfirmation?.abort();
     window.removeEventListener("pagehide", saveBeforeLeaving);
+    window.removeEventListener("storage", onStorageChange);
     host.removeEventListener("keydown", onExamKeydown);
     if (activeExam === attempt) activeExam = null;
   }
@@ -786,6 +835,10 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
           updateTimer();
           return;
         }
+        if (isOutdated()) {
+          handleSuperseded();
+          return;
+        }
         const wasSelected = selected.has(option.id);
         if (!multi) selected.clear();
         if (multi && wasSelected) selected.delete(option.id);
@@ -793,7 +846,7 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
         if (selected.size) answers.set(key, selected);
         else answers.delete(key);
         refreshStatus();
-        persistExamState();
+        if (!persistExamState() && isOutdated()) handleSuperseded();
       });
       fieldset.appendChild(el("label", {
         class: "fall-option",
@@ -809,7 +862,10 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
     prev.disabled = current === 0;
     next.disabled = current === examQuestions.length - 1;
     refreshStatus();
-    persistExamState();
+    if (!persistExamState() && isOutdated()) {
+      handleSuperseded();
+      return;
+    }
     if (moveFocus) focusContent(heading);
   }
 
@@ -914,7 +970,7 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
         class: "primary-btn",
         text: "Weiterlernen",
         attrs: { type: "button" },
-        on: { click: () => { location.hash = "#/learn"; } }
+        on: { click: () => navigate("#/learn") }
       }));
     } else {
       resultActions.appendChild(el("button", {
@@ -961,6 +1017,10 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null)
     submit(Date.now() >= deadline);
   });
   pauseBtn.addEventListener("click", () => {
+    if (isOutdated()) {
+      handleSuperseded();
+      return;
+    }
     if (Date.now() >= deadline) {
       submit(true);
       return;
@@ -994,6 +1054,7 @@ function renderExamReview({ q, index, selected, correct }) {
   detail.appendChild(el("p", { class: "item-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
   const deText = q.questionTextDe || q.textDe;
   if (deText) detail.appendChild(el("p", { class: "item-question-de", text: deText, attrs: { lang: "de" } }));
+  if (q.germanExplanation) detail.appendChild(el("p", { text: q.germanExplanation }));
   for (const option of q.options) {
     const verdict = option.correct ? "Richtige Option" : "Falsche Option";
     detail.appendChild(el("p", { class: "option-explanation" }, [

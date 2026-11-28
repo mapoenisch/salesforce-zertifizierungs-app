@@ -130,6 +130,12 @@ export function isCalendarDate(value) {
     todayISO(new Date(value + "T00:00:00")) === value;
 }
 
+export function formatDateDE(isoDate) {
+  if (!isCalendarDate(isoDate)) return String(isoDate || "");
+  const [year, month, day] = isoDate.split("-");
+  return `${day}.${month}.${year}`;
+}
+
 /** Einfache Fortschrittsbalken-Komponente (0-100). */
 export function progressBar(percent, label) {
   const pct = Math.max(0, Math.min(100, Math.round(percent)));

@@ -1,13 +1,14 @@
 // views/progress.js — Detaillierte Fortschrittsübersicht.
 
 import { state, allLearnableContent, domainMap, pathCertifications, refreshLearningData } from "../state.js";
-import { dueForPath, summarizeActivity } from "../learning.js";
+import { dueForPath, summarizeActivity, computeWeakDomains } from "../learning.js";
 import * as weeklyPlan from "../weeklyPlan.js";
 import { el, clear, progressBar, formatDuration, todayISO, pathLabel, termHelp } from "../utils.js";
 
 export async function render(container, ctx) {
   clear(container);
   await refreshLearningData();
+  if (ctx?.signal?.aborted) return;
   const certification = state.settings.certificationPath;
   const certifications = pathCertifications(certification);
   const domains = domainMap();
@@ -198,21 +199,7 @@ export async function render(container, ctx) {
   // Schwachpunktanalyse (direkt anklickbar zum gezielten Üben)
   const weakCard = el("div", { class: "card" });
   weakCard.appendChild(el("h2", { text: "Schwachpunktanalyse" }));
-  const byDomain = new Map();
-  for (const a of activity) {
-    if (!a.examDomainId) continue;
-    if (typeof a.correct !== "boolean") continue;
-    if (!byDomain.has(a.examDomainId)) byDomain.set(a.examDomainId, { correct: 0, total: 0 });
-    const e = byDomain.get(a.examDomainId);
-    e.total += 1;
-    if (a.correct) e.correct += 1;
-  }
-  const practiced = [...byDomain.entries()]
-    .filter(([, v]) => v.total >= 3)
-    .map(([id, v]) => ({ id, name: domains.get(id)?.name || id, accuracy: Math.round((v.correct / v.total) * 100), total: v.total }));
-  const weak = practiced
-    .filter((d) => d.accuracy < 80)
-    .sort((a, b) => a.accuracy - b.accuracy);
+  const { weak, practiced } = computeWeakDomains(activity, domains);
 
   if (weak.length === 0) {
     weakCard.appendChild(el("p", {
