@@ -3,7 +3,7 @@ import test from "node:test";
 import * as sm2 from "../sfz_app/js/sm2.js";
 import * as plan from "../sfz_app/js/weeklyPlan.js";
 import { dueItems, summarizeActivity, computeWeakDomains } from "../sfz_app/js/learning.js";
-import { selectExamItems, expandExamItems } from "../sfz_app/js/views/quiz.js";
+import { selectExamItems, expandExamItems, summarizeQuizPools } from "../sfz_app/js/views/quiz.js";
 import { selectSessionItems } from "../sfz_app/js/views/learn.js";
 import { validateBackup } from "../sfz_app/js/exportImport.js";
 import { DAILY_DRAFT, readDailyDraft } from "../sfz_app/js/sessionDrafts.js";
@@ -211,4 +211,46 @@ test("computeWeakDomains filtert nach Mindestanzahl und sortiert nach niedrigste
   const { weak, practiced } = computeWeakDomains(activity, domains);
   assert.equal(practiced.length, 2);
   assert.deepEqual(weak.map((d) => [d.id, d.accuracy]), [["d1", 33]]);
+});
+
+test("summarizeQuizPools trennt Übungspool und Mini-Prüfungsumfang und liefert passende Filter-Korrektur", () => {
+  const baseFilters = {
+    certification: "foundations", examDomainId: "all", cefr: "both",
+    format: "all", difficulty: "all", errorStatus: "all"
+  };
+  const makeItems = (type, domain, count) => Array.from({ length: count }, (_, i) => ({
+    contentType: type,
+    content: { id: `${type}-${domain}-${i}`, certification: "foundations", examDomainId: domain, cefr: "B1", difficulty: "easy", questions: type === "readingPassage" ? [{ questionText: "Q" }] : undefined }
+  }));
+  const items = [
+    ...makeItems("vocabulary", "fnd-reports-dashboards", 12),
+    ...makeItems("readingPassage", "fnd-reports-dashboards", 5),
+    ...makeItems("question", "fnd-ecosystem", 8)
+  ];
+  const domains = new Map([
+    ["fnd-reports-dashboards", { weightPercent: 20 }],
+    ["fnd-ecosystem", { weightPercent: 32 }]
+  ]);
+
+  const vocabOnly = summarizeQuizPools(items, { ...baseFilters, format: "vocabulary" }, domains, {
+    progressById: new Map(), defaultFilters: baseFilters
+  });
+  assert.equal(vocabOnly.practiceCount, 12);
+  assert.equal(vocabOnly.examEligibleCount, 0);
+  assert.equal(vocabOnly.examRunnable, false);
+  assert.deepEqual(vocabOnly.examFix?.patch, { format: "all" });
+
+  const fivePassages = summarizeQuizPools(items, {
+    ...baseFilters, examDomainId: "fnd-reports-dashboards", format: "readingPassage"
+  }, domains, { progressById: new Map(), defaultFilters: baseFilters });
+  assert.equal(fivePassages.practiceCount, 5);
+  assert.equal(fivePassages.examRunnable, true);
+  assert.equal(fivePassages.examQuestionCount, 5);
+
+  const fullExam = summarizeQuizPools(items, baseFilters, domains, {
+    progressById: new Map(), defaultFilters: baseFilters
+  });
+  assert.equal(fullExam.practiceCount, 25);
+  assert.equal(fullExam.examEligibleCount, 13);
+  assert.equal(fullExam.examQuestionCount, 10);
 });

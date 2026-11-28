@@ -168,8 +168,12 @@ export async function render(container, ctx) {
   const domainCard = el("div", { class: "card" });
   domainCard.appendChild(el("div", { class: "card-head-row" }, [
     el("h2", { text: "Domain-Abdeckung (nach offizieller Gewichtung)" }),
-    termHelp("Exam-Domain", "Exam-Domains sind die offiziellen Themenbereiche der Prüfung. Die Prozentzahl zeigt, wie stark der Bereich im Exam Guide gewichtet ist.")
+    termHelp("Exam-Domain", "Exam-Domains sind die offiziellen Themenbereiche der Prüfung. Der Prüfungsanteil zeigt, wie stark der Bereich im Exam Guide gewichtet ist.")
   ]));
+  domainCard.appendChild(el("p", {
+    class: "item-hint domain-coverage-legend",
+    text: "Prüfungsanteil = Gewichtung im offiziellen Exam Guide. Bearbeitet = mindestens einmal geübt. Als gefestigt gilt eine Aufgabe nach richtigen Antworten an zwei verschiedenen Kalendertagen seit dem letzten Fehler."
+  }));
   const sortedDomains = [...domains.values()]
     .filter((d) => certifications.includes(d.certification))
     .sort((a, b) => b.weightPercent - a.weightPercent)
@@ -177,9 +181,23 @@ export async function render(container, ctx) {
     .filter(({ items }) => items.length > 0);
 
   const renderCoverageBar = ({ domain, items }) => {
+    const attempted = items.filter((i) => answered.has(i.content.id)).length;
     const mastered = items.filter((i) => consolidated.has(i.content.id)).length;
-    const pct = (mastered / items.length) * 100;
-    return progressBar(pct, `${domain.name} (${domain.weightPercent}%) — gefestigt: ${mastered}/${items.length}`);
+    const pct = Math.round((mastered / items.length) * 100);
+    const row = el("div", { class: "domain-coverage-item" });
+    row.appendChild(el("div", { class: "domain-coverage-head" }, [
+      el("span", { class: "domain-coverage-name", text: domain.name }),
+      el("span", { class: "meta-pill domain-weight-pill", text: `Prüfungsanteil: ${domain.weightPercent} %` })
+    ]));
+    row.appendChild(el("p", {
+      class: "domain-coverage-stats",
+      text: `Bearbeitet: ${attempted}/${items.length} · Gefestigt (an 2 Tagen richtig): ${mastered}/${items.length} (${pct} %)`
+    }));
+    const bar = progressBar(pct);
+    const track = bar.querySelector(".progress-bar-track");
+    track?.setAttribute("aria-label", `${domain.name}: ${mastered} von ${items.length} gefestigt (${pct} %), Prüfungsanteil ${domain.weightPercent} %`);
+    row.appendChild(bar);
+    return row;
   };
 
   sortedDomains.slice(0, 4).forEach((entry) => domainCard.appendChild(renderCoverageBar(entry)));
@@ -190,10 +208,6 @@ export async function render(container, ctx) {
     sortedDomains.slice(4).forEach((entry) => more.appendChild(renderCoverageBar(entry)));
     domainCard.appendChild(more);
   }
-  domainCard.appendChild(el("p", {
-    class: "item-hint",
-    text: "Als gefestigt zählt eine Aufgabe nach richtigen Antworten an zwei verschiedenen Kalendertagen seit dem letzten Fehler."
-  }));
   domainsPanel.appendChild(domainCard);
 
   // Schwachpunktanalyse (direkt anklickbar zum gezielten Üben)

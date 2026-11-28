@@ -9,10 +9,71 @@ import { el, clear, shuffle, certLabel, disclaimerNote, focusContent, confirmDia
 
 const MINI_EXAM_COUNT = 10;
 const MINI_EXAM_SECONDS = 10 * 60;
+const MIN_EXAM_ITEMS = 3;
 
 function optionLetter(idx) {
   return String.fromCharCode(65 + idx);
 }
+
+function isExamEligible(item) {
+  return item.contentType === "question" || item.contentType === "readingPassage";
+}
+
+function formatQuestionCountLabel(count) {
+  return `${count} Frage${count === 1 ? "" : "n"}`;
+}
+
+/** Berechnet verfügbare Aufgaben und konkrete Filterhinweise getrennt für Gezielt üben und Mini-Prüfung. */
+export function summarizeQuizPools(items, filters, domains, {
+  progressById = state.progressByContentId,
+  limit = MINI_EXAM_COUNT,
+  defaultFilters = null
+} = {}) {
+  const practicePool = filterPool(items, filters, progressById);
+  const examAll = items.filter(isExamEligible);
+  const examPool = filterPool(examAll, filters, progressById);
+  const examRunnable = examPool.length >= MIN_EXAM_ITEMS;
+  const examHasMultiPart = examPool.length > limit &&
+    examPool.some((item) => (item.content.questions?.length || 1) > 1);
+  const examQuestionCount = !examRunnable
+    ? 0
+    : examPool.length <= limit
+      ? expandExamItems(examPool).length
+      : limit;
+
+  let examReason = "";
+  let examFix = null;
+  if (!examRunnable) {
+    if (filters.format === "vocabulary" || filters.format === "definition") {
+      const fmtName = filters.format === "vocabulary" ? "Vokabel im Kontext" : "Definitions-Matching";
+      examReason = `„${fmtName}“ gibt es nur bei Gezielt üben. Die Mini-Prüfung nutzt Szenario-Fragen und Reading-Passagen.`;
+      const fixedCount = filterPool(examAll, { ...filters, format: "all" }, progressById).length;
+      if (fixedCount >= MIN_EXAM_ITEMS) {
+        examFix = { label: "Format für Mini-Prüfung auf prüfbare Fragen umstellen", patch: { format: "all" } };
+      } else if (defaultFilters) {
+        examFix = { label: "Filter zurücksetzen", patch: { ...defaultFilters } };
+      }
+    } else {
+      examReason = examPool.length === 0
+        ? "Keine Szenario-Fragen oder Reading-Passagen für den aktuellen Filter."
+        : `Nur ${formatQuestionCountLabel(examPool.length)} im aktuellen Filter — für eine Mini-Prüfung sind mindestens ${MIN_EXAM_ITEMS} nötig.`;
+      if (defaultFilters) {
+        examFix = { label: "Filter zurücksetzen", patch: { ...defaultFilters } };
+      }
+    }
+  }
+
+  return {
+    practiceCount: practicePool.length,
+    examEligibleCount: examPool.length,
+    examQuestionCount,
+    examHasMultiPart,
+    examRunnable,
+    examReason,
+    examFix
+  };
+}
+
 let activeExam;
 
 function loadMiniExam(path) {
@@ -48,7 +109,7 @@ export async function render(container, ctx) {
   setup.appendChild(headRow);
   setup.appendChild(el("p", {
     class: "view-lead",
-    text: "Beide Modi nutzen dieselben Filter. Gezielt üben erklärt jede Antwort sofort, die Mini-Prüfung bewertet erst am Ende."
+    text: "Gezielt üben nutzt alle Formate und erklärt jede Antwort sofort. Die Mini-Prüfung wählt nur Szenario-Fragen und Reading-Passagen (mindestens 3) und wertet erst am Ende aus."
   }));
   container.appendChild(setup);
 
@@ -65,29 +126,42 @@ export async function render(container, ctx) {
   };
   const filters = { ...defaultFilters, examDomainId: validDomain };
 
+  const freeMeta = el("p", { class: "mode-card-meta" });
   const freeBtn = el("button", { class: "primary-btn", text: "Gezielt üben starten", attrs: { type: "button" } });
+  const freeHint = el("p", { class: "mode-card-feedback", attrs: { role: "status", id: "mode-practice-feedback" } });
+  const freeFixBtn = el("button", { class: "secondary-btn mode-fix-btn", text: "Filter zurücksetzen", attrs: { type: "button", hidden: "" } });
+
+  const examMeta = el("p", { class: "mode-card-meta" });
   const examBtn = el("button", {
     class: "secondary-btn",
     text: `Mini-Prüfung starten (${MINI_EXAM_COUNT} Fragen, ${MINI_EXAM_SECONDS / 60} Min.)`,
-    attrs: { type: "button" }
+    attrs: { type: "button", "aria-describedby": "mode-exam-feedback" }
   });
+  const examHint = el("p", { class: "mode-card-feedback", attrs: { role: "status", id: "mode-exam-feedback" } });
+  const examFixBtn = el("button", { class: "secondary-btn mode-fix-btn", attrs: { type: "button", hidden: "" } });
 
   const modeGrid = el("div", { class: "mode-grid" }, [
     el("section", { class: "card mode-card", attrs: { "aria-labelledby": "mode-practice-title" } }, [
       el("h2", { text: "Gezielt üben", attrs: { id: "mode-practice-title" } }),
       el("p", {
         class: "mode-card-text",
-        text: "Einzelne Aufgaben mit Erklärung direkt nach der Antwort. Gedacht für neue Inhalte, Fehler und unsichere Begriffe."
+        text: "Einzelne Aufgaben mit Erklärung direkt nach der Antwort. Nutzt Vokabeln, Definitionen, Szenarien und Reading."
       }),
-      freeBtn
+      freeMeta,
+      freeBtn,
+      freeHint,
+      freeFixBtn
     ]),
     el("section", { class: "card mode-card", attrs: { "aria-labelledby": "mode-exam-title" } }, [
       el("h2", { text: "Mini-Prüfung", attrs: { id: "mode-exam-title" } }),
       el("p", {
         class: "mode-card-text",
-        text: `${MINI_EXAM_COUNT} gemischte Szenariofragen in ${MINI_EXAM_SECONDS / 60} Minuten. Auswertung und Erklärungen kommen erst nach dem Absenden.`
+        text: `Bis zu ${MINI_EXAM_COUNT} gemischte Szenario-Fragen und Reading-Passagen in ${MINI_EXAM_SECONDS / 60} Minuten. Auswertung erst nach dem Absenden.`
       }),
-      examBtn
+      examMeta,
+      examBtn,
+      examHint,
+      examFixBtn
     ])
   ]);
   setup.appendChild(modeGrid);
@@ -100,7 +174,7 @@ export async function render(container, ctx) {
   ]));
   filterCard.appendChild(el("p", {
     class: "filter-hint",
-    text: "Exam-Domain = offizieller Themenbereich der Prüfung · CEFR = Englisch-Niveau (B1 Grundlagen, B2 komplexer)."
+    text: "Exam-Domain = offizieller Themenbereich · CEFR = Englisch-Niveau (B1 Grundlagen, B2 komplexer). Vokabeln und Matching gelten nur für Gezielt üben."
   }));
   setup.appendChild(filterCard);
 
@@ -117,23 +191,17 @@ export async function render(container, ctx) {
 
   const presetRow = el("div", { class: "quiz-preset-row", attrs: { role: "group", "aria-label": "Schnellfilter" } });
   const formHost = el("details", { class: "quiz-filters" });
-  const initialCount = filterPool(allQuizItems(), filters).length;
-  if (validDomain !== "all") {
-    formHost.open = true;
-    status.textContent = `${initialCount} passende Übungen für die gewählte Domain`;
-  } else {
-    status.textContent = `${initialCount} passende Übungen verfügbar`;
-  }
+  if (validDomain !== "all") formHost.open = true;
   formHost.appendChild(el("summary", { text: "Filter anpassen (Domain, Format, CEFR)" }));
   const fields = el("div");
   formHost.appendChild(fields);
-  function updateCountStatus() {
-    const count = filterPool(allQuizItems(), filters).length;
-    status.textContent = `${count} passende Übungen`;
-    refreshFilterCount();
-  }
-  refreshFilterCount();
-  const syncFiltersUI = renderFilterForm(fields, filters, defaultFilters, activePath, certifications, updateCountStatus);
+
+  const savedExam = loadMiniExam(activePath);
+  const pauseToSetup = () => ctx.navigate("#/quiz");
+  const expired = savedExam && (savedExam.submitted || savedExam.deadline <= Date.now());
+  let hasRunningDraft = Boolean(savedExam && !expired);
+  let currentExamFixPatch = null;
+
   const presets = [
     { label: "Alle Übungen", patch: { ...defaultFilters } },
     { label: "Fehler wiederholen", patch: { ...defaultFilters, errorStatus: "wrong" } },
@@ -141,50 +209,115 @@ export async function render(container, ctx) {
     { label: "B2-Fokus", patch: { ...defaultFilters, cefr: "B2" } }
   ];
   let activePresetIdx = validDomain === "all" ? 0 : -1;
-  const presetChips = presets.map(({ label, patch }, idx) => {
+  let presetChips = [];
+
+  function syncPresetChips() {
+    activePresetIdx = presets.findIndex(({ patch }) =>
+      Object.keys(defaultFilters).every((key) => filters[key] === patch[key])
+    );
+    presetChips.forEach((c, i) => {
+      c.classList.toggle("confidence-selected", i === activePresetIdx);
+      c.setAttribute("aria-pressed", String(i === activePresetIdx));
+    });
+  }
+
+  function updateCountStatus(customStatus = "") {
+    const summary = summarizeQuizPools(allQuizItems(), filters, domainMap(), { defaultFilters });
+    if (customStatus) {
+      status.textContent = customStatus;
+    } else if (validDomain !== "all" && filters.examDomainId === validDomain) {
+      status.textContent = `Gewählte Domain: ${summary.practiceCount} für Gezielt üben · ${summary.examEligibleCount} für Mini-Prüfung`;
+    } else {
+      status.textContent = `Treffer mit aktuellem Filter: ${summary.practiceCount} für Gezielt üben · ${summary.examEligibleCount} für Mini-Prüfung`;
+    }
+    refreshFilterCount();
+
+    freeMeta.textContent = `Verfügbar: ${summary.practiceCount} Aufgabe${summary.practiceCount === 1 ? "" : "n"}`;
+    freeBtn.disabled = summary.practiceCount === 0;
+    freeBtn.textContent = summary.practiceCount > 0
+      ? `Gezielt üben starten (${summary.practiceCount})`
+      : "Keine passenden Aufgaben";
+    freeHint.hidden = summary.practiceCount > 0;
+    freeHint.textContent = summary.practiceCount > 0 ? "" : "Keine Aufgabe passt zum aktuellen Filter.";
+    freeFixBtn.hidden = summary.practiceCount > 0;
+
+    if (hasRunningDraft) {
+      examMeta.textContent = "Aktuell läuft noch eine unterbrochene Mini-Prüfung.";
+      examBtn.disabled = true;
+      examBtn.textContent = "Mini-Prüfung läuft bereits";
+      examHint.hidden = false;
+      examHint.textContent = "Setze die laufende Prüfung oben fort oder verwirf sie für einen neuen Versuch.";
+      examFixBtn.hidden = true;
+      currentExamFixPatch = null;
+      return;
+    }
+
+    if (!summary.examRunnable) {
+      examMeta.textContent = `Prüfungsfähige Fragen im Filter: ${summary.examEligibleCount} (mind. ${MIN_EXAM_ITEMS} nötig)`;
+      examBtn.disabled = true;
+      examBtn.textContent = "Mini-Prüfung nicht verfügbar";
+      examHint.hidden = false;
+      examHint.textContent = summary.examReason;
+      currentExamFixPatch = summary.examFix?.patch || null;
+      examFixBtn.hidden = !summary.examFix;
+      if (summary.examFix) examFixBtn.textContent = summary.examFix.label;
+    } else {
+      const qLabel = summary.examHasMultiPart ? `mind. ${summary.examQuestionCount}` : String(summary.examQuestionCount);
+      examMeta.textContent = summary.examEligibleCount > MINI_EXAM_COUNT
+        ? `Verfügbar: ${summary.examEligibleCount} Fragen (Auswahl: ${qLabel})`
+        : `Verfügbar: ${qLabel} von max. ${MINI_EXAM_COUNT} Fragen`;
+      examBtn.disabled = false;
+      examBtn.textContent = `Mini-Prüfung starten (${qLabel} Fragen, ${MINI_EXAM_SECONDS / 60} Min.)`;
+      examHint.hidden = true;
+      examHint.textContent = "";
+      examFixBtn.hidden = true;
+      currentExamFixPatch = null;
+    }
+  }
+
+  const syncFiltersUI = renderFilterForm(fields, filters, defaultFilters, activePath, certifications, () => {
+    syncPresetChips();
+    updateCountStatus();
+  });
+
+  function applyFilterPatch(patch) {
+    Object.assign(filters, patch);
+    syncPresetChips();
+    syncFiltersUI();
+    updateCountStatus();
+  }
+
+  freeFixBtn.addEventListener("click", () => applyFilterPatch(defaultFilters));
+  examFixBtn.addEventListener("click", () => {
+    if (currentExamFixPatch) applyFilterPatch(currentExamFixPatch);
+  });
+
+  presetChips = presets.map(({ label, patch }, idx) => {
     const chip = el("button", {
       class: `secondary-btn quiz-preset-chip${idx === activePresetIdx ? " confidence-selected" : ""}`,
       text: label,
       attrs: { type: "button", "aria-pressed": String(idx === activePresetIdx) }
     });
-    chip.addEventListener("click", () => {
-      Object.assign(filters, patch);
-      activePresetIdx = idx;
-      presetChips.forEach((c, i) => {
-        c.classList.toggle("confidence-selected", i === activePresetIdx);
-        c.setAttribute("aria-pressed", String(i === activePresetIdx));
-      });
-      syncFiltersUI();
-      updateCountStatus();
-    });
+    chip.addEventListener("click", () => applyFilterPatch(patch));
     presetRow.appendChild(chip);
     return chip;
   });
   filterCard.appendChild(presetRow);
   filterCard.appendChild(formHost);
   fields.addEventListener("change", () => {
-    activePresetIdx = -1;
-    presetChips.forEach((c) => {
-      c.classList.remove("confidence-selected");
-      c.setAttribute("aria-pressed", "false");
-    });
+    syncPresetChips();
     updateCountStatus();
   });
+  updateCountStatus();
 
   const runHost = el("div");
   container.appendChild(runHost);
 
-  const savedExam = loadMiniExam(activePath);
-  const pauseToSetup = () => ctx.navigate("#/quiz");
-  const expired = savedExam && (savedExam.submitted || savedExam.deadline <= Date.now());
-  if (savedExam && !expired) {
-    examBtn.disabled = true;
-    const remainingSec = Math.max(1, Math.ceil((savedExam.deadline - Date.now()) / 1000));
+  if (hasRunningDraft) {
+    const resumeInfo = el("p");
     const resumeBanner = el("div", { class: "card studio-celebration-card" }, [
       el("h2", { text: "Laufende Mini-Prüfung gefunden" }),
-      el("p", {
-        text: `Du hast noch ${Math.floor(remainingSec / 60)}:${String(remainingSec % 60).padStart(2, "0")} Min. Restzeit und ${savedExam.answers?.length || 0} von ${savedExam.examKeys.length} beantwortete Fragen.`
-      }),
+      resumeInfo,
       el("div", { class: "quiz-actions" }, [
         el("button", {
           class: "primary-btn",
@@ -192,9 +325,11 @@ export async function render(container, ctx) {
           attrs: { type: "button" },
           on: {
             click: () => {
+              clearInterval(resumeTimer);
               const latest = loadMiniExam(activePath);
               resumeBanner.remove();
-              examBtn.disabled = false;
+              hasRunningDraft = false;
+              updateCountStatus();
               if (!latest || latest.deadline !== savedExam.deadline || latest.sessionId !== savedExam.sessionId) {
                 showSetup("Dieser Prüfungsentwurf ist nicht mehr verfügbar.");
                 return;
@@ -210,6 +345,7 @@ export async function render(container, ctx) {
           attrs: { type: "button" },
           on: {
             click: () => {
+              clearInterval(resumeTimer);
               const latest = loadMiniExam(activePath);
               if (latest?.deadline === savedExam.deadline && latest.sessionId === savedExam.sessionId &&
                   !writeDraft(EXAM_DRAFT, null)) {
@@ -217,27 +353,44 @@ export async function render(container, ctx) {
                 return;
               }
               resumeBanner.remove();
-              examBtn.disabled = false;
+              hasRunningDraft = false;
               showSetup("Prüfungsentwurf verworfen.");
             }
           }
         })
       ])
     ]);
+    const updateResumeTime = () => {
+      const remainingSec = Math.max(0, Math.ceil((savedExam.deadline - Date.now()) / 1000));
+      if (remainingSec <= 0) {
+        clearInterval(resumeTimer);
+        resumeBanner.remove();
+        hasRunningDraft = false;
+        setup.hidden = true;
+        startMiniExam(runHost, [], showSetup, pauseToSetup, savedExam, ctx.navigate);
+        return;
+      }
+      const mins = Math.floor(remainingSec / 60);
+      const secs = String(remainingSec % 60).padStart(2, "0");
+      resumeInfo.textContent = `Die Prüfungszeit läuft weiter: aktuell noch ${mins}:${secs} Min. Restzeit · ${savedExam.answers?.length || 0} von ${savedExam.examKeys.length} Fragen beantwortet.`;
+    };
+    updateResumeTime();
+    const resumeTimer = setInterval(updateResumeTime, 1000);
+    ctx.signal.addEventListener("abort", () => clearInterval(resumeTimer), { once: true });
     setup.insertBefore(resumeBanner, modeGrid);
   }
 
   function showSetup(message = "") {
     runHost.replaceChildren();
     setup.hidden = false;
-    status.textContent = message;
+    updateCountStatus(message);
     focusContent(setupTitle, { page: true });
   }
 
   freeBtn.addEventListener("click", () => {
     const pool = filterPool(allQuizItems(), filters);
     if (!pool.length) {
-      status.textContent = "Keine passenden Übungen. Passe die Filter an.";
+      updateCountStatus("Keine passenden Übungen. Passe die Filter an.");
       formHost.open = true;
       return;
     }
@@ -246,15 +399,15 @@ export async function render(container, ctx) {
   });
 
   examBtn.addEventListener("click", () => {
-    const pool = filterPool(allQuizItems().filter((item) =>
-      item.contentType === "question" || item.contentType === "readingPassage"), filters);
-    if (pool.length < 3) {
-      status.textContent = "Für eine Mini-Prüfung brauchst du mindestens 3 Szenariofragen oder Reading-Passagen. Erweitere die Filter.";
+    const pool = filterPool(allQuizItems().filter(isExamEligible), filters);
+    if (pool.length < MIN_EXAM_ITEMS) {
+      updateCountStatus(`Für eine Mini-Prüfung brauchst du mindestens ${MIN_EXAM_ITEMS} Szenariofragen oder Reading-Passagen.`);
       formHost.open = true;
       return;
     }
+    const isFiltered = Object.keys(defaultFilters).some((key) => filters[key] !== defaultFilters[key]);
     setup.hidden = true;
-    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT), showSetup, pauseToSetup, null, ctx.navigate);
+    startMiniExam(runHost, selectExamItems(pool, domainMap(), MINI_EXAM_COUNT), showSetup, pauseToSetup, null, ctx.navigate, { isFiltered });
   });
 
   if (expired) {
@@ -371,7 +524,7 @@ function allQuizItems() {
   ];
 }
 
-function filterPool(items, filters) {
+function filterPool(items, filters, progressById = state.progressByContentId) {
   return items.filter((i) => {
     const c = i.content;
     if (filters.certification !== "both" && c.certification !== filters.certification) return false;
@@ -387,7 +540,7 @@ function filterPool(items, filters) {
       }
     }
     if (filters.difficulty !== "all" && c.difficulty !== filters.difficulty) return false;
-    const progress = state.progressByContentId.get(c.id);
+    const progress = progressById.get(c.id);
     if (filters.errorStatus === "wrong" && progress?.lastResult !== "incorrect") return false;
     if (filters.errorStatus === "later" && progress?.flag !== "later") return false;
     if (filters.errorStatus === "new" && progress) return false;
@@ -561,13 +714,14 @@ export function reviewPracticeItems(entries) {
   return [...items.values()];
 }
 
-function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null, navigate = (hash) => { location.hash = hash; }) {
+function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null, navigate = (hash) => { location.hash = hash; }, { isFiltered = false } = {}) {
   const host = el("section", { class: "exam-run" });
   runHost.replaceChildren(host);
+  const examIsFiltered = savedExam ? Boolean(savedExam.isFiltered) : Boolean(isFiltered);
   let examQuestions;
   if (savedExam) {
     const allExpanded = expandExamItems(
-      allQuizItems().filter((item) => item.contentType === "question" || item.contentType === "readingPassage")
+      allQuizItems().filter(isExamEligible)
     );
     const byKey = new Map(allExpanded.map((entry) => [entry.key, entry]));
     examQuestions = savedExam.examKeys.map((k) => byKey.get(k));
@@ -653,6 +807,7 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
       ownerId,
       revision: nextRevision,
       submitted,
+      isFiltered: examIsFiltered,
       deadline,
       current,
       examKeys: examQuestions.map((entry) => entry.key),
@@ -669,8 +824,9 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
 
   const title = el("h1", { text: "Mini-Prüfung" });
   const timer = el("p", { class: "quiz-timer", attrs: { role: "timer" } });
-  const answerCount = el("p", { attrs: { role: "status" } });
-  const stats = el("div", { class: "exam-stats" }, [answerCount, timer]);
+  const questionIndicator = el("p", { class: "exam-stat-current" });
+  const answerCount = el("p", { class: "exam-stat-answered", attrs: { role: "status" } });
+  const stats = el("div", { class: "exam-stats" }, [questionIndicator, answerCount, timer]);
   const qHost = el("div");
   const prev = el("button", { class: "secondary-btn", attrs: { type: "button" } }, [
     el("kbd", { class: "keycap", text: "←", attrs: { "aria-hidden": "true" } }),
@@ -683,12 +839,25 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
   const actions = el("div", { class: "exam-actions" });
   const submitBtn = el("button", { class: "primary-btn", text: "Abgeben", attrs: { type: "button" } });
   const cancelBtn = el("button", { class: "secondary-btn", text: "Prüfung abbrechen", attrs: { type: "button" } });
-  const pauseBtn = el("button", { class: "secondary-btn", text: "Prüfung unterbrechen", attrs: { type: "button" } });
+  const pauseBtn = el("button", {
+    class: "secondary-btn",
+    text: "Unterbrechen (Zeit läuft weiter)",
+    attrs: { type: "button", "aria-describedby": "exam-pause-hint" }
+  });
+  const pauseHint = el("p", {
+    class: "item-hint exam-pause-hint",
+    text: "Hinweis: Beim Unterbrechen bleiben deine Antworten gespeichert, die Prüfungszeit läuft aber im Hintergrund weiter.",
+    attrs: { id: "exam-pause-hint" }
+  });
   actions.append(submitBtn, pauseBtn, cancelBtn);
 
-  const jump = el("nav", { class: "exam-jump", attrs: { "aria-label": "Fragenübersicht" } });
+  const jumpSummary = el("summary", {
+    class: "exam-jump-summary",
+    text: `Fragenübersicht (0/${examQuestions.length} beantwortet)`
+  });
   const jumpList = el("div", { class: "exam-jump-list" });
-  jump.appendChild(jumpList);
+  const jumpDetails = el("details", { class: "exam-jump-details" }, [jumpSummary, jumpList]);
+  const jump = el("nav", { class: "exam-jump", attrs: { "aria-label": "Fragenübersicht" } }, [jumpDetails]);
   const questionButtons = examQuestions.map((_, index) => {
     const button = el("button", { class: "secondary-btn", text: String(index + 1), attrs: { type: "button" } });
     button.addEventListener("click", () => goTo(index));
@@ -696,7 +865,7 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
     return button;
   });
   const navigation = el("div", { class: "quiz-nav" }, [prev, next]);
-  host.append(title, stats, jump, qHost, navigation, actions, draftStatus);
+  host.append(title, stats, jump, qHost, navigation, disclaimerNote(), actions, pauseHint, draftStatus);
 
   function onExamKeydown(ev) {
     if (activeExam !== attempt || !host.isConnected || pendingConfirmation || document.querySelector(".modal-overlay")) return;
@@ -791,7 +960,9 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
   }
 
   function refreshStatus() {
-    answerCount.textContent = `${answers.size} beantwortet · ${examQuestions.length - answers.size} offen`;
+    questionIndicator.textContent = `Frage ${current + 1} / ${examQuestions.length}`;
+    answerCount.textContent = `${answers.size} beantwortet`;
+    jumpSummary.textContent = `Fragenübersicht (${answers.size}/${examQuestions.length} beantwortet)`;
     for (const [index, button] of questionButtons.entries()) {
       const answered = answers.has(examQuestions[index].key);
       button.setAttribute("aria-label", `Frage ${index + 1}, ${answered ? "beantwortet" : "offen"}`);
@@ -811,9 +982,11 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
     const selected = answers.get(key) || new Set();
     const card = el("div", { class: "item-card fallakte exam-question" });
     const heading = el("h2", { class: "fallakte-step exam-question-heading", text: `Frage ${current + 1} von ${examQuestions.length}` });
+    const domain = domainMap().get(q.source?.examDomainId || q.examDomainId);
+    const metaLabel = [domain?.name, q.source?.cefr || q.cefr ? `CEFR ${q.source?.cefr || q.cefr}` : ""].filter(Boolean).join(" · ");
     card.appendChild(el("header", { class: "fallakte-head" }, [
       heading,
-      el("p", { class: "fallakte-source", text: "Mini-Prüfung" })
+      metaLabel ? el("p", { class: "fallakte-source", text: metaLabel }) : null
     ]));
     if (q.scenario) card.appendChild(el("p", { class: "item-scenario", text: q.scenario, attrs: { lang: "en" } }));
     card.appendChild(el("p", { class: "fallakte-question", text: q.questionText || q.text, attrs: { lang: "en" } }));
@@ -932,7 +1105,7 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
       el("p", { text: `Trefferquote: ${pct} %` }),
       el("p", {
         class: "item-hint",
-        text: "Orientierungswert: Offizielle Bestehensgrenze liegt bei 62 % (Foundations) bzw. 68 % (Administrator)."
+        text: `Orientierungswert: Offizielle Bestehensgrenze 62 % (Foundations, 40 Fragen) bzw. 68 % (Administrator, 60 Fragen). Hinweis: Dieses Ergebnis beruht auf einer kleinen${examIsFiltered ? " und gefilterten" : ""} Stichprobe (${graded.length} Fragen).`
       })
     ]);
 
@@ -1016,7 +1189,7 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
     }))) return;
     submit(Date.now() >= deadline);
   });
-  pauseBtn.addEventListener("click", () => {
+  pauseBtn.addEventListener("click", async () => {
     if (isOutdated()) {
       handleSuperseded();
       return;
@@ -1025,6 +1198,11 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
       submit(true);
       return;
     }
+    const confirmed = await ask(
+      "Deine Antworten bleiben gespeichert. Die Prüfungszeit läuft im Hintergrund weiter. Möchtest du die Prüfung jetzt unterbrechen?",
+      { cancelText: "Weiterprüfen", confirmText: "Unterbrechen (Zeit läuft weiter)" }
+    );
+    if (!confirmed) return;
     if (!saveBeforeLeaving()) return;
     stop();
     pauseToSetup();
@@ -1040,7 +1218,6 @@ function startMiniExam(runHost, pool, showSetup, pauseToSetup, savedExam = null,
     return;
   }
   goTo(current, false);
-  host.insertBefore(disclaimerNote(), qHost);
   timerHandle = setInterval(updateTimer, 250);
   updateTimer();
   focusContent(title, { page: true });
